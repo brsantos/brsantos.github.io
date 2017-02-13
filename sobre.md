@@ -3,7 +3,7 @@ layout: page
 title: Sobre mim
 ---
 
-###Formação:
+### Formação:
 
 * Bacharelado em Estatística, 2005-2008.
 * Mestrado em Estatística, 2010-2012.
