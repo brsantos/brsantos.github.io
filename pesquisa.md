@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Sobre mim
+title: Pesquisa
 ---
 
 ### Interesses de pesquisa
