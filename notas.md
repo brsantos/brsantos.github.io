@@ -3,7 +3,6 @@ layout: page
 title: Notas
 ---
 
-
 <div class="posts-list">
   {% for post in paginator.posts %}
   <article class="post-preview">
