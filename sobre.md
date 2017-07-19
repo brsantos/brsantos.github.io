@@ -1,5 +1,6 @@
 ---
 layout: page
+lang: pt
 title: Sobre mim
 ---
 
@@ -18,7 +19,7 @@ title: Sobre mim
 
 ### Currículo Lattes:
 
-[Link](http://buscatextual.cnpq.br/buscatextual/visualizacv.do?id=K4336963A7)
+[Link](http://lattes.cnpq.br/1816139493443640)
 
 ### Google Scholar
 

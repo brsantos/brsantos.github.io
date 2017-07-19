@@ -1,5 +1,6 @@
 ---
 layout: page
+lang: pt
 title: Pesquisa
 ---
 
@@ -23,10 +24,10 @@ title: Pesquisa
 5. Santos, B. e Elian, S. (2015). Influence measures in quantile regression models. Communications in Statistics - Theory and Methods. DOI: [link](http://www.tandfonline.com/doi/full/10.1080/03610926.2013.799699)  
 6. Santos, B. e Bolfarine, H. (2015). Analysis of Brazil’s presidential election via Bayesian spatial quantile regression. Proceedings of the 30th International Workshop on Statistical Modelling (Herwig Friedl, Helga Wagner, editors), vol. 2, 239-242.
 7. Santos, B. e Bolfarine, H. (2016). Bayesian quantile regression analysis for continuous data with a discrete component at zero. [link](http://arxiv.org/abs/1511.05925)
-8. Santos, B. e Bolfarine, H. (2016). On Bayesian quantile regression and outliers. [link](http://arxiv.org/abs/1601.07344)
 
 ### Trabalhos em andamento:
 
+* Santos, B. e Bolfarine, H. (2016). On Bayesian quantile regression. Submetido para Journal of Computational and Graphical Statistics [link](http://arxiv.org/abs/1601.07344)
 * Santos, B. e Bolfarine, H. (2017). Analysis of Brazil’s presidential election via Bayesian spatial quantile regression. Em preparação, versão para artigo.
 
 ### Minicursos ministrados:

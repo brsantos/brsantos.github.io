@@ -1,5 +1,6 @@
 ---
 layout: post
+lang: pt
 title: Como fazer estudos de simulação utilizando computação em paralelo
 ---
 
