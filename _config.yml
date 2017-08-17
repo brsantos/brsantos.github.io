@@ -16,26 +16,25 @@ baseurl: ""
 # Name of website
 title: Bruno Santos
 
-languages: ["pt", "en"]
+# languages: ["pt", "en"]
 
 # Short description of your site
-description: 
-  pt: Professor Adjunto de Estatística - UFBA
-  en: Assistant Professor of Statistics - UFBA
+description: Assistant Professor of Statistics - UFBA
+#  pt: Professor Adjunto de Estatística - UFBA
 
 # --- Navigation bar options --- #
 
 # List of links in the navigation bar
 navbar-links:
-  pt:
-    Sobre: "sobre"
-    Ensino: "ensino"
-    Pesquisa: "pesquisa"
-    Notas: "notas"
-  en: 
-    About: "about"
-    Teaching: "teaching"
-    Research: "research"
+#  pt:
+#    Sobre: "sobre"
+#    Ensino: "ensino"
+#    Pesquisa: "pesquisa"
+#    Notas: "notas"
+#  en: 
+   About: "about"
+   Teaching: "teaching"
+   Research: "research"
 
 #  Author's home: "http://brsantos.org"
 
