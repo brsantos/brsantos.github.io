@@ -9,4 +9,17 @@ title: Teaching
 #### 2016 Fall semester
 
 * MAT236 - Métodos Estatísticos
-  * [Ementa](https://est.ufba.br/sites/est.ufba.br/files/mat236_-_metodos_estatisticos.pdf)
+  * [Syllabus](https://est.ufba.br/sites/est.ufba.br/files/mat236_-_metodos_estatisticos.pdf)
+  
+#### 2017 Spring semester
+
+* MAT236 - Métodos Estatísticos
+  * [Syllabus](https://est.ufba.br/sites/est.ufba.br/files/mat236_-_metodos_estatisticos.pdf)  
+  
+#### 2017 Fall semester
+
+* MAT236 - Métodos Estatísticos
+  * [Syllabus](https://est.ufba.br/sites/est.ufba.br/files/mat236_-_metodos_estatisticos.pdf)
+  
+* MATXXX - Bayesian Inference
+  * [Syllabus](https://est.ufba.br/sites/est.ufba.br/files/mat236_-_metodos_estatisticos.pdf)
