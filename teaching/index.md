@@ -21,5 +21,5 @@ title: Teaching
 * MAT236 - Métodos Estatísticos
   * [Syllabus](https://est.ufba.br/sites/est.ufba.br/files/mat236_-_metodos_estatisticos.pdf)
   
-* MATXXX - Bayesian Inference
+* [MATXXX - Bayesian Inference](InfBayesiana/)
   * [Syllabus](https://est.ufba.br/sites/est.ufba.br/files/mat236_-_metodos_estatisticos.pdf)
