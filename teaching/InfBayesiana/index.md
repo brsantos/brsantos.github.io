@@ -1,10 +1,8 @@
 ---
 layout: page
 lang: en
-title: Teaching
+title: Inferência Bayesiana
 ---
 
-### Inferência Bayesiana
-
-#### Listas de exercícios
+### Listas de exercícios
 
