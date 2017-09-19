@@ -52,6 +52,10 @@ levels(dados$PensionistaINSS) <- c("Sim", "Não")
 dados$TeveFilho <- factor(dados$TeveFilho)
 levels(dados$TeveFilho) <- c("Sim", "Não")
 
+dados$CondicaoAtividade <- factor(dados$CondicaoAtividade)
+levels(dados$CondicaoAtividade) <- c("Economicamente ativas", 
+                                     "Não economicamente ativas")
+
 dados$GruposAnosEstudo <- factor(dados$GruposAnosEstudo)
 levels(dados$GruposAnosEstudo) <- c("Sem instrução e menos de 1 ano",
                                     "1 a 3 anos",
