@@ -83,8 +83,8 @@ levels(dados$SatisfacaoOportunidades) <- c("Não cabe avaliar",
                                            "Satisfeito",
                                            "Muito satisfeito")
 
-dados$MarcaEsporte <- factor(dados$MarcaEsporte)
-levels(dados$MarcaEsporte) <- c("Não selecionada", "Selecionada")
+dados$SelecaoPerguntasEsporte <- factor(dados$SelecaoPerguntasEsporte)
+levels(dados$SelecaoPerguntasEsporte) <- c("Não selecionada", "Selecionada")
 
 dados$PraticouEsporte <- factor(dados$PraticouEsporte)
 levels(dados$PraticouEsporte) <- c("Sim", "Não")
