@@ -10,7 +10,7 @@ title: MAT020 - Estatística I A
 
 ### Gráfico interativo
 
-* Gráfico sobre a relação entre expectativa de vida e fertilidade em diferentes países. Link [aqui](exemploGrafico.html)
+* Gráfico sobre a relação entre expectativa de vida e fertilidade em diferentes países. Link [aqui](exemploGrafico.html). Exemplo foi retirada dessa  [página](http://www.magesblog.com/2016/04/new-r-package-to-access-world-bank-data.html).
 
 ### Links interessantes
 
