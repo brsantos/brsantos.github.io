@@ -16,4 +16,8 @@ title: MAT020 - Estatística I A
 
 * [Vendo a teoria (em inglês)](http://students.brown.edu/seeing-theory/index.html)
 * [Five Thirty Eight](http://fivethirtyeight.com/): site de notícias com análise de dados e modelos estatísticos.
-* [Gapminder](http://www.gapminder.org/tools/#_chart-type=bubbles): Análise gráfica de variáveis socioeconômicas de diferentes países, utilizando animação para aumentar o efeito da comparação.
+* [Gapminder](http://www.gapminder.org/tools/#_chart-type=bubbles): Análise gráfica de variáveis socioeconômicas de diferentes países, utilizando animação.
+
+### Links de palestras 
+
+* [Hans Rosling - The seemingly impossible is possible](https://www.gapminder.org/videos/hans-rosling-ted-talk-2007-seemingly-impossible-is-possible/)
