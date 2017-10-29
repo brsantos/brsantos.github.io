@@ -11,3 +11,6 @@ title: Inferência Bayesiana
 ### Listas de exercícios
 
 * [Lista 1](Lista1.pdf)
+* [Lista 2](Lista2.pdf)
+  * [Wage](Wage.txt)
+  * [CoalDisast](CoalDisast.csv)
