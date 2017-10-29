@@ -12,5 +12,8 @@ title: Inferência Bayesiana
 
 * [Lista 1](Lista1.pdf)
 * [Lista 2](Lista2.pdf)
-  * [Wage](Wage.txt)
-  * [CoalDisast](CoalDisast.csv)
+
+### Dados
+
+* [Wage](Wage.txt)
+* [CoalDisast](CoalDisast.csv)
