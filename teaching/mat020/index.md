@@ -8,6 +8,11 @@ title: MAT020 - Estatística I A
 
 * [Arquivo](Programa_MAT020.pdf)
 
+### Exercícios sugeridos
+
+* Lista 1 - Monitoria: 1, 3, 5, 7, 9, 11, 13, 16, 24, 27.
+* Lista 1 - Respondida: 5, 6, 7, 8, 10, 13, 15, 20, 25.
+
 ### Gráfico interativo
 
 * Gráfico sobre a relação entre expectativa de vida e fertilidade em diferentes países. Link [aqui](exemploGrafico.html). Exemplo foi retirada dessa  [página](http://www.magesblog.com/2016/04/new-r-package-to-access-world-bank-data.html).
