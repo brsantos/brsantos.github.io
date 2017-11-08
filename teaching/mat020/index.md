@@ -8,6 +8,11 @@ title: MAT020 - Estatística I A
 
 * [Arquivo](Programa_MAT020.pdf)
 
+### Listas de exercícios
+
+* [Lista 1 - Monitoria](Lista1Monitoria.pdf)
+* [Lista 1 - Respondida](Lista1Respondida.pdf)
+
 ### Exercícios sugeridos
 
 * Lista 1 - Monitoria: 1, 3, 5, 7, 9, 11, 13, 16, 24, 27.
