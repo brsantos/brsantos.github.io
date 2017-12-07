@@ -7,6 +7,7 @@ title: Minicurso - Quantile Regression
 ### Slides
 
 * [Dia 1](Minicurso_Dia1.pdf)
+* [Dia 2](Minicurso_Dia2.pdf)
 
 ### Códigos
 
