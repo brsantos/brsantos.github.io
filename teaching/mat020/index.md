@@ -12,11 +12,15 @@ title: MAT020 - Estatística I A
 
 * [Lista 1 - Monitoria](Lista1Monitoria.pdf)
 * [Lista 1 - Respondida](Lista1Respondida.pdf)
+* [Lista 2 - Monitoria](Lista2Monitoria.pdf)
+* [Lista 2 - Respondida](Lista2Respondida.pdf)
 
 ### Exercícios sugeridos
 
 * Lista 1 - Monitoria: 1, 3, 5, 7, 9, 11, 13, 16, 24, 27.
 * Lista 1 - Respondida: 5, 6, 7, 8, 10, 13, 15, 20, 25.
+* Lista 2 - Monitoria: 3, 4, 6, 7, 9, 11, 12, 15, 16, 18, 22, 24, 25, 26.
+* Lista 2 - Respondida: 11, 13, 14, 15, 16, 19, 21, 26, 28.
 
 ### Gráfico interativo
 
