@@ -12,6 +12,7 @@ title: MAT236 - Métodos Estatísticos
 
 * [Slides - Apostila 1](Apostila1_MAT236.pdf)
 * [Slides - Apostila 2](Apostila2_MAT236.pdf)
+* [Slides - Apostila 3](Apostila3_MAT236.pdf)
 
 ### Exercícios sugeridos
 
