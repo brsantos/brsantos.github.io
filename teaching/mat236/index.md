@@ -22,6 +22,7 @@ title: MAT236 - Métodos Estatísticos
 * Lista 4: 1, 5, 6, 7, 9, 10, 12, 13, 14, 15.
 * Lista 5: 1, 2, 5, 6, 7, 9, 10, 12, 13. 
 * Lista 6: 6, 7, 8, 9, 13, 14, 15, 18, 19, 20, 22, 25, 26, 28, 29, 31, 32, 33, 35, 39.
+* Lista 7: 2, 4, 5, 6, 7, 9, 10, 11, 14, 15, 16, 17, 18.
 
 ### Software: R
 
@@ -38,5 +39,3 @@ estatísticos.
 ### Links de palestras 
 
 * [Hans Rosling - The seemingly impossible is possible](https://www.gapminder.org/videos/hans-rosling-ted-talk-2007-seemingly-impossible-is-possible/)
-
-
