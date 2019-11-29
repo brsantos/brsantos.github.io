@@ -21,7 +21,7 @@ levels(dados$Etnia) <- c("Indígena", "Branca", "Preta", "Amarela", "Parda",
 dados$EstadoCivil <- factor(dados$EstadoCivil)
 levels(dados$EstadoCivil) <- c("Solteiro(a)", 
                                "Casado(a)", 
-                               "Desquitado(a) ou separado(a) judicialmente",
+                               "Desquitado(a)",
                                "Divorciado(a)",
                                "Viúvo(a)")
 
