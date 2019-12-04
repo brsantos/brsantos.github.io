@@ -1,0 +1,5 @@
+"0","ggplot(dfhair, aes(x = as.factor(Sex), y = Freq, "
+"0","                   fill = Sex)) +"
+"0","  theme_minimal() +"
+"0","  geom_boxplot()"
+"0",""

@@ -1,0 +1,4 @@
+"0","#exemplo"
+"0"," ggplot(dados, aes(x = var_x, y = var_y, "
+"0","                   color = var_grupo)) +"
+"0","  geom_point()"

@@ -1,0 +1,8 @@
+"0","ggplot(df, aes(x = Horsepower)) +"
+"0","  geom_histogram(bins = 10, "
+"0","                 color = ""black"", "
+"0","                 fill = ""darkorchid4"") +"
+"0","  theme_bw() +"
+"0","  labs(x = ""Frequencia"", "
+"0","       y = ""Horsepower"", "
+"0","       title = ""Potencia"")"

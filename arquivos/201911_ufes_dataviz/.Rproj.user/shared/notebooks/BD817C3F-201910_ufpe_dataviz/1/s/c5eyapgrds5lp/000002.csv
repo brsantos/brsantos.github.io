@@ -1,0 +1,6 @@
+"0","ggplot(df, aes(x = Type)) +"
+"0","  geom_bar(fill = ""darkorchid4"") +"
+"0","  labs(x = ""Tipo de carro"", y = ""Contagem"","
+"0","       title = ""Tipo de carro"") +"
+"0","  theme_minimal() +"
+"0","  facet_grid( ~ AirBags)"

@@ -1,0 +1,2 @@
+"0","knitr::opts_chunk$set(echo = FALSE, fig.align = ""center"", message = FALSE, "
+"0","                      warning = FALSE, comment = ""  #>"", collapse = T)"
