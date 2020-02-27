@@ -80,6 +80,9 @@
 % margins by default, and it is still possible to overwrite the defaults
 % using explicit options in \includegraphics[width, height, ...]{}
 \setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\usepackage[normalem]{ulem}
+% avoid problems with \sout in headers with hyperref:
+\pdfstringdefDisableCommands{\renewcommand{\sout}{}}
 \IfFileExists{parskip.sty}{%
 \usepackage{parskip}
 }{% else
@@ -124,7 +127,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{2020-02-18}
+    \date{2020-02-27}
 
 \usepackage{booktabs}
 
@@ -138,114 +141,485 @@
 \hypertarget{introducao}{%
 \chapter{Introdução}\label{introducao}}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{install.packages}\NormalTok{(}\StringTok{"bookdown"}\NormalTok{)}
-\CommentTok{# or the development version}
-\CommentTok{# devtools::install_github("rstudio/bookdown")}
-\end{Highlighting}
-\end{Shaded}
+A ciência \sout{de dados} \textbf{Estatística} está interessada em discutir e aprender sobre a incerteza de variáveis aleatórias na nossa vida e as suas relações entre si. Em particular, essas variáveis aleatórias podem se apresentar como categorias. São exemplos: o gênero musical que uma pessoa prefere (blues, rock, samba, funk, \ldots{}); a área de conhecimento que uma pessoa escolhe seguir carreira profissional (Exatas, Humanas, Biológicas); a informação sobre ser favorável a um projeto de governo (Sim, Não); entre diversos outros. A esse tipo de dados denominamos \emph{dados categorizados} e sobre esse tipo variável aleatória que estamos interessados nessas notas de aula e referente curso.
 
-Remember each Rmd file contains one and only one chapter, and a chapter is defined by the first-level heading \texttt{\#}.
+Durante a apresentação desse material, estaremos interessados em discutir os modelos estatísticos que nos auxiliam a tomar decisões a respeito de hipóteses sobre esse tipo de dados. Também daremos ênfase aos códigos no software \texttt{R} para obtermos esses modelos estatísticos, assim como estaremos interessados nas melhores maneiras de visualizar os resultados.
 
-To compile this example to PDF, you need XeLaTeX. You are recommended to install TinyTeX (which includes XeLaTeX): \url{https://yihui.org/tinytex/}.
+Esse primeiro capítulo tem o intuito de contextualizar a análise de dados categorizados, apresentando exemplos desse tipo de dados, assim como podemos utilizar o \texttt{R} para visualizar esse tipo de dados. Além disso, também apresentamos as distribuições de probabilidade associadas a esse tipo de variável aleatória. Por fim, discutimos brevemente métodos de inferência para os parâmetros dessa distribuição, apresentando métodos de máxima verossimilhança e também métodos bayesianos.
 
-\hypertarget{intro}{%
-\chapter{Introduction}\label{intro}}
+\hypertarget{dados-categorizados-e-visualizacao}{%
+\section{Dados categorizados e visualização}\label{dados-categorizados-e-visualizacao}}
 
-You can label chapter and section titles using \texttt{\{\#label\}} after them, e.g., we can reference Chapter \ref{intro}. If you do not manually label them, there will be automatic labels anyway, e.g., Chapter \ref{methods}.
+Quando observamos dados como categorias, podemos classificar essas variáveis aleatórias como variáveis qualitativas. Essa denominação pode ainda ser dividida entre variáveis aleatórias qualitativas \textbf{ordinais} ou variáveis aleatórias qualitativas \textbf{nominais}. Para o primeiro tipo podemos dizer que existe uma ordem entre as diferentes categorias, enquanto que para a segunda não é possível fazer nenhum tipo de ordenamento que possa ser utilizado na análise dos dados. Por exemplo, faixas de renda (``Menor que 1 salário mín.'', ``Entre 1 salário mín. e 2 salários mín.'', \ldots{}) pode ser ordenada, logo diríamos que é uma variável qualitativa ordinal. Por outro lado, se considerarmos a variável tratamento em um experimento clínico, em que uma pessoa pode fazer do grupo controle ou do grupo tratamento, essas duas possibilidades (``Controle'', ``Tratamento'') não permitem nenhuma ordem, logo essa variável aleatória seria denominada variável qualitativa nominal.
 
-Figures and tables with captions will be placed in \texttt{figure} and \texttt{table} environments, respectively.
+Na próxima subseção apresentaremos alguns exemplos de dados categóricos e como podemos visualizar a sua respectiva distribuição usando o software \texttt{R}.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{par}\NormalTok{(}\DataTypeTok{mar =} \KeywordTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{, }\DecValTok{4}\NormalTok{, }\FloatTok{.1}\NormalTok{, }\FloatTok{.1}\NormalTok{))}
-\KeywordTok{plot}\NormalTok{(pressure, }\DataTypeTok{type =} \StringTok{'b'}\NormalTok{, }\DataTypeTok{pch =} \DecValTok{19}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
+\hypertarget{dados-sobre-musicas-do-raul-seixas-no-spotify}{%
+\subsection{Dados sobre músicas do Raul Seixas no Spotify}\label{dados-sobre-musicas-do-raul-seixas-no-spotify}}
 
-\begin{figure}
-
-{\centering \includegraphics[width=0.8\linewidth]{notas_livro_files/figure-latex/nice-fig-1} 
-
-}
-
-\caption{Here is a nice figure!}\label{fig:nice-fig}
-\end{figure}
-
-Reference a figure by its code chunk label with the \texttt{fig:} prefix, e.g., see Figure \ref{fig:nice-fig}. Similarly, you can reference tables generated from \texttt{knitr::kable()}, e.g., see Table \ref{tab:nice-tab}.
+Como primeira ilustração, considere os dados que podem ser obtidos sobre a plataforma digital Spotify, a partir de API disponibilizada pelos responsáveis por essa rede social de \emph{streaming} de músicas. A partir de uma obtenção de uma chave para acesso, é possível baixar diferentes variáveis de diferentes artistas, diferentes álbuns, as quais podem ser utilizadas para análise dos gostos musicais das pessoas, assim como dos diferentes estilos musicais e suas respectivas características, etc. Para essa ilustração consideremos dados do artista \textbf{Raul Seixas}, que é considerado por alguns como um dos precursores do rock no Brasil. Para obtenção de algumas informações pela API disponibilizada pelo Spotify, podemos obter os dados da seguinte maneira. Primeiramente, consideramos os seguintes pacotes, em que o primeiro nos permite o acesso às informações do Spotify de forma mais rápida, enquanto que o segundo nos permite organizar os dados no R de maneira mais ágil, e o terceiro nos possibilita o acesso dos dados da plataforma digital:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{knitr}\OperatorTok{::}\KeywordTok{kable}\NormalTok{(}
-  \KeywordTok{head}\NormalTok{(iris, }\DecValTok{20}\NormalTok{), }\DataTypeTok{caption =} \StringTok{'Here is a nice table!'}\NormalTok{,}
-  \DataTypeTok{booktabs =} \OtherTok{TRUE}
-\NormalTok{)}
+\KeywordTok{library}\NormalTok{(Rspotify)}
+\KeywordTok{library}\NormalTok{(dplyr)}
+\KeywordTok{library}\NormalTok{(httr)}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{table}[t]
+Em seguida, consideramos a variável \texttt{key} que deve ser obtida diretamente \href{https://developer.spotify.com/documentation/general/guides/authorization-guide/}{aqui}. Em posse dessa chave de acesso, podemos obter nossas informações de interesse:
 
-\caption{\label{tab:nice-tab}Here is a nice table!}
-\centering
-\begin{tabular}{rrrrl}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Obtendo a id de identificação do artista}
+\NormalTok{raul_seixas_id <-}\StringTok{ }\KeywordTok{searchArtist}\NormalTok{(}\StringTok{"Raul+Seixas"}\NormalTok{, }\DataTypeTok{token =}\NormalTok{ key) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{slice}\NormalTok{(}\DecValTok{1}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{select}\NormalTok{(id)}
+
+\CommentTok{# Obtendo o id e o nome de todos os álbuns do artista disponíveis na plataforma}
+\NormalTok{rs_albums <-}\StringTok{ }\KeywordTok{getAlbums}\NormalTok{(raul_seixas_id}\OperatorTok{$}\NormalTok{id, }\DataTypeTok{token =}\NormalTok{ key)}
+
+\CommentTok{# Obtendo para cada um dos álbuns obtidos anteriormente, o id e o nome de }
+\CommentTok{# cada uma das músicas que compõem o álbum.}
+\NormalTok{rs_album_songs <-}\StringTok{ }\KeywordTok{lapply}\NormalTok{(rs_albums}\OperatorTok{$}\NormalTok{id, getAlbum, }\DataTypeTok{token =}\NormalTok{ key)}
+
+\CommentTok{# Obtendo algumas informações adicionais sobre o album.}
+\NormalTok{rs_album_songs_info <-}\StringTok{ }\KeywordTok{lapply}\NormalTok{(rs_albums}\OperatorTok{$}\NormalTok{id, getAlbumInfo, }\DataTypeTok{token =}\NormalTok{ key)}
+\end{Highlighting}
+\end{Shaded}
+
+Em seguida, precisamos obter todas as informações das músicas que queremos analisar. Isso é feita com ajuda das funções \texttt{lapply}, pois precisamos considerar os diferentes \texttt{id}'s dos álbuns e em seguida de cada uma das músicas. O seguinte código pode ser utilizado:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lista_musicas_info <-}\StringTok{ }\KeywordTok{lapply}\NormalTok{(rs_album_songs, }\ControlFlowTok{function}\NormalTok{(a)\{}
+\NormalTok{  musicas_album_a <-}\StringTok{ }\KeywordTok{lapply}\NormalTok{(a}\OperatorTok{$}\NormalTok{id, getFeatures, }\DataTypeTok{token =}\NormalTok{ key)}
+\NormalTok{  num_variaveis <-}\StringTok{ }\KeywordTok{dim}\NormalTok{(musicas_album_a[[}\DecValTok{1}\NormalTok{]])[}\DecValTok{2}\NormalTok{]}
+\NormalTok{  dados_musicas <-}\StringTok{ }\NormalTok{musicas_album_a }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\KeywordTok{unlist}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{matrix}\NormalTok{(}\DataTypeTok{ncol =}\NormalTok{ num_variaveis, }\DataTypeTok{byrow =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{as.data.frame}\NormalTok{() }
+  \KeywordTok{names}\NormalTok{(dados_musicas) <-}\StringTok{ }\KeywordTok{names}\NormalTok{(musicas_album_a[[}\DecValTok{1}\NormalTok{]])}
+\NormalTok{  dados_musicas }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{select}\NormalTok{(danceability, energy, key, loudness, mode, speechiness, }
+\NormalTok{           acousticness, instrumentalness, liveness, valence, tempo,}
+\NormalTok{           duration_ms, time_signature) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{nome =}\NormalTok{ a}\OperatorTok{$}\NormalTok{name)}
+\NormalTok{\}) }
+
+\CommentTok{# Empilhando as músicas de todos os albuns em um mesmo banco de dados.}
+\NormalTok{todas_musicas <-}\StringTok{ }\KeywordTok{do.call}\NormalTok{(rbind.data.frame, lista_musicas_info)}
+
+\CommentTok{# Preenchendo os dados com nome do album}
+\NormalTok{todas_musicas}\OperatorTok{$}\NormalTok{nome_album <-}\StringTok{ }\KeywordTok{lapply}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\KeywordTok{length}\NormalTok{(rs_album_songs), }\ControlFlowTok{function}\NormalTok{(a)\{}
+  \KeywordTok{rep}\NormalTok{(rs_albums}\OperatorTok{$}\NormalTok{name[a], }\KeywordTok{length}\NormalTok{(rs_album_songs[[a]]}\OperatorTok{$}\NormalTok{id))}
+\NormalTok{\}) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{unlist}\NormalTok{()}
+
+
+\CommentTok{# Obtendo data de lançamento}
+\NormalTok{todas_musicas}\OperatorTok{$}\NormalTok{data_lancamento <-}\StringTok{ }\KeywordTok{lapply}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\KeywordTok{length}\NormalTok{(rs_album_songs), }\ControlFlowTok{function}\NormalTok{(a)\{}
+  \KeywordTok{rep}\NormalTok{(rs_album_songs_info[[a]]}\OperatorTok{$}\NormalTok{release_date[}\DecValTok{1}\NormalTok{], }\KeywordTok{length}\NormalTok{(rs_album_songs[[a]]}\OperatorTok{$}\NormalTok{id))}
+\NormalTok{\}) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{unlist}\NormalTok{()}
+
+\CommentTok{# Criando variável ano de lançamento a partir de variável de texto}
+\NormalTok{todas_musicas}\OperatorTok{$}\NormalTok{ano_lancamento <-}\StringTok{ }\KeywordTok{substr}\NormalTok{(todas_musicas}\OperatorTok{$}\NormalTok{data_lancamento, }\DecValTok{1}\NormalTok{, }\DecValTok{4}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Para esse exemplo consideramos somente as músicas que apresentam ano de lançamento menor do que 1990, segundo informações obtidas na própria plataforma.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{musicas_raul_seixas <-}\StringTok{ }\KeywordTok{filter}\NormalTok{(todas_musicas, ano_lancamento }\OperatorTok{<}\StringTok{ "1990"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Agora podemos finalmente visualizar algumas das informações obtidas. Para essa parte, consideramos os seguintes pacotes.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(ggplot2)}
+\KeywordTok{library}\NormalTok{(ggridges)}
+\KeywordTok{library}\NormalTok{(rgdal)}
+\end{Highlighting}
+\end{Shaded}
+
+Por exemplo, poderíamos estar interessados no tempo de duração das músicas ao longo dos anos. Primeiramente, consideramos a variável tempo de duração em sua forma quantitativa. O seguinte gráfico com a densidade estimada do tempo de duração das músicas para os diferentes anos de lançamento poderia ser obtido com o seguinte código
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{musicas_raul_seixas }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{duration =} \KeywordTok{as.numeric}\NormalTok{(}\KeywordTok{as.character}\NormalTok{(duration_ms))}\OperatorTok{/}\DecValTok{1000}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{y =}\NormalTok{ ano_lancamento, }\DataTypeTok{x =}\NormalTok{ duration, }\DataTypeTok{fill =} \KeywordTok{stat}\NormalTok{(x))) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_density_ridges_gradient}\NormalTok{(}\DataTypeTok{scale =} \DecValTok{2}\NormalTok{, }\DataTypeTok{rel_min_height =} \FloatTok{0.01}\NormalTok{, }
+                               \DataTypeTok{gradient_lwd =} \FloatTok{1.}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}
+    \DataTypeTok{x =} \StringTok{"Duração em s"}\NormalTok{,}
+    \DataTypeTok{y =} \StringTok{"Ano do lançamento"}\NormalTok{,}
+    \DataTypeTok{title =} \StringTok{"Distribuição da duração das músicas do Raul Seixas"}\NormalTok{,}
+    \DataTypeTok{subtitle =} \StringTok{"Análise em função do ano de lançamento"}\NormalTok{,}
+    \DataTypeTok{caption =} \StringTok{"Fonte: Spotify"}
+\NormalTok{  ) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_fill_viridis_c}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme_minimal}\NormalTok{() }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position =} \StringTok{'none'}\NormalTok{) }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics[width=0.8\linewidth]{notas_livro_files/figure-latex/graf1-1} \end{center}
+
+Nota-se que não é possível obter nenhuma indicação clara de relação entre a distribuição do tempo e o ano do lançamento. Poderíamos categorizar o tempo de duração para simplificar essa análise. Nesse caso talvez fosse interessante considerar uma categorização das músicas considerando somente 3 possibilidades: duração curta, média ou longa. Essa categorização poderia ser feita inclusive utilizando os quantis da própria variável utilizando a função \texttt{quantcut} do pacote \texttt{gtools}. O resultado dessa categorização pode ser vista na figura a seguir.
+
+\begin{center}\includegraphics[width=0.8\linewidth]{notas_livro_files/figure-latex/graf2-1} \end{center}
+
+Ao longo do texto estaremos interessados em discutir por exemplo que tipo de associação existe entre essas duas variáveis categóricas. Por exemplo, poderíamos dizer que as duas variáveis são independentes? Esse tema será discutido nos próximos capítulos.
+
+Outra variável categórica disponível na APi do Spotify seria o tom geral da música, que é descrito da seguinte forma, conforme \href{https://developer.spotify.com/documentation/web-api/reference/tracks/get-audio-analysis/}{manual de referência}, e traduzido livremente aqui:
+
+\begin{quote}
+O tom geral estimado da música. Os valores nesse campo variam de 0 a 11, mapeando para os tons de acordo com uma notação clássica de tom (e.g., 0 = Dó, 1 = Dó\#, \ldots{}). Se nenhum tom é detectado, o valor é igual a -1.
+\end{quote}
+
+\begin{center}\includegraphics[width=0.8\linewidth]{notas_livro_files/figure-latex/graf3-1} \end{center}
+
+Na Figura \ref{fig:graf3} podemos ver a distribuição do uso de diferentes tons ao longo dos anos pelo artista Raul Seixas. Lembrando que esses tons são estimados, inclusive a plataforma disponibiliza uma outra variável que associa a cada um desses tons estimados um grau de confiança, porém essa informação não é utilizada aqui. Porém, a partir dessa análise inicial poderíamos dizer que para alguns anos o número de diferentes tons nessa música é menos expressivo. Enquanto que para outros anos a utilização de muitos tons é mais acentuada. Poderíamos apontar o ano de 1977 como um ano em que houve o maior número de tons diferentes na música.
+
+Outra análise que poderia ser feita seria avaliar a relação entre o tempo da música, considerando essa variável categorizada, e o tom utilizado. Para isso, em uma análise descritiva poderíamos considerar o gŕafico a seguir.
+
+\begin{center}\includegraphics[width=0.8\linewidth]{notas_livro_files/figure-latex/graf4-1} \end{center}
+
+Porém a visualização dos resultados nesse caso, parece ser um pouco prejudicada, devido ao número muito maior de tons do que de categorias de duração da música. Por esse motivo, uma outra possibilidade é alterar o modo de visualização. Poderíamos observar a distribuição da duração da música em função dos tons da música, conforme figura a seguir.
+
+\begin{center}\includegraphics[width=0.8\linewidth]{notas_livro_files/figure-latex/graf5-1} \end{center}
+
+Note que a visualização da informação na Figura \ref{fig:graf5} parece ser um pouco mais simplificada do que na Figura \ref{fig:graf4}. Porém a análise da última figura mostra que para alguns tons de música não foi possível observar músicas das três diferentes durações. Por exemplo, para o tom \textbf{Ré\#} somente músicas de duração média foram observadas. Esse tipo de observação é importante para discutirmos modelos estatísticos que poderiam ser supostos para os dados. Eventualmente categorias sem observações de valores podem se tornar problemáticas para determinadas análises.
+
+O objetivo dessa subseção era apresentar uma forma de diferente de obtenção de dados para análise, nesse caso, considerando informações obtidas de uma plataforma de \emph{streaming} de músicas, como Spotify. Também é importante discutir como visualizar a informação obtida. Como exercício, que será reforçado ao final do capítulo, seria interessante a tentativa de reprodução dos gráficos apresentados aqui.
+
+\hypertarget{dados-obtidos-do-datasus}{%
+\subsection{Dados obtidos do DATASUS}\label{dados-obtidos-do-datasus}}
+
+Para um segundo exemplo sobre dados categorizados vamos utilizar informações sobre o \href{http://datasus.saude.gov.br/}{DATASUS}, em que diversas variáveis sobre o sistema hospitalar estão disponíveis para uso de todos. Para essa ilustração, consideremos o Sistema de Informações Hospitalares (SIH), em que podemos verificar em todos os Estados brasileiros quantas pessoas foram hospitalizadas em hospitais, em função do tempo de hospitalização. Tal informação pode ser importante para eventualmente considerar problemas de eficiência em determinadas regiões ou eventualmente de profissionais que podem estar prejudicando o atendimento à população. Outras hipóteses que devem ser consideradas para analisar o tempo de hospitalização podem estar relacionadas ao clima ou poluição das cidades, assim como aos/às possíveis motivos/doenças que causam essas hospitalizações, entre outros fatores. Porém, aqui inicialmente vamos utilizar somente os dados de em sua forma mais simples, isto é, vamos avaliar por Estado a duração do tempo de hospitalização para o ano de 2018.
+
+Separemos inicialmente o tempo de hospitalização até 3 dias, entre 3 dias e até 7 dias e mais do que 7 dias. A depender do interesse, outras categorizações poderiam ser utilizadas para o efeito dessa análise. A tabela com as respectivas quantidades é apresentada em seguida:
+
+\begin{tabular}{lrrr}
 \toprule
-Sepal.Length & Sepal.Width & Petal.Length & Petal.Width & Species\\
+  & Menor que 3 dias & Entre 3 e 7 dias & Maior que 7 dias\\
 \midrule
-5.1 & 3.5 & 1.4 & 0.2 & setosa\\
-4.9 & 3.0 & 1.4 & 0.2 & setosa\\
-4.7 & 3.2 & 1.3 & 0.2 & setosa\\
-4.6 & 3.1 & 1.5 & 0.2 & setosa\\
-5.0 & 3.6 & 1.4 & 0.2 & setosa\\
+AC & 29.324 & 8.757 & 6.714\\
+AL & 116.464 & 31.494 & 29.557\\
+AM & 108.132 & 44.931 & 31.727\\
+AP & 23.960 & 7.720 & 6.332\\
+BA & 567.871 & 135.945 & 125.358\\
 \addlinespace
-5.4 & 3.9 & 1.7 & 0.4 & setosa\\
-4.6 & 3.4 & 1.4 & 0.3 & setosa\\
-5.0 & 3.4 & 1.5 & 0.2 & setosa\\
-4.4 & 2.9 & 1.4 & 0.2 & setosa\\
-4.9 & 3.1 & 1.5 & 0.1 & setosa\\
+CE & 302.072 & 103.923 & 98.765\\
+DF & 118.476 & 47.189 & 46.562\\
+ES & 147.631 & 52.018 & 43.391\\
+GO & 226.784 & 57.489 & 49.280\\
+MA & 344.637 & 69.411 & 57.330\\
 \addlinespace
-5.4 & 3.7 & 1.5 & 0.2 & setosa\\
-4.8 & 3.4 & 1.6 & 0.2 & setosa\\
-4.8 & 3.0 & 1.4 & 0.1 & setosa\\
-4.3 & 3.0 & 1.1 & 0.1 & setosa\\
-5.8 & 4.0 & 1.2 & 0.2 & setosa\\
+MG & 745.551 & 274.402 & 225.807\\
+MS & 110.933 & 31.866 & 26.057\\
+MT & 127.860 & 35.091 & 28.691\\
+PA & 345.591 & 94.365 & 53.964\\
+PB & 111.170 & 38.405 & 37.718\\
 \addlinespace
-5.7 & 4.4 & 1.5 & 0.4 & setosa\\
-5.4 & 3.9 & 1.3 & 0.4 & setosa\\
-5.1 & 3.5 & 1.4 & 0.3 & setosa\\
-5.7 & 3.8 & 1.7 & 0.3 & setosa\\
-5.1 & 3.8 & 1.5 & 0.3 & setosa\\
+PE & 329.240 & 118.111 & 117.593\\
+PI & 141.089 & 42.908 & 34.343\\
+PR & 607.942 & 160.164 & 118.811\\
+RJ & 390.143 & 147.568 & 190.146\\
+RN & 109.622 & 30.802 & 34.490\\
+\addlinespace
+RO & 81.671 & 21.138 & 17.069\\
+RR & 26.237 & 9.323 & 8.185\\
+RS & 399.140 & 166.227 & 180.125\\
+SC & 317.700 & 94.846 & 78.365\\
+SE & 60.864 & 16.049 & 17.864\\
+\addlinespace
+SP & 1.581.736 & 474.649 & 481.952\\
+TO & 42.658 & 12.933 & 12.420\\
 \bottomrule
 \end{tabular}
-\end{table}
 
-You can write citations, too. For example, we are using the \textbf{bookdown} package \citep{R-bookdown} in this sample book, which was built on top of R Markdown and \textbf{knitr} \citep{xie2015}.
+Porém, note como essa tabela contêm muitas linhas, a informação que gostaríamos de avaliar fica um pouco prejudicada em virtude dessa quantidade grande de \emph{inputs}. Uma outra maneira de visualizar essa quantidade seria colocar isso num gráfico. Em se tratando de uma variável que se refere a uma informação espacial podemos utilizar um mapa para apresentar esses dados. Além disso, se temos interesse em discutir as categorias de tempo de internação, podemos calcular a proporção de pessoas em cada uma das categorias condicionalmente ao Estado, isto é, para cada Estado verificamos qual é a proporção de pessoas que ficaram internadas até 3 dias, a proporção que ficou internada entre 3 e 7 dias e, por último, a proporção que ficou internada um tempo maior que 7 dias.
 
-\hypertarget{literature}{%
-\chapter{Literature}\label{literature}}
+Se fizermos isso, o resultado no gráfico com os mapas ficariam da seguinte forma
 
-Here is a review of existing methods.
+\begin{center}\includegraphics[width=0.8\linewidth]{notas_livro_files/figure-latex/graf6-1} \end{center}
 
-\hypertarget{methods}{%
-\chapter{Methods}\label{methods}}
+Porém, note agora que devido a diferença de escala entre as três categorias, não é possível perceber a diferença entre os três mapas. No entanto, não é necessário observar essas três proporções, porque elas são complementares, isto é, a soma das três é igual a 1. Nesse caso, podemos focar nas duas categorias à direita que têm escalas muito mais próximas.
 
-We describe our methods in this chapter.
+\begin{center}\includegraphics[width=0.8\linewidth]{notas_livro_files/figure-latex/graf7-1} \end{center}
 
-\hypertarget{applications}{%
-\chapter{Applications}\label{applications}}
+Com isso obtemos a Figura \ref{fig:graf7} em que é possível identificar de forma muito mais evidente a diferença entre as proporções de internação entre os diferentes Estados. Por exemplo, agora é possível notar de forma bastante clara com o Rio de Janeiro tem um percentual de internação, condicional ao tempo de internação maior que 7 dias, muito maior que os outros Estados. Seria interessante discutir ou entender os motivos por trás dessa diferença. Seria a distribuição das doenças pelas quais as pessoas são levadas ao hospital diferente nesse Estado do que em outros? Seria um problema típico do ano de 2018, em que houve algum surto de alguma doença? Ao longo do texto, iremos utilizar mais informações para discutir essas hipóteses.
 
-Some \emph{significant} applications are demonstrated in this chapter.
+\hypertarget{dados-sobre-o-campeonato-brasileiro-de-futebol-2012-2019}{%
+\subsection{Dados sobre o Campeonato Brasileiro de Futebol 2012-2019}\label{dados-sobre-o-campeonato-brasileiro-de-futebol-2012-2019}}
 
-\hypertarget{example-one}{%
-\section{Example one}\label{example-one}}
+Como última representação de dados categorizados poderíamos considerar dados de esportes também. Em diversos esportes é interessante analisar a distribuição dos resultados e tentar buscar informações que ajudem a entender a aleatoriedade dos respectivos esportes. Isso não é diferente no futebol e podemos pensar, por exemplo, na diferença entre jogar ``em casa'' ou ``fora de casa'', como é comum identificar os times que são mandantes e aqueles que viajam para jogar no campo do adversário.
 
-\hypertarget{example-two}{%
-\section{Example two}\label{example-two}}
+Para isso, consideremos para essa análise do Campeonato Brasileiro entre os anos de 2012-2019, os quais podemos obter os dados do sítio \href{https://www.football-data.co.uk/brazil.php}{football-data.co.uk}, em que as descrições dos campos do banco de dados podem ser encontradas \href{http://www.football-data.co.uk/notes.txt}{aqui}.
 
-\hypertarget{final-words}{%
-\chapter{Final Words}\label{final-words}}
+Inicialmente, podemos identificar o resultado da partida como uma variável aleatória categórica, em que podemos classificar os seus possíveis valores como: ``C'', vitória do time da casa; ``E'', empate; ``F'', vitória do time visitante. Se observarmos a distribuição dessas variáveis ao longo dos anos, veremos o resultado na figura a seguir.
 
-We have finished a nice book.
+\begin{center}\includegraphics[width=0.8\linewidth]{notas_livro_files/figure-latex/graf8-1} \end{center}
+
+É possível perceber, por exemplo, que a distribuição tem poucas alterações ao longo dos anos. Em particular, a proporção de vezes que o time visitante vence costuma variar em torno de 25\%. O mesmo valor parece ser verdade para a proporção de empates. Valores mais diferentes dessa \emph{regra} parecem ter sido os três últimos anos, de 2017 a 2019. Esse tipo de análise, por exemplo, é intuito desse curso. Por exemplo, será que poderíamos responder que essas probabilidades de vitória de cada um dos casos seria independente do ano do Campeonato Brasileiro? Em outras palavras, temos o interesse em dizer se essas probabilidades se manteram as mesmas ao longo dos anos, ponderando a incerteza natural desses processos.
+
+Uma outra análise simples que poderia ser feita seria a comparação do desempenho dos campeões com os demais participantes em cada um dos anos. Por exemplo, será que a distribuição dos resultados do campeão ao longo dos anos teve uma grande variação para esses certames analisados? Se fizermos isso, o resultado seria o seguinte:
+
+\begin{center}\includegraphics[width=0.8\linewidth]{notas_livro_files/figure-latex/graf9-1} \end{center}
+
+A Figura acima pode ser um pouco problemática, porque a partir da sua análise não é possível identificar se o time campeão se saiu vencedor em cada uma das partidas que fez como mandante ou visitante. Porém, é possível perceber alguns padrões. Por exemplo, em geral, a proporção de empates parece ser menor para os times que acabam se sagrando campeões. Por outro lado, também parece haver uma proporção maior de vitórias do time jogando fora de casa. Aqui, é claro devemos ter o cuidado de notar que essas vitórias também podem ter sido do time adversário, quando jogou contra o time campeão na \emph{casa} deste.
+
+Aqui poderíamos pensar em modelos probabilísticos que pudessem a explicar a probabilidade de vitória entre os times em cada um dos jogos. Ao longo do texto, iremos retornar a esse banco de dados para discutir como trabalhar esse tipo de informações.
+
+\hypertarget{distribuicoes-de-probabilidade}{%
+\section{Distribuições de probabilidade}\label{distribuicoes-de-probabilidade}}
+
+Para discutir sobre a aleatoriedade das variáveis categóricas de interesse nos problemas apresentados ao longo desse texto, é preciso fazer suposições sobre a distribuição de probabilidade dessas variáveis aleatórias de interesse. Ao menos, essa é uma das perspectivas possíveis, e talvez mais utilizadas, dentro da Estatística, a qual denominamos de \textbf{Estatística Paramétrica}. Esse nome se dá devido aos parâmetros das distribuições de probabilidade, que iremos utilizar em cada um dos problemas. Para o caso de dados categorizados, iremos considerar as seguintes distribuições de probabilidade: \emph{binomial}, \emph{multinomial} e \emph{Dirichlet}. As duas primeiras iremos assumir para a função de distribuição dos valores observados, que iremos identificar como verossimilhança posteriormente, enquanto que a última distribuição de probabilidade iremos utilizar para definir uma distribuição de probabilidade \emph{a priori} quando estivermos falando sobre o método de inferência bayesiano na última seção deste capítulo.
+
+\hypertarget{distribuicao-binomial}{%
+\subsection{Distribuição binomial}\label{distribuicao-binomial}}
+
+Primeiramos, definamos uma variável aleatória \(Y\), em que somente dois resultados são possíveis. Por exemplo, ao jogarmos uma moeda o resultado pode ser somente \emph{cara} ou \emph{coroa}. Ainda quando vamos classificar as pessoas com relação ao seu hábito de fumar, diríamos que os resultados possíveis são \emph{fumante} ou \emph{não fumante}. A esses valores usualmente associamos a denominação de sucesso ou fracasso, porém essa denominação não é importante aqui. Podemos associar a esses possíveis valores, os valores numéricos 0 e 1, apenas para facilitar a definição de alguns eventos de probabilidade. Para o caso do hábito de fumar, poderíamos fazer
+
+\[
+Y = \begin{cases}
+1, & \mbox{se a pessoa é fumante}, \\
+0, & \mbox{caso contrário}
+    \end{cases}
+\]
+Para essa variável binária podemos assumir que esta tem distribuição \emph{Bernoulli}, com uma parâmetro de probabilidade \textbf{p} que define essa distribuição de probabilidade. Ao definir esse parâmetro, podemos dizer que
+\[
+P(Y = 1) = p, \quad \quad P(Y = 0) = 1 - p.
+\]
+Agora considere uma sequência de variáveis aleatórias indepedentes e identicamente distribuídas com distribuição Bernoulli, i.e., \(Y_1, \cdots, Y_n\), em que \(Y_i \sim Bernoulli(p)\), \(i = 1, \cdots, n\). Se definirmos \(W\) como a soma dessa sequência, i.e., \(W = \sum_{i=1}^n Y_i\), então dizemos que \(W\) tem distribuição Binomial com parâmetros \(n\) e \(p\). Os valores possíveis que essa variável aleatória assume são \(W = \{0, 1, \cdots, n\}\) e a sua função de probabilidade é dada por
+
+\[
+P(W = w) = \frac{n!}{w!(n-w)!} p^w (1-p)^{n-w}, \quad w = 0, 1, \cdots, n.
+\]
+Para alguns valores fixados de \(n\) e \(p\) podemos utilizar o \texttt{R} para fazer o gráficos das respectivas funções de probabilidade. Por exemplo, se fizermos \(n = 10\) e \(p\) variando entre 0,2, 0,5 e 0,8, encontraríamos o seguinte:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{valores_p <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\FloatTok{0.2}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\FloatTok{0.8}\NormalTok{)}
+\NormalTok{n <-}\StringTok{ }\DecValTok{10}
+
+\NormalTok{valores_fp <-}\StringTok{ }\KeywordTok{sapply}\NormalTok{(valores_p, }\ControlFlowTok{function}\NormalTok{(x) }\KeywordTok{dbinom}\NormalTok{(}\DecValTok{0}\OperatorTok{:}\NormalTok{n, }\DataTypeTok{prob =}\NormalTok{ x, }\DataTypeTok{size =}\NormalTok{ n)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{as.numeric}\NormalTok{()}
+
+\NormalTok{dados_figura <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{x =} \KeywordTok{rep}\NormalTok{(}\DecValTok{0}\OperatorTok{:}\NormalTok{n, }\KeywordTok{length}\NormalTok{(valores_p)),}
+                           \DataTypeTok{n =} \KeywordTok{rep}\NormalTok{(n, }\KeywordTok{length}\NormalTok{(valores_fp)), }
+                           \DataTypeTok{p =} \KeywordTok{rep}\NormalTok{(valores_p, }\DataTypeTok{each =}\NormalTok{ n }\OperatorTok{+}\StringTok{ }\DecValTok{1}\NormalTok{), }
+                           \DataTypeTok{valores_prob =}\NormalTok{ valores_fp)}
+
+\KeywordTok{ggplot}\NormalTok{(dados_figura) }\OperatorTok{+}\StringTok{ }\KeywordTok{theme_minimal}\NormalTok{() }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{geom_bar}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ x, }\DataTypeTok{y =}\NormalTok{ valores_prob, }\DataTypeTok{fill =} \KeywordTok{factor}\NormalTok{(p)), }
+           \DataTypeTok{stat =} \StringTok{'identity'}\NormalTok{, }\DataTypeTok{width =} \FloatTok{0.5}\NormalTok{, }\DataTypeTok{position =} \StringTok{'dodge'}\NormalTok{) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{scale_fill_viridis_d}\NormalTok{(}\DataTypeTok{name =} \StringTok{"p = "}\NormalTok{) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}\OperatorTok{~}\StringTok{ }\NormalTok{p) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_continuous}\NormalTok{(}\DataTypeTok{breaks =} \DecValTok{0}\OperatorTok{:}\NormalTok{n) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{title =} \StringTok{"Distribuição Binomial para n = 10"}\NormalTok{, }
+       \DataTypeTok{subtitle =} \StringTok{"E p igual a 0,2, 0,5 ou 0,8"}\NormalTok{,}
+       \DataTypeTok{y =} \StringTok{"P(W = w)"}\NormalTok{,}
+       \DataTypeTok{x =} \StringTok{"w"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position =} \StringTok{'bottom'}\NormalTok{, }
+        \DataTypeTok{strip.background =} \KeywordTok{element_blank}\NormalTok{(), }
+        \DataTypeTok{strip.text.x =} \KeywordTok{element_blank}\NormalTok{())}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics[width=0.8\linewidth]{notas_livro_files/figure-latex/graf10-1} \end{center}
+
+Note como para \(p\) igual a 0,5 os valores das probabilidades parecem ser simétricos em torno do valor quando \(w = 5\). Enquanto que para os outros dois valores de \(p\) a distribuição de probabilidade parece assimétrica. Esse é um resultado característico da distribuição Binomial. Como propriedades dessa variável aleatória \(W\) temos que
+\[
+E(W) = np, \quad Var(W) = np(1-p).
+\]
+Essas informações nos ajudam então a propôr essa distribuição de probabilidade para determinadas variáveis aleatórias. Por exemplo, se considerássemos o exemplo da seção anterior, sobre tempo de internação, mas fizemos a seguinte categorização
+\[
+Y = \begin{cases}
+1, & \mbox{se a pessoa fica internada até 3 dias}, \\
+0, & \mbox{caso contrário}.
+    \end{cases}
+\]
+Considerando uma amostra de 10 pessoas, ou seja \(n = 10\), poderíamos dizer qual a probabilidade de 5 dessas pessoas terem ficado internada por até 3 dias. Para \(p = 0,5\) essa probabilidade seria igual a
+\[
+P(W = 5) = {10 \choose 5} 0.5^5 (1-0.5)^{10 - 5} = 0,2461
+\]
+Se considerássemos \(p=0.8\), ao invés de \(p = 0.5\), obteríamos que essa probabilidade é igual a 0,0264. Com relação aos valores esperados, teríamos que esses valores seriam 5 e 8, respectivamente considerando os dois valores para \(p\). Vemos então que ao assumir valores para os parâmetros somos capazes de fazer asserções sobre a incerteza dessas variáveis aleatórias. Na prática os valores desses parâmetros são sempre desconhecidos, então precisaremos discutir como fazer inferência sobre esses valores. O tema da próxima seção é exatamente este.
+
+Ainda sobre a distribuição Binomial, um resultado importante que podemos citar se refere a aproximação dessa distribuição de probabilidade pela distribuição Normal, quando \(n \rightarrow \infty\), isto é, quando \(n\) cresce. Considere o gráfico anterior, por exemplo, quando consideramos \(n = 100\), desconsiderando o valor de \(p = 0,5\).
+
+\begin{center}\includegraphics[width=0.8\linewidth]{notas_livro_files/figure-latex/graf11-1} \end{center}
+
+Notem como apesar de \(p\) ser um valor diferente de 0,5, agora a distribuição dos valores de probabilidade parece ter uma distribuição de probabilidade simétrica. Inclusive os valores parecem se distribuir de acordo com a distribuição Normal. Aliás, essa aproximação pode ser utilizada para calcular probabilidades de uma variável aleatória Binomial, que é uma distribuição de probabilidade para valores discretos, com a distribuição Normal, que é uma distribuição de probabilidade para valores contínuos. Essa aproximação se dá utilizando uma distribuição Normal com média \(\mu = np\) e desvio padrão \(\sigma = \sqrt{np(1-p)}\), e pode ser justificada pelo Teorema do Limite Central, porém não faremos essa demonstração aqui.
+
+\hypertarget{distribuicao-multinomial}{%
+\subsection{Distribuição multinomial}\label{distribuicao-multinomial}}
+
+Considere agora novamente o exemplo do tempo de internação, segundo dados do SUS, que utilizamos na seção anterior. Quando discutimos uma ilustração da distribuição Binomial, na subseção anterior, consideremos uma categorização somente com duas categorias. Isso foi devido a necessidade de definirmos a distribuição Binomial como uma soma de variáveis aleatórias Bernoulli, em que somente dois valores são possíveis. Considere o caso em que temos mais de duas categorias como resultados possíveis de um experimento aleatório discreto, e temos uma sequência independente desses eventos aleatórios. Supondo que gostaríamos de falar sobre as probabilidades dos possíveis valores observados para cada uma das categorias, então precisamos utilizar a distribuição \textbf{multinomial}.
+
+A variável aleatória associada à distribuição multinomial é uma variável aleatória multivariada. Por exemplo, para falarmos de probabilidade para valores dessa variável aleatória temos que definir um vetor de possilidades. Por exemplo, voltando ao exemplo do tempo de internação, supondo uma amostra de 10 pessoas, um possível valor para essa variável aleatória seria \(\{4, 5, 1\}\), em que 4 pessoas ficaram internadas até 3 dias; 5 pessoas ficaram internadas entre 3 e 7 dias; e 1 pessoa ficou internada por mais de 7 dias.
+
+A distribuição multinomial é uma generalização da distribuição Binomial. Considere que temos \(k\) categorias. Podemos definir as probabilidades de cada uma das categorias pelo vetor \(\{p_1, p_2, \cdots, p_k\}\), em que \(\sum_{i=1}^k p_i = 1\). Para definir sua função de probabilidade, considere os valores \(n_1, n_2, \cdots, n_k\), em que \(n_i\) representa a quantidade de observações, dentre os \(n\) ensaios independentes, que são classificados na \(i\)-ésima categoria, em que \(\sum_{i=1}^k n_i = n\). Assim, podemos definir a função de probabilidade como
+
+\[
+P(Y_1 = y_1, Y_2 = y_2, \cdots, Y_k = y_k) = 
+\frac{n!}{y_1!y_2!\cdots y_k!} p_1^{y_1} p_2^{y_2} \cdots p_k^{y_k}
+\]
+Consideremos o caso em que \(k = 3\), então podemos visualizar o gráfico com essa função de probabilidade de forma mais simples. Considere o caso em que \(n = 10\), então supondo o vetor de probabilidades \((p_1, p_2, p_3) = (0,4, 0,4, 0,2)\) teríamos o seguinte gráfico da distribuição de probabilidade
+
+\begin{center}\includegraphics[width=0.8\linewidth]{notas_livro_files/figure-latex/graf12-1} \end{center}
+
+Note, por exemplo, que algumas combinações não são possíveis. Por exemplo, para \(y_1 = 6\) e \(y_2 = 5\) não é possível calcular nenhum valor de probabilidade, pois isso violaria a condição que \(\sum_{i=1}^k n_i = n\). Se considerássemos outro valor para o vetor de probabilidades, como \((p_1, p_2, p_3) = (0,10, 0,25, 0,65)\) obteríamos o seguinte
+
+\begin{center}\includegraphics[width=0.8\linewidth]{notas_livro_files/figure-latex/graf13-1} \end{center}
+
+Essa ilustração é somente para ilustrar como devemos calcular as probabilidades para o caso multivariado e como devemos entender essa distribuição de probabilidade. De todo modo, iremos utilizar a distribuição multinomial em diversos momentos nos próximos capítulos.
+
+\hypertarget{distribuicao-dirichlet}{%
+\subsection{Distribuição Dirichlet}\label{distribuicao-dirichlet}}
+
+A distribuição Dirichlet é uma versão multivariada da distribuição Beta. Lembremos que a distribuição de probabilidade Beta é uma distribuição voltada para variáveis aleatórias contínuas com suporte no intervalo {[}0, 1{]}. Supondo uma variável aleatória, \(Y \in [0, 1]\), dizemos que \(Y\) segue uma distribuição beta com parâmetros \(a > 0\) e \(b > 0\), se sua função de densidade for escrita como
+\[
+f(y | a, b) = \frac{\Gamma(a+b)}{\Gamma(a)\Gamma(b)} y^{a-1}(1-y)^{b-1}.
+\]
+Nesse caso, temos que \(E(Y) = a/(a+b)\) e \(Var(Y) = (a+b)/[(a+b)^2(a+b+1)]\). Podemos usar o \texttt{R} para visualizar alguns exemplos dessa densidade fazendo
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{numero_pontos <-}\StringTok{ }\DecValTok{100}
+\NormalTok{list_parametros <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{), }
+                        \KeywordTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{1}\NormalTok{), }
+                        \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{3}\NormalTok{), }
+                        \KeywordTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{, }\DecValTok{4}\NormalTok{), }
+                        \KeywordTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{, }\DecValTok{10}\NormalTok{))}
+
+\NormalTok{densidade_beta <-}\StringTok{ }\KeywordTok{lapply}\NormalTok{(list_parametros, }
+                       \ControlFlowTok{function}\NormalTok{(x) }\KeywordTok{dbeta}\NormalTok{(}\DecValTok{0}\OperatorTok{:}\NormalTok{numero_pontos}\OperatorTok{/}\NormalTok{numero_pontos, }
+\NormalTok{                                         x[}\DecValTok{1}\NormalTok{], x[}\DecValTok{2}\NormalTok{])) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{unlist}\NormalTok{()}
+
+\NormalTok{dados_beta <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{x =} \KeywordTok{rep}\NormalTok{(}\DecValTok{0}\OperatorTok{:}\NormalTok{numero_pontos}\OperatorTok{/}\NormalTok{numero_pontos, }
+                                 \KeywordTok{length}\NormalTok{(list_parametros)),}
+                              \DataTypeTok{densidade =}\NormalTok{ densidade_beta, }
+                              \DataTypeTok{parametros =} \KeywordTok{rep}\NormalTok{(}\KeywordTok{as.character}\NormalTok{(list_parametros), }
+                                          \DataTypeTok{each =}\NormalTok{ numero_pontos }\OperatorTok{+}\StringTok{ }\DecValTok{1}\NormalTok{))}
+
+
+\KeywordTok{ggplot}\NormalTok{(dados_beta, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ x, }\DataTypeTok{y =}\NormalTok{ densidade, }\DataTypeTok{color =}\NormalTok{ parametros)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme_minimal}\NormalTok{() }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{geom_line}\NormalTok{() }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{scale_color_discrete}\NormalTok{(}\DataTypeTok{name =} \StringTok{"(a, b)"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics[width=0.8\linewidth]{notas_livro_files/figure-latex/graf14-1} \end{center}
+
+Podemos ver que essa distribuição de probabilidade pode apresentar diferentes formas. Em especial, a distribuição uniforme é um caso especial quando \(a = 1\) e \(b = 1\).
+
+A distribuição Dirichlet é então uma extensão multivariada para essa distribuição de probabilidade. Se considerarmos um vetor aleatório \(\boldsymbol Y\) em que \(Y \in [0, 1]^k\) e \(\sum_{i=1}^k y_i = 1\), então dizemos que \(\boldsymbol Y\) segue uma distribuição Dirichlet com parâmetro \(\boldsymbol \alpha\), \(\alpha \in \mathbb{R}_+^k\), quando sua função densidade puder ser descrita como
+\[
+f(y_1, \cdots, y_k | \boldsymbol \alpha) = \frac{1}{B(\boldsymbol \alpha)} 
+\prod_{i=1}^k y_i^{\alpha_i - 1}
+\]
+
+Essa distribuição de probabilidade é particularmente importante para os métodos de inferência bayesiana que discutiremos na próxima seção. Para fazer o gráfico da densidade, há o problema da dimensionalidade, porém podemos ver alguns exemplos para o caso trivariado nas figuras, conforme variamos os valores de \(\boldsymbol \alpha\).
+
+\begin{center}\includegraphics[width=0.8\linewidth]{notas_livro_files/figure-latex/graf15-1} \end{center}
+
+\begin{center}\includegraphics[width=0.8\linewidth]{notas_livro_files/figure-latex/graf15-2} \end{center}
+
+\begin{center}\includegraphics[width=0.8\linewidth]{notas_livro_files/figure-latex/graf15-3} \end{center}
+
+\begin{center}\includegraphics[width=0.8\linewidth]{notas_livro_files/figure-latex/graf15-4} \end{center}
+
+\begin{center}\includegraphics[width=0.8\linewidth]{notas_livro_files/figure-latex/graf15-5} \end{center}
+
+Notem que quando \(\alpha_1 = \alpha_2 = \alpha_3\) a densidade se concentra em valores mais centrais do simplex em três dimensões, com exceção do caso em que todos os valores são iguais a 1. Nesse caso, temos um exemplo de uma distribuição uniforme multivariada. Para os outros valores de \(\alpha\) a concentração da densidade depende dos valores definidos, mas as densidades apresentam diferentes formas.
+
+\hypertarget{metodos-inferenciais}{%
+\section{Métodos inferenciais}\label{metodos-inferenciais}}
+
+\hypertarget{metodo-da-maxima-verossimilhanca}{%
+\subsection{Método da máxima verossimilhança}\label{metodo-da-maxima-verossimilhanca}}
+
+\hypertarget{metodos-bayesianos}{%
+\subsection{Métodos bayesianos}\label{metodos-bayesianos}}
+
+\hypertarget{tabelas-de-contingencia}{%
+\chapter{Tabelas de contingência}\label{tabelas-de-contingencia}}
+
+\hypertarget{tipos-de-estudos}{%
+\section{Tipos de estudos}\label{tipos-de-estudos}}
+
+\hypertarget{estudo-descritivo}{%
+\subsection{Estudo descritivo}\label{estudo-descritivo}}
+
+\hypertarget{ensaio-clinico-aleatorizado}{%
+\subsection{Ensaio clínico aleatorizado}\label{ensaio-clinico-aleatorizado}}
+
+\hypertarget{estudo-de-coorte}{%
+\subsection{Estudo de coorte}\label{estudo-de-coorte}}
+
+\hypertarget{estudos-prospectivos-e-retrospectivos}{%
+\subsection{Estudos prospectivos e retrospectivos}\label{estudos-prospectivos-e-retrospectivos}}
+
+\hypertarget{estudos-tranversais-e-longitudinais}{%
+\subsection{Estudos tranversais e longitudinais}\label{estudos-tranversais-e-longitudinais}}
+
+\hypertarget{probabilidade-conjunta-marginal-e-condicional}{%
+\section{Probabilidade conjunta, marginal e condicional}\label{probabilidade-conjunta-marginal-e-condicional}}
+
+\hypertarget{avaliacao-em-testes-diagnosticos}{%
+\section{Avaliação em testes diagnósticos}\label{avaliacao-em-testes-diagnosticos}}
+
+\hypertarget{independencia}{%
+\section{Independência}\label{independencia}}
+
+\hypertarget{amostragem-binomial-e-multinomial}{%
+\section{Amostragem binomial e multinomial}\label{amostragem-binomial-e-multinomial}}
+
+\hypertarget{comparando-proporcoes-em-tabelas-2x2}{%
+\section{Comparando proporções em tabelas 2x2}\label{comparando-proporcoes-em-tabelas-2x2}}
+
+\hypertarget{razao-de-chances}{%
+\section{Razão de chances}\label{razao-de-chances}}
+
+\hypertarget{testes-qui-quadrado-para-independencia}{%
+\section{Testes qui-quadrado para independência}\label{testes-qui-quadrado-para-independencia}}
+
+\hypertarget{testes-de-independencia-para-dados-ordinais}{%
+\section{Testes de independência para dados ordinais}\label{testes-de-independencia-para-dados-ordinais}}
+
+\hypertarget{testes-exatos-para-pequenas-amostras}{%
+\section{Testes exatos para pequenas amostras}\label{testes-exatos-para-pequenas-amostras}}
+
+\hypertarget{associacao-em-tabelas-de-tripla-entrada}{%
+\chapter{Associação em tabelas de tripla entrada}\label{associacao-em-tabelas-de-tripla-entrada}}
+
+\hypertarget{tabelas-parciais}{%
+\section{Tabelas parciais}\label{tabelas-parciais}}
+
+\hypertarget{associacoes-condicionais-vs-marginais}{%
+\section{Associações condicionais vs marginais}\label{associacoes-condicionais-vs-marginais}}
+
+\hypertarget{paradoxo-de-simpson}{%
+\section{Paradoxo de Simpson}\label{paradoxo-de-simpson}}
+
+\hypertarget{razoes-de-chance-condicional-e-marginal}{%
+\section{Razões de chance condicional e marginal}\label{razoes-de-chance-condicional-e-marginal}}
+
+\hypertarget{independencia-condicional-vs-independencia-marginal}{%
+\section{Independência condicional vs independência marginal}\label{independencia-condicional-vs-independencia-marginal}}
+
+\hypertarget{associacao-homogenea}{%
+\section{Associação homogênea}\label{associacao-homogenea}}
+
+\hypertarget{exercicios}{%
+\section{Exercícios}\label{exercicios}}
 
 \bibliography{book.bib,packages.bib}
 
