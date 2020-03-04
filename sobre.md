@@ -8,7 +8,7 @@ title: Sobre mim
 
 * Bacharelado em Estatística, 2005-2008.
 * Mestrado em Estatística, 2010-2012.
-* Doutorado em Estatística, 2012-.
+* Doutorado em Estatística, 2012-2016.
 
 ### Experiência profissional:
 * Estagiário - Banco Santander [ago/06-fev/07]

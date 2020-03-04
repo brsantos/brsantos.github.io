@@ -11,7 +11,8 @@ title: About me
 * PhD in Statistics, 2012-2016.
 
 ### Professional Experience :
-* Assistant Professor - UFBA [dec/16-]
+* Postdoctoral Researcher - Georg-August-Universität Göttingen [apr/18-sep/19]
+* Assistant Professor - UFBA [dec/16-mar/18]
 * Specialist in Statistics - Sky [jun/16-sep/16]
 * Statistician - NIC.br [nov/10-jan/11]
 * Jr. Credit Modeling Analyst - Banco Itaú Unibanco [sep/08-feb/10]
