@@ -127,7 +127,7 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{2020-02-27}
+    \date{2020-03-04}
 
 \usepackage{booktabs}
 
@@ -543,11 +543,186 @@ Notem que quando \(\alpha_1 = \alpha_2 = \alpha_3\) a densidade se concentra em 
 \hypertarget{metodos-inferenciais}{%
 \section{Métodos inferenciais}\label{metodos-inferenciais}}
 
+Na seção anterior, mostramos alguns exemplos das distribuições apresentadas, porém utilizamos valores fixos dos parâmetros para ilustrar suas funções de probabilidade ou função densidade. Na prática, esses parâmetros são desconhecidos e precisamos estimá-los. Nessa seção, apresentaremos brevemente alguns resultados para estimação desses parâmetros, tanto do ponto de vista clássico, utilizando métodos de maximização da verossimilhança, quanto do ponto de vista clássico, apresentando o Teorema de Bayes utilizado para o cálculo.
+
 \hypertarget{metodo-da-maxima-verossimilhanca}{%
 \subsection{Método da máxima verossimilhança}\label{metodo-da-maxima-verossimilhanca}}
 
+Quando consideramos os dados observados e calculamos a probabilidade de observar aquela amostra como uma função do parâmetros, estamos definindo a \textbf{função de verossimilhança}. Tome como exemplo, o caso Binomial em que \(n = 6\) e observamos 2 \emph{sucessos}, ou seja, a probabilidade de observamos essa amostra para diferentes valores de \(p\) é dada por
+\[
+P(Y = 2|p) = {6 \choose 2} p^2 (1-p)^4.
+\]
+Note que a equação acima está definida para diferentes valores de \(p\). Inclusive podemos colocar essa informação em um gráfico, da seguinte forma:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{verossimilhanca_bin <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(p, n, y)\{}
+  \KeywordTok{dbinom}\NormalTok{(y, }\DataTypeTok{size =}\NormalTok{ n, }\DataTypeTok{prob =}\NormalTok{ p) }
+\NormalTok{\}}
+
+\KeywordTok{curve}\NormalTok{(}\KeywordTok{verossimilhanca_bin}\NormalTok{(x, }\DataTypeTok{n =} \DecValTok{6}\NormalTok{, }\DataTypeTok{y =} \DecValTok{2}\NormalTok{), }
+      \DataTypeTok{ylab =} \StringTok{""}\NormalTok{, }\DataTypeTok{xlab =} \StringTok{""}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics[width=0.8\linewidth]{notas_livro_files/figure-latex/vero_bin-1} \end{center}
+
+Nesse caso, para o caso binomial podemos sempre escrever a função de verossimilhança como
+\[
+L(p) = {n \choose y} p^y (1-p)^{n-y},
+\]
+em que \(n\) e \(y\) são sempre considerados fixados. É possível mostrar que o estimador de máxima verossimilhança (EMV) é dado por
+\[
+\hat{p} = \frac{y}{n},
+\]
+em que \(y\) representa o valor de \emph{sucessos} observados. No exemplo anterior, teríamos \(\hat{p} = 2/6 = 1/3\). Tal informação pode ser vista no gráfico da função de verossimilhança, uma vez que 1/3 é o ponto em que a função de verossimilhança apresenta seu maior valor.
+
+O EMV tem boas propriedades assintóticas, por isso ele é bastante utilizado. Podemos descrever a incerteza sobre os seus valores utilizando o resultado que, se \(\hat{\theta}\) é o EMV para o estimando o parâmetro \(\theta\), então podemos dizer em geral que\\
+\[
+\frac{\hat{\theta} - \theta}{I(\theta)} \stackrel{a}{\sim} N(0, 1),
+\]
+em que \(I(\theta)\) é a informação de Fisher. Isso nos mostra que o EMV é assintoticamente não viesado para estimar \(\theta\). No caso binomial, temos que
+\[
+\hat{p} \sim N\left(p, \frac{p(1-p)}{n} \right).
+\]
+Esse resultado pode ser justificado também pelo Teorema Central do Limite, notando que o estimador é uma soma de variáveis aleatórias com distribuição Bernoulli. E essa informação pode ser utilizada para construir intervalos de confiança e testes de hipóteses sobre o parâmetro \(p\) de interesse, porém não os discutiremos aqui nessa parte do texto.
+
+Para ilustrar algumas características desses estimadores, podemos discutir alguns resultados tendo em vista valores gerados da distribuição Binomial, com valor \(p\) conhecido e fixado. Consideremos \(p = 0,30\) e geramos valores de amostra com três tamanhos de amostra diferentes. No primeiro caso geramos 20 valores de \(Y \sim Bin(n = 20, 0,3)\), enquanto no segundo caso geramos 100 valores dessa mesma variável aleatória e no terceiro 200 valores são gerados. Os resultados podem ser observados no gráfico a seguir.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{42}\NormalTok{)}
+
+\NormalTok{n <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{20}\NormalTok{, }\DecValTok{100}\NormalTok{, }\DecValTok{200}\NormalTok{)}
+\NormalTok{seq_p <-}\StringTok{ }\KeywordTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DataTypeTok{length.out =} \DecValTok{250}\NormalTok{)}
+
+\NormalTok{valores_verossimilhanca <-}\StringTok{ }\KeywordTok{lapply}\NormalTok{(n, }\ControlFlowTok{function}\NormalTok{(x)\{}
+\NormalTok{  valores_amostrais <-}\StringTok{ }\KeywordTok{rbinom}\NormalTok{(x, }\DataTypeTok{size =} \DecValTok{20}\NormalTok{, }\DataTypeTok{prob =} \FloatTok{0.3}\NormalTok{)}
+  
+\NormalTok{  vero_calc <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(p)\{}
+    \KeywordTok{sapply}\NormalTok{(valores_amostrais, }
+\NormalTok{           dbinom, }\DataTypeTok{size =} \DecValTok{20}\NormalTok{, }\DataTypeTok{prob =}\NormalTok{ p, }\DataTypeTok{log =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{sum}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{exp}\NormalTok{()}
+\NormalTok{  \}}
+  
+  \KeywordTok{sapply}\NormalTok{(seq_p, vero_calc)}
+\NormalTok{\}) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{unlist}\NormalTok{()}
+
+\NormalTok{dados_verossimilhanca <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{valores =}\NormalTok{ valores_verossimilhanca, }
+                                    \DataTypeTok{p =} \KeywordTok{rep}\NormalTok{(seq_p, }\DataTypeTok{times =} \KeywordTok{length}\NormalTok{(n)),}
+                                    \DataTypeTok{tam_amostra =} \KeywordTok{rep}\NormalTok{(n, }\DataTypeTok{each =} \KeywordTok{length}\NormalTok{(seq_p)))}
+
+\KeywordTok{ggplot}\NormalTok{(dados_verossimilhanca, }\KeywordTok{aes}\NormalTok{(p, valores_verossimilhanca)) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{theme_minimal}\NormalTok{() }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{geom_line}\NormalTok{() }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}\OperatorTok{~}\StringTok{ }\NormalTok{tam_amostra, }\DataTypeTok{scales =} \StringTok{'free'}\NormalTok{) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{xlim}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\FloatTok{0.25}\NormalTok{, }\FloatTok{0.35}\NormalTok{)) }\OperatorTok{+}\StringTok{ }\KeywordTok{ylab}\NormalTok{(}\StringTok{"Verossimilhança"}\NormalTok{) }\OperatorTok{+}\StringTok{ }\KeywordTok{xlab}\NormalTok{(}\StringTok{"Valores de p"}\NormalTok{) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{geom_vline}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{xintercept =} \FloatTok{0.3}\NormalTok{), }\DataTypeTok{linetype =} \DecValTok{2}\NormalTok{, }\DataTypeTok{size =} \FloatTok{0.5}\NormalTok{, }\DataTypeTok{color =} \StringTok{'grey50'}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics[width=0.8\linewidth]{notas_livro_files/figure-latex/vero_bin2-1} \end{center}
+
+Quando aumentamos o tamanho da amostra, aumentamos a informação que temos sobre os possíveis valores de \(p\), que é desconhecido, uma vez que é menor a banda de valores possíveis, tendo em vista a função de verossimilhança. Ou seja, temos menos incerteza sobre quais os possíveis valores de \(p\) que podem ter gerado aquela amostra observada. Note inclusive que o estimador para o caso em que 20 valores foram gerados apresenta um pequeno viés, pois a estimativa de máxima verossimilhança se encontra em um valor um pouco maior que 0,30.
+
 \hypertarget{metodos-bayesianos}{%
 \subsection{Métodos bayesianos}\label{metodos-bayesianos}}
+
+Para falar brevemente sobre métodos bayesianos para estimar os parâmetros da distribuição binomial ou da distribuição multinomial, lembremos inicialmente do Teorema de Bayes. Suponha que estamos interessados no estimando \(\theta \in \mathbb{R}\) e suponhamos uma distribuição a priori \(p(\theta)\) para esse parâmetro. O Teorema de Bayes nos diz que a distribuição a posteriori de \(\theta\) pode ser escrita como
+\[
+p(\theta | y) = \frac{L(\theta)}{p(y)} p(\theta),
+\]
+em que \(L(\theta)\) é a verossimilhança dos dados e \(p(y) = \int_\mathbb{R} p(y|\theta) p(\theta) d(\theta)\) é a distribuição marginal dos dados. Em geral, podemos desconsiderar o denominador, por se tratar somente de uma função normalizador, para que a integral da densidade a posteriori integre 1, pois essa quantidade não depende de \(\theta\). Então, podemos escrever a densidade a posteriori como
+\[
+p(\theta | y) \propto L(\theta) p(\theta),
+\]
+ou seja, a informação a posteriori é o conhecimento que tínhamos a priori, atualizado pela função de verossimilhança. Por esse motivo, que o Teorema de Bayes é conhecido como o procedimento estatístico para atualizarmos sobre nossas crenças sobre valores desconhecidos quando obtemos novas informações.
+
+Na seção anterior, discutimos o método de verossimilhança para obter estimativas sobre \(p\) no caso Binomial. Vejamos agora como podemos adicionar a informação a priori para obtermos uma distribuição a posteriori para \(p\).
+
+Podemos considerar que a distribuição a priori deve ser a medida de conhecimento que temos sobre o parâmetros antes de observarmos nossos dados. Uma possível abordagem é considerar todos os valores equiprováveis a priori. Como o espaço paramétrico de \(p\) é o intervalo {[}0, 1{]}, então poderíamos considerar a distribuição uniforme nesse mesmo intervalo. Nesse caso, a distribuição a posteriori vai ter a mesma forma (ou distribuição) da verossimilhança, pois a distribuição dá pesos iguais para todos os valores de \(p\). Note que a distribuição Uniforme no intervalo (0, 1) para variáveis contínuas é um caso especial da distribuição Beta quando os seus respectivos parâmetros são ambos iguais a 1.
+
+No entanto, podemos discutir a distribuição de probabilidade a posteriori de \(p\) para diferentes valores de \(a\) e \(b\), da função densidade de uma variável aleatória com distribuição Beta. Mudando um pouco as definição para facilitar a leitura, se considerarmos somente os termos que dependem de \(p\), podemos reescrever o seguinte para a distribuição a posteriori
+
+\[
+\begin{aligned} 
+\pi(p| y) &\propto L(p) \pi(p) \\ 
+&\propto p^{y} (1-p)^{n-y} p^{a - 1}(1-p)^{b-1} \\ 
+&= p^{y + a - 1}(1-p)^{n - y + b - 1}.
+\end{aligned}
+\]
+
+O resultado anterior indica que a distribuição a posteriori de \(p\), quando consideramos uma distribuição a priori, \(p \sim \mbox{Beta}(a, b)\), também tem distribuição Beta com parâmetros \(y + a\) e \(n - y + b\), quando consideramos para a verossimilhança \(Y|p \sim Bin(n, p)\). Considerando novamente o cenário em que obtivemos 2 sucessos em 6 eventos independentes com distribuição Bernoulli, com probabilidade \(p\),podemos comparar a distribuição a posteriori para diferentes valores de \(a\) e \(b\). No gráfico a seguir, a linha preta representa a função de verossimilhança, enquanto que as linhas coloridas representam as quantidades consideradas pela atualização bayesiana: a linha pontilhada colorida representa a informação a priori, enquanto que a respectiva linha cheia colorida representa a distribuição a priori.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{x =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{)), }\KeywordTok{aes}\NormalTok{(x)) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{theme_minimal}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_function}\NormalTok{(}\DataTypeTok{fun =}\NormalTok{ verossimilhanca_bin, }\DataTypeTok{args =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{n =} \DecValTok{6}\NormalTok{, }\DataTypeTok{y =} \DecValTok{2}\NormalTok{)) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{stat_function}\NormalTok{(}\DataTypeTok{fun =}\NormalTok{ dbeta, }\DataTypeTok{args =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{shape1 =} \DecValTok{3}\NormalTok{, }\DataTypeTok{shape2 =} \DecValTok{5}\NormalTok{), }
+                \DataTypeTok{color =} \StringTok{'red'}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_function}\NormalTok{(}\DataTypeTok{fun =}\NormalTok{ dbeta, }\DataTypeTok{args =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{shape1 =} \DecValTok{1}\NormalTok{, }\DataTypeTok{shape2 =} \DecValTok{1}\NormalTok{), }
+                \DataTypeTok{color =} \StringTok{'red'}\NormalTok{, }\DataTypeTok{linetype =} \DecValTok{2}\NormalTok{) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{stat_function}\NormalTok{(}\DataTypeTok{fun =}\NormalTok{ dbeta, }\DataTypeTok{args =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{shape1 =} \DecValTok{4}\NormalTok{, }\DataTypeTok{shape2 =} \DecValTok{6}\NormalTok{), }
+                \DataTypeTok{color =} \StringTok{'blue'}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_function}\NormalTok{(}\DataTypeTok{fun =}\NormalTok{ dbeta, }\DataTypeTok{args =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{shape1 =} \DecValTok{2}\NormalTok{, }\DataTypeTok{shape2 =} \DecValTok{2}\NormalTok{), }
+                \DataTypeTok{color =} \StringTok{'blue'}\NormalTok{, }\DataTypeTok{linetype =} \DecValTok{2}\NormalTok{) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{stat_function}\NormalTok{(}\DataTypeTok{fun =}\NormalTok{ dbeta, }\DataTypeTok{args =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{shape1 =} \DecValTok{5}\NormalTok{, }\DataTypeTok{shape2 =} \DecValTok{6}\NormalTok{), }
+                \DataTypeTok{color =} \StringTok{'green'}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{stat_function}\NormalTok{(}\DataTypeTok{fun =}\NormalTok{ dbeta, }\DataTypeTok{args =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{shape1 =} \DecValTok{3}\NormalTok{, }\DataTypeTok{shape2 =} \DecValTok{2}\NormalTok{), }
+                \DataTypeTok{color =} \StringTok{'green'}\NormalTok{, }\DataTypeTok{linetype =} \DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics[width=0.8\linewidth]{notas_livro_files/figure-latex/posteriori_exemplo-1} \end{center}
+
+Note que a depender da distribuição a priori, a distribuição a posteriori apresenta diferentes formas e também diferentes estimativas, a depender da função de perda de interesse. Compare agora com a situação supondo que o experimento independente Bernoulli foi repetido mais vezes, i.e., \(n = 60\) e \(y = 20\), porém observando ainda a mesma proporção de \emph{sucessos}.
+
+\begin{center}\includegraphics[width=0.8\linewidth]{notas_livro_files/figure-latex/posteriori_exemplo2-1} \end{center}
+
+Note que conforme o número de repetições do experimento Bernoulli aumenta, a contribuição da distribuição a priori é menos relevante. Nesse segundo exemplo, as distribuições a posteriori tem forma muito próximas, o que indica que a inferência sobre o parâmetro \(p\) vai ter um peso muito maior da verossimilhança do que da distribuição a priori.
+
+Quando consideramos o caso multinomial, uma vez que os parâmetros da distribuição são multivariados, temos que considerar uma outra distribuição a priori, que não a distribuição beta. Nesse caso, podemos utilizar a distribuição Dirichlet, que foi apresentada na seção anterior.
+
+No caso binomial, vimos que as distribuições a priori e posteriori coincidiam: ambas têm distribuição beta. Quando isso, acontece dizemos que a distribuição é a família conjugada de distribuições para o modelo binomial. Podemos mostrar que no modelo multinomial, a distribuição Dirichlet é a respectiva família conjugada. A demonstração desse resultado fica como exercício, assim como ilustrações para diferentes valores de parâmetro.
+
+\hypertarget{exercicios}{%
+\section{Exercícios}\label{exercicios}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Considere um exame com 50 questões de múltipla escolha, com 5 alternativas em cada questão, em que apenas umas das opções está correta. Considere que uma pessoa responde de forma aleatória cada uma das questões e que suas respostas são independentes entre si.
+
+  \begin{enumerate}
+  \def\labelenumii{\alph{enumii}.}
+  \tightlist
+  \item
+    Defina variável aleatória \(X\) número de respostas certas ao final do exame. Descreva a distribuição de probabilidade de X.
+  \item
+    Calcule a probabilidade do número de acertos ser maior que a metade da prova. Se necessário, utilze alguma aproximação para fazer esse cálculo.
+  \end{enumerate}
+\item
+  Considere a variável aleatória ao final do curso de Estatística, em que os seus possíveis são ``Aprovado'', ``Reprovado por falta'', ``Reprovado por nota''. Sejam \((N_1, N_2, N_3)\) as respectivas quantidades aleatórias em uma determinada turma. Suponha que esses valores ocorrem com probabilidade \((\pi_1, \pi_2, \pi_3)\). Considere uma turma com 3 pessoas com resultados independentes, em que as frequências observadas são \((n_1, n_2, n_3)\).
+
+  \begin{enumerate}
+  \def\labelenumii{\alph{enumii}.}
+  \tightlist
+  \item
+    Mostre que é possível obter \(n_3\) a partir de \(n_1\) e \(n_2\). Logo, discuta que a distribuição de probabilidade do vetor aleatório \((N_1, N_2, N_3)\) é na verdade bidimensional.
+  \item
+    Apresente o conjunto de todas as possibilidades das frequências observadas \((n_1, n_2, n_3)\) quando \(n = 3\).
+  \item
+    Suponha que \((\pi_1, \pi_2, \pi_3) = (0.70, 0.10, 0.20)\). Encontre a probabilidade utilizando a distribuição multinomial que \((N_1, N_2, N_3) = (2, 1, 0)\).
+  \end{enumerate}
+\item
+  Escreva uma função no R para calcular a função de verossimilhança para o modelo multinomial trivariado. Gere 20 valores aleatórios dessa distribuição de probabilidade, fixando os valores dos parâmetros. Mostre que a função de verossimilhança recupera os valores dos parâmetros de maneira satisfatória para esses valores gerados. Compare com o caso em que 200 valores são gerados. O que esse resultado nos mostra?
+\item
+  Mostre que a distribuição Dirichlet faz parte da família conjugada para o modelo multinomial, i.e., mostre que a distribuição a posteriori dos parâmetros do modelo multinomial têm uma distribuição Dirichlet quando consideramos essa mesma distribuição para a distribuição a priori.
+\item
+  Considere novamente a variável aleatória do exercício 2. Agora tome que os valores observados são iguais a \((n_1, n_2, n_3) = (10, 3, 2)\). Considere uma distribuição a priori Dirichlet com parâmetros \(\boldsymbol \alpha = (1, 1, 1)\) e também \(\boldsymbol \alpha = (3, 2, 1)\). Compare os resultados da distribuição a posteriori para os dois casos. Verifique se existem diferenças se considerássemos os valores observados como \((n_1, n_2, n_3) = (50, 15, 10)\).
+\end{enumerate}
 
 \hypertarget{tabelas-de-contingencia}{%
 \chapter{Tabelas de contingência}\label{tabelas-de-contingencia}}
@@ -618,8 +793,8 @@ Notem que quando \(\alpha_1 = \alpha_2 = \alpha_3\) a densidade se concentra em 
 \hypertarget{associacao-homogenea}{%
 \section{Associação homogênea}\label{associacao-homogenea}}
 
-\hypertarget{exercicios}{%
-\section{Exercícios}\label{exercicios}}
+\hypertarget{exercicios-1}{%
+\section{Exercícios}\label{exercicios-1}}
 
 \bibliography{book.bib,packages.bib}
 

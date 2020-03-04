@@ -24,7 +24,7 @@
 <meta name="author" content="Bruno Santos" />
 
 
-<meta name="date" content="2020-02-27" />
+<meta name="date" content="2020-03-03" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -146,6 +146,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="1.3.1" data-path="index.html"><a href="index.html#metodo-da-maxima-verossimilhanca"><i class="fa fa-check"></i><b>1.3.1</b> Método da máxima verossimilhança</a></li>
 <li class="chapter" data-level="1.3.2" data-path="index.html"><a href="index.html#metodos-bayesianos"><i class="fa fa-check"></i><b>1.3.2</b> Métodos bayesianos</a></li>
 </ul></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#exercicios"><i class="fa fa-check"></i><b>1.4</b> Exercícios</a></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="tabelas-de-contingencia.html"><a href="tabelas-de-contingencia.html"><i class="fa fa-check"></i><b>2</b> Tabelas de contingência</a><ul>
 <li class="chapter" data-level="2.1" data-path="tabelas-de-contingencia.html"><a href="tabelas-de-contingencia.html#tipos-de-estudos"><i class="fa fa-check"></i><b>2.1</b> Tipos de estudos</a><ul>
@@ -172,7 +173,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.4" data-path="associacao-em-tabelas-de-tripla-entrada.html"><a href="associacao-em-tabelas-de-tripla-entrada.html#razoes-de-chance-condicional-e-marginal"><i class="fa fa-check"></i><b>3.4</b> Razões de chance condicional e marginal</a></li>
 <li class="chapter" data-level="3.5" data-path="associacao-em-tabelas-de-tripla-entrada.html"><a href="associacao-em-tabelas-de-tripla-entrada.html#independencia-condicional-vs-independencia-marginal"><i class="fa fa-check"></i><b>3.5</b> Independência condicional vs independência marginal</a></li>
 <li class="chapter" data-level="3.6" data-path="associacao-em-tabelas-de-tripla-entrada.html"><a href="associacao-em-tabelas-de-tripla-entrada.html#associacao-homogenea"><i class="fa fa-check"></i><b>3.6</b> Associação homogênea</a></li>
-<li class="chapter" data-level="3.7" data-path="associacao-em-tabelas-de-tripla-entrada.html"><a href="associacao-em-tabelas-de-tripla-entrada.html#exercicios"><i class="fa fa-check"></i><b>3.7</b> Exercícios</a></li>
+<li class="chapter" data-level="3.7" data-path="associacao-em-tabelas-de-tripla-entrada.html"><a href="associacao-em-tabelas-de-tripla-entrada.html#exercicios-1"><i class="fa fa-check"></i><b>3.7</b> Exercícios</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
@@ -198,7 +199,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="header">
 <h1 class="title">Análise de dados categorizados usando R</h1>
 <p class="author"><em>Bruno Santos</em></p>
-<p class="date"><em>2020-02-27</em></p>
+<p class="date"><em>2020-03-03</em></p>
 </div>
 <div id="introducao" class="section level1">
 <h1><span class="header-section-number">Capítulo 1</span> Introdução</h1>
@@ -624,13 +625,135 @@ f(y_1, \cdots, y_k | \boldsymbol \alpha) = \frac{1}{B(\boldsymbol \alpha)}
 </div>
 <div id="metodos-inferenciais" class="section level2">
 <h2><span class="header-section-number">1.3</span> Métodos inferenciais</h2>
+<p>Na seção anterior, mostramos alguns exemplos das distribuições apresentadas, porém utilizamos valores fixos dos parâmetros para ilustrar suas funções de probabilidade ou função densidade. Na prática, esses parâmetros são desconhecidos e precisamos estimá-los. Nessa seção, apresentaremos brevemente alguns resultados para estimação desses parâmetros, tanto do ponto de vista clássico, utilizando métodos de maximização da verossimilhança, quanto do ponto de vista clássico, apresentando o Teorema de Bayes utilizado para o cálculo.</p>
 <div id="metodo-da-maxima-verossimilhanca" class="section level3">
 <h3><span class="header-section-number">1.3.1</span> Método da máxima verossimilhança</h3>
+<p>Quando consideramos os dados observados e calculamos a probabilidade de observar aquela amostra como uma função do parâmetros, estamos definindo a <strong>função de verossimilhança</strong>. Tome como exemplo, o caso Binomial em que <span class="math inline">\(n = 6\)</span> e observamos 2 <em>sucessos</em>, ou seja, a probabilidade de observamos essa amostra para diferentes valores de <span class="math inline">\(p\)</span> é dada por
+<span class="math display">\[
+P(Y = 2|p) = {6 \choose 2} p^2 (1-p)^4.
+\]</span>
+Note que a equação acima está definida para diferentes valores de <span class="math inline">\(p\)</span>. Inclusive podemos colocar essa informação em um gráfico, da seguinte forma:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">verossimilhanca_bin &lt;-<span class="st"> </span><span class="cf">function</span>(p, n, y){</a>
+<a class="sourceLine" id="cb9-2" data-line-number="2">  <span class="kw">dbinom</span>(y, <span class="dt">size =</span> n, <span class="dt">prob =</span> p) </a>
+<a class="sourceLine" id="cb9-3" data-line-number="3">}</a>
+<a class="sourceLine" id="cb9-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb9-5" data-line-number="5"><span class="kw">curve</span>(<span class="kw">verossimilhanca_bin</span>(x, <span class="dt">n =</span> <span class="dv">6</span>, <span class="dt">y =</span> <span class="dv">2</span>), </a>
+<a class="sourceLine" id="cb9-6" data-line-number="6">      <span class="dt">ylab =</span> <span class="st">&quot;&quot;</span>, <span class="dt">xlab =</span> <span class="st">&quot;&quot;</span>)</a></code></pre></div>
+<p><img src="notas_livro_files/figure-html/vero_bin-1.png" width="80%" style="display: block; margin: auto;" /></p>
+<p>Nesse caso, para o caso binomial podemos sempre escrever a função de verossimilhança como
+<span class="math display">\[
+L(p) = {n \choose y} p^y (1-p)^{n-y},
+\]</span>
+em que <span class="math inline">\(n\)</span> e <span class="math inline">\(y\)</span> são sempre considerados fixados. É possível mostrar que o estimador de máxima verossimilhança (EMV) é dado por
+<span class="math display">\[
+\hat{p} = \frac{y}{n},
+\]</span>
+em que <span class="math inline">\(y\)</span> representa o valor de <em>sucessos</em> observados. No exemplo anterior, teríamos <span class="math inline">\(\hat{p} = 2/6 = 1/3\)</span>. Tal informação pode ser vista no gráfico da função de verossimilhança, uma vez que 1/3 é o ponto em que a função de verossimilhança apresenta seu maior valor.</p>
+<p>O EMV tem boas propriedades assintóticas, por isso ele é bastante utilizado. Podemos descrever a incerteza sobre os seus valores utilizando o resultado que, se <span class="math inline">\(\hat{\theta}\)</span> é o EMV para o estimando o parâmetro <span class="math inline">\(\theta\)</span>, então podemos dizer em geral que<br />
+<span class="math display">\[
+\frac{\hat{\theta} - \theta}{I(\theta)} \stackrel{a}{\sim} N(0, 1),
+\]</span>
+em que <span class="math inline">\(I(\theta)\)</span> é a informação de Fisher. Isso nos mostra que o EMV é assintoticamente não viesado para estimar <span class="math inline">\(\theta\)</span>. No caso binomial, temos que
+<span class="math display">\[
+\hat{p} \sim N\left(p, \frac{p(1-p)}{n} \right).
+\]</span>
+Esse resultado pode ser justificado também pelo Teorema Central do Limite, notando que o estimador é uma soma de variáveis aleatórias com distribuição Bernoulli. E essa informação pode ser utilizada para construir intervalos de confiança e testes de hipóteses sobre o parâmetro <span class="math inline">\(p\)</span> de interesse, porém não os discutiremos aqui nessa parte do texto.</p>
+<p>Para ilustrar algumas características desses estimadores, podemos discutir alguns resultados tendo em vista valores gerados da distribuição Binomial, com valor <span class="math inline">\(p\)</span> conhecido e fixado. Consideremos <span class="math inline">\(p = 0,30\)</span> e geramos valores de amostra com três tamanhos de amostra diferentes. No primeiro caso geramos 20 valores de <span class="math inline">\(Y \sim Bin(n = 20, 0,3)\)</span>, enquanto no segundo caso geramos 100 valores dessa mesma variável aleatória e no terceiro 200 valores são gerados. Os resultados podem ser observados no gráfico a seguir.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">42</span>)</a>
+<a class="sourceLine" id="cb10-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb10-3" data-line-number="3">n &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">20</span>, <span class="dv">100</span>, <span class="dv">200</span>)</a>
+<a class="sourceLine" id="cb10-4" data-line-number="4">seq_p &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dt">length.out =</span> <span class="dv">250</span>)</a>
+<a class="sourceLine" id="cb10-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb10-6" data-line-number="6">valores_verossimilhanca &lt;-<span class="st"> </span><span class="kw">lapply</span>(n, <span class="cf">function</span>(x){</a>
+<a class="sourceLine" id="cb10-7" data-line-number="7">  valores_amostrais &lt;-<span class="st"> </span><span class="kw">rbinom</span>(x, <span class="dt">size =</span> <span class="dv">20</span>, <span class="dt">prob =</span> <span class="fl">0.3</span>)</a>
+<a class="sourceLine" id="cb10-8" data-line-number="8">  </a>
+<a class="sourceLine" id="cb10-9" data-line-number="9">  vero_calc &lt;-<span class="st"> </span><span class="cf">function</span>(p){</a>
+<a class="sourceLine" id="cb10-10" data-line-number="10">    <span class="kw">sapply</span>(valores_amostrais, </a>
+<a class="sourceLine" id="cb10-11" data-line-number="11">           dbinom, <span class="dt">size =</span> <span class="dv">20</span>, <span class="dt">prob =</span> p, <span class="dt">log =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb10-12" data-line-number="12"><span class="st">      </span><span class="kw">sum</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb10-13" data-line-number="13"><span class="st">      </span><span class="kw">exp</span>()</a>
+<a class="sourceLine" id="cb10-14" data-line-number="14">  }</a>
+<a class="sourceLine" id="cb10-15" data-line-number="15">  </a>
+<a class="sourceLine" id="cb10-16" data-line-number="16">  <span class="kw">sapply</span>(seq_p, vero_calc)</a>
+<a class="sourceLine" id="cb10-17" data-line-number="17">}) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">unlist</span>()</a>
+<a class="sourceLine" id="cb10-18" data-line-number="18"></a>
+<a class="sourceLine" id="cb10-19" data-line-number="19">dados_verossimilhanca &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">valores =</span> valores_verossimilhanca, </a>
+<a class="sourceLine" id="cb10-20" data-line-number="20">                                    <span class="dt">p =</span> <span class="kw">rep</span>(seq_p, <span class="dt">times =</span> <span class="kw">length</span>(n)),</a>
+<a class="sourceLine" id="cb10-21" data-line-number="21">                                    <span class="dt">tam_amostra =</span> <span class="kw">rep</span>(n, <span class="dt">each =</span> <span class="kw">length</span>(seq_p)))</a>
+<a class="sourceLine" id="cb10-22" data-line-number="22"></a>
+<a class="sourceLine" id="cb10-23" data-line-number="23"><span class="kw">ggplot</span>(dados_verossimilhanca, <span class="kw">aes</span>(p, valores_verossimilhanca)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb10-24" data-line-number="24"><span class="st">  </span><span class="kw">theme_minimal</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb10-25" data-line-number="25"><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb10-26" data-line-number="26"><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span><span class="st"> </span>tam_amostra, <span class="dt">scales =</span> <span class="st">&#39;free&#39;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb10-27" data-line-number="27"><span class="st">  </span><span class="kw">xlim</span>(<span class="kw">c</span>(<span class="fl">0.25</span>, <span class="fl">0.35</span>)) <span class="op">+</span><span class="st"> </span><span class="kw">ylab</span>(<span class="st">&quot;Verossimilhança&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">xlab</span>(<span class="st">&quot;Valores de p&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb10-28" data-line-number="28"><span class="st">  </span><span class="kw">geom_vline</span>(<span class="kw">aes</span>(<span class="dt">xintercept =</span> <span class="fl">0.3</span>), <span class="dt">linetype =</span> <span class="dv">2</span>, <span class="dt">size =</span> <span class="fl">0.5</span>, <span class="dt">color =</span> <span class="st">&#39;grey50&#39;</span>)</a></code></pre></div>
+<p><img src="notas_livro_files/figure-html/vero_bin2-1.png" width="80%" style="display: block; margin: auto;" /></p>
+<p>Quando aumentamos o tamanho da amostra, aumentamos a informação que temos sobre os possíveis valores de <span class="math inline">\(p\)</span>, que é desconhecido, uma vez que é menor a banda de valores possíveis, tendo em vista a função de verossimilhança. Ou seja, temos menos incerteza sobre quais os possíveis valores de <span class="math inline">\(p\)</span> que podem ter gerado aquela amostra observada. Note inclusive que o estimador para o caso em que 20 valores foram gerados apresenta um pequeno viés, pois a estimativa de máxima verossimilhança se encontra em um valor um pouco maior que 0,30.</p>
 </div>
 <div id="metodos-bayesianos" class="section level3">
 <h3><span class="header-section-number">1.3.2</span> Métodos bayesianos</h3>
-
+<p>Para falar brevemente sobre métodos bayesianos para estimar os parâmetros da distribuição binomial ou da distribuição multinomial, lembremos inicialmente do Teorema de Bayes. Suponha que estamos interessados no estimando <span class="math inline">\(\theta \in \mathbb{R}\)</span> e suponhamos uma distribuição a priori <span class="math inline">\(p(\theta)\)</span> para esse parâmetro. O Teorema de Bayes nos diz que a distribuição a posteriori de <span class="math inline">\(\theta\)</span> pode ser escrita como
+<span class="math display">\[
+p(\theta | y) = \frac{L(\theta)}{p(y)} p(\theta),
+\]</span>
+em que <span class="math inline">\(L(\theta)\)</span> é a verossimilhança dos dados e <span class="math inline">\(p(y) = \int_\mathbb{R} p(y|\theta) p(\theta) d(\theta)\)</span> é a distribuição marginal dos dados. Em geral, podemos desconsiderar o denominador, por se tratar somente de uma função normalizador, para que a integral da densidade a posteriori integre 1, pois essa quantidade não depende de <span class="math inline">\(\theta\)</span>. Então, podemos escrever a densidade a posteriori como
+<span class="math display">\[
+p(\theta | y) \propto L(\theta) p(\theta),
+\]</span>
+ou seja, a informação a posteriori é o conhecimento que tínhamos a priori, atualizado pela função de verossimilhança. Por esse motivo, que o Teorema de Bayes é conhecido como o procedimento estatístico para atualizarmos sobre nossas crenças sobre valores desconhecidos quando obtemos novas informações.</p>
+<p>Na seção anterior, discutimos o método de verossimilhança para obter estimativas sobre <span class="math inline">\(p\)</span> no caso Binomial. Vejamos agora como podemos adicionar a informação a priori para obtermos uma distribuição a posteriori para <span class="math inline">\(p\)</span>.</p>
+<p>Podemos considerar que a distribuição a priori deve ser a medida de conhecimento que temos sobre o parâmetros antes de observarmos nossos dados. Uma possível abordagem é considerar todos os valores equiprováveis a priori. Como o espaço paramétrico de <span class="math inline">\(p\)</span> é o intervalo [0, 1], então poderíamos considerar a distribuição uniforme nesse mesmo intervalo. Nesse caso, a distribuição a posteriori vai ter a mesma forma (ou distribuição) da verossimilhança, pois a distribuição dá pesos iguais para todos os valores de <span class="math inline">\(p\)</span>. Note que a distribuição Uniforme no intervalo (0, 1) para variáveis contínuas é um caso especial da distribuição Beta quando os seus respectivos parâmetros são ambos iguais a 1.</p>
+<p>No entanto, podemos discutir a distribuição de probabilidade a posteriori de <span class="math inline">\(p\)</span> para diferentes valores de <span class="math inline">\(a\)</span> e <span class="math inline">\(b\)</span>, da função densidade de uma variável aleatória com distribuição Beta. Mudando um pouco as definição para facilitar a leitura, se considerarmos somente os termos que dependem de <span class="math inline">\(p\)</span>, podemos reescrever o seguinte para a distribuição a posteriori</p>
+<p><span class="math display">\[
+\begin{aligned} 
+\pi(p| y) &amp;\propto L(p) \pi(p) \\ 
+&amp;\propto p^{y} (1-p)^{n-y} p^{a - 1}(1-p)^{b-1} \\ 
+&amp;= p^{y + a - 1}(1-p)^{n - y + b - 1}.
+\end{aligned}
+\]</span></p>
+<p>O resultado anterior indica que a distribuição a posteriori de <span class="math inline">\(p\)</span>, quando consideramos uma distribuição a priori, <span class="math inline">\(p \sim \mbox{Beta}(a, b)\)</span>, também tem distribuição Beta com parâmetros <span class="math inline">\(y + a\)</span> e <span class="math inline">\(n - y + b\)</span>, quando consideramos para a verossimilhança <span class="math inline">\(Y|p \sim Bin(n, p)\)</span>. Considerando novamente o cenário em que obtivemos 2 sucessos em 6 eventos independentes com distribuição Bernoulli, com probabilidade <span class="math inline">\(p\)</span>,podemos comparar a distribuição a posteriori para diferentes valores de <span class="math inline">\(a\)</span> e <span class="math inline">\(b\)</span>. No gráfico a seguir, a linha preta representa a função de verossimilhança, enquanto que as linhas coloridas representam as quantidades consideradas pela atualização bayesiana: a linha pontilhada colorida representa a informação a priori, enquanto que a respectiva linha cheia colorida representa a distribuição a priori.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw">ggplot</span>(<span class="kw">data.frame</span>(<span class="dt">x =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)), <span class="kw">aes</span>(x)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb11-2" data-line-number="2"><span class="st">  </span><span class="kw">theme_minimal</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb11-3" data-line-number="3"><span class="st">  </span><span class="kw">stat_function</span>(<span class="dt">fun =</span> verossimilhanca_bin, <span class="dt">args =</span> <span class="kw">list</span>(<span class="dt">n =</span> <span class="dv">6</span>, <span class="dt">y =</span> <span class="dv">2</span>)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb11-4" data-line-number="4"><span class="st">  </span><span class="kw">stat_function</span>(<span class="dt">fun =</span> dbeta, <span class="dt">args =</span> <span class="kw">list</span>(<span class="dt">shape1 =</span> <span class="dv">3</span>, <span class="dt">shape2 =</span> <span class="dv">5</span>), </a>
+<a class="sourceLine" id="cb11-5" data-line-number="5">                <span class="dt">color =</span> <span class="st">&#39;red&#39;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb11-6" data-line-number="6"><span class="st">  </span><span class="kw">stat_function</span>(<span class="dt">fun =</span> dbeta, <span class="dt">args =</span> <span class="kw">list</span>(<span class="dt">shape1 =</span> <span class="dv">1</span>, <span class="dt">shape2 =</span> <span class="dv">1</span>), </a>
+<a class="sourceLine" id="cb11-7" data-line-number="7">                <span class="dt">color =</span> <span class="st">&#39;red&#39;</span>, <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb11-8" data-line-number="8"><span class="st">  </span><span class="kw">stat_function</span>(<span class="dt">fun =</span> dbeta, <span class="dt">args =</span> <span class="kw">list</span>(<span class="dt">shape1 =</span> <span class="dv">4</span>, <span class="dt">shape2 =</span> <span class="dv">6</span>), </a>
+<a class="sourceLine" id="cb11-9" data-line-number="9">                <span class="dt">color =</span> <span class="st">&#39;blue&#39;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb11-10" data-line-number="10"><span class="st">  </span><span class="kw">stat_function</span>(<span class="dt">fun =</span> dbeta, <span class="dt">args =</span> <span class="kw">list</span>(<span class="dt">shape1 =</span> <span class="dv">2</span>, <span class="dt">shape2 =</span> <span class="dv">2</span>), </a>
+<a class="sourceLine" id="cb11-11" data-line-number="11">                <span class="dt">color =</span> <span class="st">&#39;blue&#39;</span>, <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb11-12" data-line-number="12"><span class="st">  </span><span class="kw">stat_function</span>(<span class="dt">fun =</span> dbeta, <span class="dt">args =</span> <span class="kw">list</span>(<span class="dt">shape1 =</span> <span class="dv">5</span>, <span class="dt">shape2 =</span> <span class="dv">6</span>), </a>
+<a class="sourceLine" id="cb11-13" data-line-number="13">                <span class="dt">color =</span> <span class="st">&#39;green&#39;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb11-14" data-line-number="14"><span class="st">  </span><span class="kw">stat_function</span>(<span class="dt">fun =</span> dbeta, <span class="dt">args =</span> <span class="kw">list</span>(<span class="dt">shape1 =</span> <span class="dv">3</span>, <span class="dt">shape2 =</span> <span class="dv">2</span>), </a>
+<a class="sourceLine" id="cb11-15" data-line-number="15">                <span class="dt">color =</span> <span class="st">&#39;green&#39;</span>, <span class="dt">linetype =</span> <span class="dv">2</span>)</a></code></pre></div>
+<p><img src="notas_livro_files/figure-html/posteriori_exemplo-1.png" width="80%" style="display: block; margin: auto;" /></p>
+<p>Note que a depender da distribuição a priori, a distribuição a posteriori apresenta diferentes formas e também diferentes estimativas, a depender da função de perda de interesse. Compare agora com a situação supondo que o experimento independente Bernoulli foi repetido mais vezes, i.e., <span class="math inline">\(n = 60\)</span> e <span class="math inline">\(y = 20\)</span>, porém observando ainda a mesma proporção de <em>sucessos</em>.</p>
+<p><img src="notas_livro_files/figure-html/posteriori_exemplo2-1.png" width="80%" style="display: block; margin: auto;" /></p>
+<p>Note que conforme o número de repetições do experimento Bernoulli aumenta, a contribuição da distribuição a priori é menos relevante. Nesse segundo exemplo, as distribuições a posteriori tem forma muito próximas, o que indica que a inferência sobre o parâmetro <span class="math inline">\(p\)</span> vai ter um peso muito maior da verossimilhança do que da distribuição a priori.</p>
+<p>Quando consideramos o caso multinomial, uma vez que os parâmetros da distribuição são multivariados, temos que considerar uma outra distribuição a priori, que não a distribuição beta. Nesse caso, podemos utilizar a distribuição Dirichlet, que foi apresentada na seção anterior.</p>
+<p>No caso binomial, vimos que as distribuições a priori e posteriori coincidiam: ambas têm distribuição beta. Quando isso, acontece dizemos que a distribuição é a família conjugada de distribuições para o modelo binomial. Podemos mostrar que no modelo multinomial, a distribuição Dirichlet é a respectiva família conjugada. A demonstração desse resultado fica como exercício, assim como ilustrações para diferentes valores de parâmetro.</p>
 </div>
+</div>
+<div id="exercicios" class="section level2">
+<h2><span class="header-section-number">1.4</span> Exercícios</h2>
+<ol style="list-style-type: decimal">
+<li>Considere um exame com 50 questões de múltipla escolha, com 5 alternativas em cada questão, em que apenas umas das opções está correta. Considere que uma pessoa responde de forma aleatória cada uma das questões e que suas respostas são independentes entre si.
+<ol style="list-style-type: lower-alpha">
+<li>Defina variável aleatória <span class="math inline">\(X\)</span> número de respostas certas ao final do exame. Descreva a distribuição de probabilidade de X.</li>
+<li>Calcule a probabilidade do número de acertos ser maior que a metade da prova. Se necessário, utilze alguma aproximação para fazer esse cálculo.</li>
+</ol></li>
+<li>Considere a variável aleatória ao final do curso de Estatística, em que os seus possíveis são “Aprovado”, “Reprovado por falta”, “Reprovado por nota”. Sejam <span class="math inline">\((N_1, N_2, N_3)\)</span> as respectivas quantidades aleatórias em uma determinada turma. Suponha que esses valores ocorrem com probabilidade <span class="math inline">\((\pi_1, \pi_2, \pi_3)\)</span>. Considere uma turma com 3 pessoas com resultados independentes, em que as frequências observadas são <span class="math inline">\((n_1, n_2, n_3)\)</span>.
+<ol style="list-style-type: lower-alpha">
+<li>Mostre que é possível obter <span class="math inline">\(n_3\)</span> a partir de <span class="math inline">\(n_1\)</span> e <span class="math inline">\(n_2\)</span>. Logo, discuta que a distribuição de probabilidade do vetor aleatório <span class="math inline">\((N_1, N_2, N_3)\)</span> é na verdade bidimensional.</li>
+<li>Apresente o conjunto de todas as possibilidades das frequências observadas <span class="math inline">\((n_1, n_2, n_3)\)</span> quando <span class="math inline">\(n = 3\)</span>.</li>
+<li>Suponha que <span class="math inline">\((\pi_1, \pi_2, \pi_3) = (0.70, 0.10, 0.20)\)</span>. Encontre a probabilidade utilizando a distribuição multinomial que <span class="math inline">\((N_1, N_2, N_3) = (2, 1, 0)\)</span>.</li>
+</ol></li>
+<li><p>Escreva uma função no R para calcular a função de verossimilhança para o modelo multinomial trivariado. Gere 20 valores aleatórios dessa distribuição de probabilidade, fixando os valores dos parâmetros. Mostre que a função de verossimilhança recupera os valores dos parâmetros de maneira satisfatória para esses valores gerados. Compare com o caso em que 200 valores são gerados. O que esse resultado nos mostra?</p></li>
+<li><p>Mostre que a distribuição Dirichlet faz parte da família conjugada para o modelo multinomial, i.e., mostre que a distribuição a posteriori dos parâmetros do modelo multinomial têm uma distribuição Dirichlet quando consideramos essa mesma distribuição para a distribuição a priori.</p></li>
+<li><p>Considere novamente a variável aleatória do exercício 2. Agora tome que os valores observados são iguais a <span class="math inline">\((n_1, n_2, n_3) = (10, 3, 2)\)</span>. Considere uma distribuição a priori Dirichlet com parâmetros <span class="math inline">\(\boldsymbol \alpha = (1, 1, 1)\)</span> e também <span class="math inline">\(\boldsymbol \alpha = (3, 2, 1)\)</span>. Compare os resultados da distribuição a posteriori para os dois casos. Verifique se existem diferenças se considerássemos os valores observados como <span class="math inline">\((n_1, n_2, n_3) = (50, 15, 10)\)</span>.</p></li>
+</ol>
+
 </div>
 </div>
             </section>
