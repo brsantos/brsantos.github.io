@@ -18,7 +18,7 @@ title: Research
 
 ### Doctorate's degree thesis (in Portuguese):
 
-* Santos, B. (2016). [Exntesions of Bayesian quantile regression models](https://teses.usp.br/teses/disponiveis/45/45133/tde-03072016-000933/en.php), under supervision of Prof. Heleno Bolfarine.
+* Santos, B. (2016). [Extensions of Bayesian quantile regression models](https://teses.usp.br/teses/disponiveis/45/45133/tde-03072016-000933/en.php), under supervision of Prof. Heleno Bolfarine.
 
 ### Publications:
 
