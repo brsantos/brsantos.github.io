@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Modelos de regressão quantílica para variáveis resposta multidimensionais</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2020-03-04" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+layout: true 
+
+background-image: url(img/daslab.png)
+background-position: 0% 100%
+background-size: 20%
+
+---
+class: middle
+
+# Modelos de regressão quantílica para variáveis resposta multidimensionais
+
+*****
+
+### Bruno Santos
+
+&lt;!-- ### Departamento de Estatística --&gt;
+
+---
+class: center, middle
+
+# Notas no ENEM
+
+
+### O que podemos aprender com esses dados?
+
+---
+
+# 3D gráfico de dispersão
+
+.center[![](img/data.gif)]
+
+- y1: Nota em ciências naturais.
+
+- y2: Nota em ciências humanas.
+
+- y3: Nota em matemática.
+ 
+
+---
+
+# Perguntas
+
+- Quais as diferenças entre as notas de pessoas de escolas privadas e escolas públicas?
+
+--
+
+- Se a mãe tem educação superior, existe diferença nas notas das pessoas?
+
+--
+
+- E com relação ao pai? 
+
+--
+
+# Uma possível análise:
+
+- **STA13824: Análise de regressão!**
+
+--
+
+  - Disciplina do 5º período;
+  - Estuda as propriedades das médias condicionais;
+  - Considera inicialmente que a variável resposta tem distribuição Normal
+  
+--
+
+- **STA13830: Modelos lineares generalizados!**
+
+
+---
+
+# Variável resposta multidimensional
+
+.center[![](img/directions_1.gif)]
+
+--
+
+- É preciso definir direções e bases ortonormais em espaços de diferentes dimensões
+  - **MAT13682: Geometria analítica**
+  - **MAT13695: Álgebra linear**
+
+---
+
+# Modelos de regressão quantílica
+
+- Não é necessário assumir uma distribuição de probabilidade!
+
+--
+
+- Porém, é importante verificar a consistência dos estimadores:
+
+--
+
+  - Inferência clássica:
+      - **STA13820: Inferência Estatística I**
+      - **STA13823: Inferência Estatística II**
+--
+  
+  - Inferência Bayesiana:
+      - **STA13826: Inferência Bayesiana**
+      - **STA13816: Probabilidade I**
+      - **STA13819: Probabilidade II**
+    
+    
+---
+
+# Considerando inferência bayesiana
+
+- Pode envolver desenvolvimento de pacotes computacionais
+
+
+```r
+library(devtools)
+install_github('brsantos/baquantreg')
+```
+
+--
+
+- **INF05116:	Programação**
+
+- **STA13817: Estatística Computacional I**
+
+- **STA13818: Estatística Computacional II**
+
+
+---
+
+# Respostas
+
+
+```r
+baquantreg:::drawQuantileRegion_3D(...)
+```
+
+
+- Sobre a diferença entre escolas públicas e privadas
+
+.center[![](img/new_school_tau_3.gif)]
+
+---
+
+# Mais respostas
+
+- Sobre a diferença entre a educação dos pais:
+  - qual das figuras se refere ao caso em que a mãe tem educação superior?
+  
+--
+  
+.pull-left[
+![](img/new_mother_tau_3.gif)
+]
+
+.pull-right[
+![](img/new_father_tau_3.gif)
+]
+
+---
+
+# E quando consideramos mais dimensões?
+
+- Trabalho conjunto com a Prof. Agatha:
+
+- Medidas de ultrasonografias de bebês:
+
+  - 4 medidas diferentes do feto
+  - Curvas de crescimento em função das semanas de gestação
+  
+.center[![:scale 40%](img/plot_IWSM.png)]
+
+
+---
+
+# Possibilidades no projeto
+
+- Aprendizado de novas técnicas estatísticas:
+  - regressão quantílica;
+  - regressão não linear;
+  - preditores aditivos estruturados;
+  - ...
+
+--
+
+- Desenvolvimento de rotinas computacionais no R:
+  - visualização de resultados para mais de 3 dimensões;
+  - códigos para avaliação do ajuste do modelo;
+  - ...
+  
+--
+
+- Trabalho em novas aplicações
+  - DATASUS;
+  - POF;
+  - Dados ambientais: poluição, ventos, ...
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="macros.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
