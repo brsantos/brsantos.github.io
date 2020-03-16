@@ -1,6 +1,0 @@
-"0","ggplot(df, aes(x = Type, fill = AirBags)) +"
-"0","  geom_bar(position = ""fill"", "
-"0","               color = ""black"") +"
-"0","  theme_minimal() +"
-"0","  scale_fill_brewer(palette = ""Purples"", "
-"0","                    direction = 1)"

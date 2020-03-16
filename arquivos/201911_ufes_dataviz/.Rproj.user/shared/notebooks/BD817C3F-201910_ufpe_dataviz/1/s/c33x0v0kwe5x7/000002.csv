@@ -1,1 +1,0 @@
-"0","dados <- tibble(var_x = 1:4, var_y = seq(2,8,2), var_grupo = c(rep(""a"", 3),""b"")) "

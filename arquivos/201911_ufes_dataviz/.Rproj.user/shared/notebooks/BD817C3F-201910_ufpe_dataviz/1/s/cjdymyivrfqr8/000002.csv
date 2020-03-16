@@ -1,2 +1,0 @@
-"0","ggplot(df, aes(x = Type)) +"
-"0","  geom_bar()"

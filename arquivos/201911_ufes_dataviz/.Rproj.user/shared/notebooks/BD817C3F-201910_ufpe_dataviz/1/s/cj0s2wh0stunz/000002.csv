@@ -1,4 +1,0 @@
-"0","ggplot(df, aes(x = Type, fill = AirBags)) +"
-"0","  geom_bar(position = ""dodge"", "
-"0","               color = ""black"") +"
-"0","  theme_minimal()"

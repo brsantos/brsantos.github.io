@@ -1,5 +1,0 @@
-"0","ggplot(df, aes(x = Horsepower)) +"
-"0","  geom_histogram(binwidth = 10,"
-"0","                 color = ""black"","
-"0","                 fill = ""darkorchid4"") +"
-"0","  theme_bw() "

@@ -1,2 +1,0 @@
-"0","ggplot(df, aes(x = Horsepower)) +"
-"0","  geom_histogram(binwidth = 10)"
