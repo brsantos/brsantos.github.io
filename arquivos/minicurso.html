@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>R básico</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="     R-Ladies Vitória" />
+    <link rel="stylesheet" href="css/kunoichi.css" type="text/css" />
+    <link rel="stylesheet" href="css/ninjutsu.css" type="text/css" />
+    <link rel="stylesheet" href="css/rladies-fonts.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# R básico <br>
+## meus primeiros passos no R <br><br><br>
+### <br><br><br><br> R-Ladies Vitória
+### mai/2020
+
+---
+
+layout: true
+
+&lt;div class="my-footer"&gt;&lt;span&gt;
+
+&lt;a href="https://www.meetup.com/pt-BR/R-Ladies-Vitoria"&gt;Meetup&lt;/a&gt; |
+&lt;a href="https://twitter.com/rladiesvix"&gt;Twitter&lt;/a&gt; | 
+&lt;a href="http://instagram.com/rladiesvix"&gt;Instagram&lt;/a&gt; |
+&lt;a href="https://github.com/rladies/meetup-presentations_vitoria"&gt;Github&lt;/a&gt; 
+
+
+&lt;/span&gt;&lt;/div&gt; 
+
+
+
+&lt;!-- programação --&gt;
+---
+class: middle 
+
+# Programação 
+
+- R-Ladies
+
+- Introdução ao R
+
+- R básico
+
+- Importação de dados
+
+- Tratamento de dados
+
+- Medidas descritivas
+
+&lt;!-- R-Ladies --&gt;
+---
+class:  center
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="img/hexlogorladies.jpeg" alt="&amp;lt;center&amp;gt;&amp;lt;b&amp;gt; &amp;lt;/center&amp;gt;&amp;lt;/b&amp;gt;" width="18%" /&gt;
+&lt;p class="caption"&gt;&lt;center&gt;&lt;b&gt; &lt;/center&gt;&lt;/b&gt;&lt;/p&gt;
+&lt;/div&gt;
+
+
+- R-Ladies é uma organização mundial que **promove a diversidade de gênero** na comunidade R.
+
+- Capacitar pessoas de gêneros sub-representados, criando e fortalecendo redes colaborativas dentro da comunidade R para que elas alcancem todas e quaisquer funções e áreas de participação no mundo da tecnologia.
+
+
+**Como**
+
+* Promovendo meetups (encontros) e mentorias. 
+
+* Garantindo espaço amigável e seguro. 
+
+---
+class:  center
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="img/rladies_vix.png" alt="&amp;lt;center&amp;gt;&amp;lt;b&amp;gt; &amp;lt;/center&amp;gt;&amp;lt;/b&amp;gt;" width="40%" /&gt;
+&lt;p class="caption"&gt;&lt;center&gt;&lt;b&gt; &lt;/center&gt;&lt;/b&gt;&lt;/p&gt;
+&lt;/div&gt;
+
+O Capítulo da cidade de Vitória foi criado em 29 de setembro de 2019.
+
+
+
+- [Código de conduta - R-Ladies](https://github.com/rladies/starter-kit/wiki/Code-of-Conduct#portuguese)
+
+
+- Saiba mais:
+  - RLadies Global: [https://rladies.org/](https://rladies.org/)
+  - MeetUp: [https://www.meetup.com/pt-BR/R-Ladies-Vitoria](https://www.meetup.com/pt-BR/R-Ladies-Vitoria)
+  - Twitter: [@RLadiesGlobal](https://twitter.com/rladiesglobal), [@rladiesvix](https://twitter.com/rladiesvix)
+  - Instagram: [@RLadiesVix](http://instagram.com/rladiesvix)
+  - Github: [https://github.com/rladies/meetup-presentations_vitoria](https://github.com/rladies/meetup-presentations_vitoria)
+
+
+&lt;!-- R --&gt;
+---
+class: center
+
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="img/R_logo.svg.png" alt="&amp;lt;center&amp;gt;&amp;lt;b&amp;gt; &amp;lt;/center&amp;gt;&amp;lt;/b&amp;gt;" width="25%" /&gt;
+&lt;p class="caption"&gt;&lt;center&gt;&lt;b&gt; &lt;/center&gt;&lt;/b&gt;&lt;/p&gt;
+&lt;/div&gt;
+
+
+- O R é uma linguagem de programação, além de um ambiente de software gratuito. 
+
+- oferece um vasto leque de funcionalidades acessíveis via instalação de bibliotecas.
+
+- o R possui uma comunidade extremamente ativa, engajada desde o aprimoramento da ferramenta e desenvolvimento de novas bibliotecas, até o suporte aos usuários.
+
+- Saiba mais em: [r-project.org](https://www.r-project.org/about.html) 
+
+
+
+---
+class: middle
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="img/rstudio.png" alt="&amp;lt;center&amp;gt;&amp;lt;b&amp;gt; &amp;lt;/center&amp;gt;&amp;lt;/b&amp;gt;" width="45%" /&gt;
+&lt;p class="caption"&gt;&lt;center&gt;&lt;b&gt; &lt;/center&gt;&lt;/b&gt;&lt;/p&gt;
+&lt;/div&gt;
+- Optar por programar em R também implica na escolha de uma IDE (Integrated Development Environment) que, na grande maioria dos casos, será o RStudio.
+
+- O RStudio é um conjunto de ferramentas integradas projetadas (IDE - Integrated Development Environment) da linguagem R para editar e executar os códigos em R.
+
+- O R, em combinação com o RStudio, possui um conjunto de funcionalidades cuja intenção é ajudar no processo de desenvolvimento.
+
+
+- Saiba mais em: [https://rstudio.com/](https://rstudio.com/) 
+
+
+
+---
+class: middle
+
+# RStudio
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="figures/rstudio1.png" alt="&amp;lt;center&amp;gt;&amp;lt;b&amp;gt; &amp;lt;/center&amp;gt;&amp;lt;/b&amp;gt;" width="100%" /&gt;
+&lt;p class="caption"&gt;&lt;center&gt;&lt;b&gt; &lt;/center&gt;&lt;/b&gt;&lt;/p&gt;
+&lt;/div&gt;
+---
+class: middle
+
+# RStudio
+
+
+* Editor/Scripts: É onde escrever os códigos. Arquivos do tipo .R. 
+
+* Console: Executar os comandos e ver os resultados. 
+
+* Enviroment: Painel com todos os objetos criados.
+
+* History: História dos comandos executados. 
+
+* Files: Navegar em pastas e arquivos. 
+
+* Plots: Onde os gráficos serão apresentados.
+
+* Packages: Pacotes instalados (sem ticar) e habilitados (ticados). 
+
+* Help: Retorna o tutorial de ajuda do comando solicitado com help() ou ?comando. Veremos melhor como pedir ajuda no R ainda nessa aula. 
+
+
+---
+class: middle
+
+# Rproj e diretórios
+- Organizar arquivos é uma parte integral do processo de programação.
+
+- Denominados “projetos”, eles não passam de pastas comuns com um arquivo .Rproj.
+
+
+
+Uma funcionalidade importante é a criação de projetos, permitindo dividir o trabalho em múltiplos ambientes, cada um com o seu diretório, documentos e workspace.
+
+Para criar um projeto, os seguintes passos podem ser seguidos:
+
+1) Clique na opção “File” do menu, e então em “New Project”.
+
+2) Clique em “New Directory”.
+
+3) Clique em “New Project”.
+
+4) Escreva o nome do diretório (pasta) onde deseja manter seu projeto, ex “my_project”.
+
+5) Clique no botão “Create Project”.
+
+Para criar um novo script para escrever os códigos, vá em File -&gt; New File -&gt; R Script
+
+---
+class: middle
+
+# Boas práticas
+
+- Comente bem o seu código: É possível fazer comentários usando o símbolo ‘#’. É sempre bom explicar o que uma variável armazena, o que uma função faz, porque alguns parâmetros são passados para uma determinada função, qual é o objetivo de um trecho de código, etc.
+
+- Evite linhas de código muito longas: Usar linhas de código mais curtas ajuda na leitura do código.
+
+- Escreva um código organizado: Por exemplo, adote um padrão no uso de minúsculas e maiúsculas, uma lógica única na organização de pastas e arquivos, pode ser adotada uma breve descrição (como comentário) indicando o que um determinado script faz.
+
+- Carregue todos os pacotes que irá usar sempre no início do arquivo: Quando alguém abrir o seu código será fácil identificar quais são os pacotes que devem ser instalados e quais dependências podem existir.
+
+- Evite referência de caminho que considere seu computador ou usuário: Faça referência ao caminho do projeto.
+
+---
+class: middle
+
+# Shall we?
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="img/allisonhorst/community1.jpg" alt="&amp;lt;center&amp;gt;&amp;lt;b&amp;gt;Ilustração por Allison Horst - Twitter: &amp;lt;a href='https://twitter.com/allison_horst/'&amp;gt; @allison_horst&amp;lt;/a&amp;gt; &amp;lt;/b&amp;gt;&amp;lt;/center&amp;gt;" width="40%" /&gt;
+&lt;p class="caption"&gt;&lt;center&gt;&lt;b&gt;Ilustração por Allison Horst - Twitter: &lt;a href='https://twitter.com/allison_horst/'&gt; @allison_horst&lt;/a&gt; &lt;/b&gt;&lt;/center&gt;&lt;/p&gt;
+&lt;/div&gt;
+
+---
+class: middle
+
+### R como calculadora 
+
+&lt;!-- 1) Operadores --&gt;
+
+
+```r
+#adição
+10 + 15
+  #&gt; [1] 25
+#subtração
+10 - 2
+  #&gt; [1] 8
+#multiplicação
+2*10
+  #&gt; [1] 20
+#divisão
+30/2
+  #&gt; [1] 15
+#raiz quadrada
+sqrt(4)
+  #&gt; [1] 2
+#potência
+2^2
+  #&gt; [1] 4
+```
+Se você digitar um comando incompleto, como 10 *, o R mostrará um +. Isso não tem a ver com a soma e apenas que o R está esperando você completar seu comando. Termine seu comando ou aperte Esc para recomeçar. 
+&lt;!-- Vale também ressaltar que se você digitar um comando que o R não reconhece, ele retornará uma mensagem de erro e você pode digitar outro comando normalmente em seguida.  --&gt;
+
+---
+class: top
+
+### Atribuição 
+
+Para atribuir a um objeto, o sinal de atribuição é = ou &lt;-. 
+
+Exemplos:
+
+```r
+x &lt;- 10/2
+x
+  #&gt; [1] 5
+X
+  #&gt; Error in eval(expr, envir, enclos): object 'X' not found
+```
+Por que tivemos um erro acima?
+
+--
+
+O R é _case sensitive_, isto é, faz a diferenciação entre as letras minúsculas e maiúsculas. Portanto, x é diferente de X. 
+
+---
+class: middle
+
+### Objetos em R
+
+Existem cinco classes básicas no R:
+
+* character: "UAH!" 
+
+* numeric: 0.95 (números reais)
+
+* integer: 100515 (inteiros)
+
+* complex: 2 + 5i (números complexos, a + bi)
+
+* logical: TRUE (booleanos, TRUE/FALSE)
+
+---
+class: middle
+
+Vamos atribuir a x a string banana. 
+
+```r
+x &lt;- banana 
+  #&gt; Error in eval(expr, envir, enclos): object 'banana' not found
+x &lt;- "banana"
+x
+  #&gt; [1] "banana"
+```
+O primeiro caso (x&lt;-banana) não deu certo, pois ele entendeu que estamos atribuindo a x outro objeto banana, que não foi declarado. Para atribuir o string banana à x, precisamos colocar entre aspas ou aspas simples. Uma string sem aspas é entendido como um objeto, veja abaixo:
+
+```r
+banana &lt;- 30
+x &lt;- banana
+x
+  #&gt; [1] 30
+```
+
+
+---
+class: middle
+
+Função `class()`.
+
+
+```r
+y &lt;- "ola"
+class(y)
+  #&gt; [1] "character"
+
+x &lt;- 2.5
+class(x)
+  #&gt; [1] "numeric"
+```
+
+Apagar objetos
+
+
+```r
+x &lt;- 20
+x
+  #&gt; [1] 20
+remove(x)
+x
+  #&gt; Error in eval(expr, envir, enclos): object 'x' not found
+```
+
+
+---
+class: middle
+
+### Data Strutures
+* atomic vector
+
+* matrix
+
+* factors
+
+* data frame
+
+* list
+---
+class: middle
+
+### Vetor
+ &lt;!-- Como atribuir varios valores a um objeto?  Para entrar com vários números (ou nomes, ou qualquer outro grupo de coisas), precisamos usar uma função para dizer ao programa que os valores serão combinados em um único vetor. --&gt;
+
+```r
+x &lt;- c(2, 3, 4)
+x
+  #&gt; [1] 2 3 4
+y &lt;- seq(1:10)
+y
+  #&gt;  [1]  1  2  3  4  5  6  7  8  9 10
+z &lt;- rep(1, 10)
+z
+  #&gt;  [1] 1 1 1 1 1 1 1 1 1 1
+a &lt;- 1:10
+a
+  #&gt;  [1]  1  2  3  4  5  6  7  8  9 10
+bicho &lt;-c("macaco", "pato", "galinha", "porco")
+bicho
+  #&gt; [1] "macaco"  "pato"    "galinha" "porco"
+```
+E se quisermos visualizar o conteúdo da posição 2 no vetor bicho?
+
+```r
+bicho[2]
+  #&gt; [1] "pato"
+```
+
+
+---
+class: top
+
+Operações vetoriais
+
+
+```r
+k &lt;- x * 2
+y &lt;- c(x, k)
+y
+  #&gt; [1] 2 3 4 4 6 8
+```
+&lt;!-- Vale mencionar que o separador de decimais no R é . (ponto)!  --&gt;
+
+--
+
+Supondo que temos os seuintes valores de altura e peso.
+
+
+```r
+peso &lt;- c(62, 70, 52, 98, 90, 70)
+altura &lt;- c(1.70, 1.82, 1.75, 1.94, 1.84, 1.61)
+```
+
+Como calcular o IMC?
+--
+
+
+```r
+imc &lt;- peso/(altura^2)
+imc
+  #&gt; [1] 21.45329 21.13271 16.97959 26.03890 26.58318 27.00513
+```
+
+
+---
+class: middle
+
+### Matrizes
+
+```r
+x &lt;- matrix(seq(1:16), nrow=4,ncol=4)
+x
+  #&gt;      [,1] [,2] [,3] [,4]
+  #&gt; [1,]    1    5    9   13
+  #&gt; [2,]    2    6   10   14
+  #&gt; [3,]    3    7   11   15
+  #&gt; [4,]    4    8   12   16
+x[2,3] #retorna o elemento na segunda linha e terceira coluna da matriz
+  #&gt; [1] 10
+x[3,  ]   # seleciona a 3ª linha
+  #&gt; [1]  3  7 11 15
+x[ , 2]   # seleciona a 2ª coluna
+  #&gt; [1] 5 6 7 8
+x[1,] &lt;- c(13,15,19,30)  #substituir a primeira linha por (13,15,19,30)
+
+x
+  #&gt;      [,1] [,2] [,3] [,4]
+  #&gt; [1,]   13   15   19   30
+  #&gt; [2,]    2    6   10   14
+  #&gt; [3,]    3    7   11   15
+  #&gt; [4,]    4    8   12   16
+```
+
+---
+class: middle
+
+Como obter a dimensão da matriz x?
+
+```r
+dim(x)
+  #&gt; [1] 4 4
+```
+
+Outra função importante é `length()` para obter o tamanho de vetores.
+
+```r
+length(x[1, ])
+  #&gt; [1] 4
+
+length(x[, 1])
+  #&gt; [1] 4
+```
+
+---
+class: middle
+
+Concatenar linhas em uma matriz
+
+```r
+v1 &lt;- c(2, 20, 12, 34)
+x2 &lt;- rbind(x, v1)
+x2
+  #&gt;    [,1] [,2] [,3] [,4]
+  #&gt;      13   15   19   30
+  #&gt;       2    6   10   14
+  #&gt;       3    7   11   15
+  #&gt;       4    8   12   16
+  #&gt; v1    2   20   12   34
+```
+
+Concatenar colunas em uma matriz
+
+```r
+v2 &lt;- c(25, 10, 15, 4) 
+x3 &lt;- cbind(x, v2)
+x3
+  #&gt;                  v2
+  #&gt; [1,] 13 15 19 30 25
+  #&gt; [2,]  2  6 10 14 10
+  #&gt; [3,]  3  7 11 15 15
+  #&gt; [4,]  4  8 12 16  4
+```
+
+
+
+---
+class: middle
+
+Operações matriciais
+
+```r
+xa &lt;- x2[1:2, 1:2]
+xb &lt;- matrix(rnorm(4), 2, 2)
+xa * xb #multiplicacao ponto a ponto
+  #&gt;      [,1]       [,2]
+  #&gt;  8.524992 -19.219678
+  #&gt;  2.153431   1.720992
+
+xa %*% xb #multiplicacao matricial
+  #&gt;       [,1]        [,2]
+  #&gt;  24.675727 -12.3545741
+  #&gt;   7.771831  -0.8416316
+
+solve(xa) #inversa de xa
+  #&gt;                            
+  #&gt; [1,]  0.12500000 -0.3125000
+  #&gt; [2,] -0.04166667  0.2708333
+
+diag(xa) #matriz diagonal
+  #&gt; [1] 13  6
+```
+
+---
+class: middle
+
+### Data frame
+Trata-se de uma “tabela de dados” onde as colunas são as variáveis e as linhas são os registros. Essas colunas podem ser de classes diferentes. 
+Essa é a grande diferença entre data.frame’s e matrizes (matriz é só numérica).
+
+Posso criar um data frame no R com os vetores, por exemplo:
+
+```r
+ID &lt;- seq(1:6)
+pes &lt;- c(62, 70, 52, 98, 90, 70)
+alt &lt;- c(1.70, 1.82, 1.75, 1.94, 1.84, 1.61)
+imc &lt;- pes/(alt^2)
+dados &lt;- data.frame(ID = ID,
+                    peso = pes,
+                    altura = alt, 
+                    imc = imc)
+dados
+  #&gt;   ID peso altura      imc
+  #&gt; 1  1   62   1.70 21.45329
+  #&gt; 2  2   70   1.82 21.13271
+  #&gt; 3  3   52   1.75 16.97959
+  #&gt; 4  4   98   1.94 26.03890
+  #&gt; 5  5   90   1.84 26.58318
+  #&gt; 6  6   70   1.61 27.00513
+```
+
+---
+class: middle
+
+Selecionar a variável de interesse:
+
+```r
+dados$altura
+  #&gt; [1] 1.70 1.82 1.75 1.94 1.84 1.61
+```
+
+Esqueci de colocar a varivel de grupo no data frame. Tenho que criar tudo de novo? Não:
+
+```r
+gr &lt;- c(rep(1,3),rep(2,3))
+dados$grupo &lt;- gr
+
+dados
+  #&gt;   ID peso altura      imc grupo
+  #&gt; 1  1   62   1.70 21.45329     1
+  #&gt; 2  2   70   1.82 21.13271     1
+  #&gt; 3  3   52   1.75 16.97959     1
+  #&gt; 4  4   98   1.94 26.03890     2
+  #&gt; 5  5   90   1.84 26.58318     2
+  #&gt; 6  6   70   1.61 27.00513     2
+```
+
+---
+class: middle
+
+Funcões uteis para data.frame:
+
+* head() - Mostra as primeiras 6 linhas.
+
+* tail() - Mostra as últimas 6 linhas.
+
+* dim() - Número de linhas e de colunas.
+
+* names() - Os nomes das colunas (variáveis).
+
+* str() - Estrutura do data.frame. Mostra, entre outras coisas, as classes de cada coluna.
+
+
+
+```r
+names(dados)
+  #&gt; [1] "ID"     "peso"   "altura" "imc"    "grupo"
+str(dados)
+  #&gt; 'data.frame':	6 obs. of  5 variables:
+  #&gt;  $ ID    : int  1 2 3 4 5 6
+  #&gt;  $ peso  : num  62 70 52 98 90 70
+  #&gt;  $ altura: num  1.7 1.82 1.75 1.94 1.84 1.61
+  #&gt;  $ imc   : num  21.5 21.1 17 26 26.6 ...
+  #&gt;  $ grupo : num  1 1 1 2 2 2
+```
+
+---
+class: middle
+
+
+```r
+mean(dados$imc)
+  #&gt; [1] 23.1988
+sd(dados$imc)
+  #&gt; [1] 4.00006
+summary(dados$imc)
+  #&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  #&gt;   16.98   21.21   23.75   23.20   26.45   27.01
+```
+
+
+```r
+table(dados$grupo)
+  #&gt; 
+  #&gt; 1 2 
+  #&gt; 3 3
+```
+
+---
+class: middle
+
+### Fator
+&lt;!-- Fatores podem ser vistos como vetores de inteiros que possuem rótulos (labels). Eles são úteis para representar uma variável categórica (nominal e ordinal). --&gt;
+
+
+```r
+sexo &lt;- c("M", "H", "H", "H", "M", "M", "H")
+sex &lt;- as.factor(sexo)
+sex
+  #&gt; [1] M H H H M M H
+  #&gt; Levels: H M
+levels(sex)
+  #&gt; [1] "H" "M"
+```
+
+---
+class: middle
+
+### Arrays
+
+```r
+dim3 &lt;- array(rnorm(18),dim = c(3,3,2))
+dim3
+  #&gt; , , 1
+  #&gt; 
+  #&gt;             [,1]      [,2]        [,3]
+  #&gt; [1,] -0.02337547  0.181575  1.10341822
+  #&gt; [2,]  0.38777529 -1.664429 -0.34859248
+  #&gt; [3,] -1.90143561  0.741697  0.07032957
+  #&gt; 
+  #&gt; , , 2
+  #&gt; 
+  #&gt;            [,1]       [,2]       [,3]
+  #&gt; [1,] -0.4199125 0.06417912  0.1564156
+  #&gt; [2,]  0.6122967 0.60075361 -1.0202387
+  #&gt; [3,]  1.1386135 0.57797530  0.6874354
+```
+
+---
+class: middle
+
+### Lists
+
+```r
+ls &lt;- list(ls1 = 'a',
+           ls2 = c(1, 2, 3),
+           ls3 = matrix(rnorm(6), ncol = 3))
+ls
+  #&gt; $ls1
+  #&gt; [1] "a"
+  #&gt; 
+  #&gt; $ls2
+  #&gt; [1] 1 2 3
+  #&gt; 
+  #&gt; $ls3
+  #&gt;             [,1]       [,2]       [,3]
+  #&gt; [1,] -0.01338534 -1.1116297 -0.7199607
+  #&gt; [2,]  1.57524972 -0.5184335 -0.2677496
+```
+
+---
+class: middle
+
+## Operadores Relacionais
+
+Igual a: `==`
+
+
+```r
+10 == 11
+  #&gt; [1] FALSE
+```
+
+Diferente de: `!=`
+
+
+```r
+10 != 11
+  #&gt; [1] TRUE
+```
+
+* Maior que: &gt; 
+
+* Maior ou igual: &gt;= 
+
+* Menor que: &lt; 
+
+* Menor ou igual: &lt;= 
+
+---
+class: top
+
+## Operadores Lógicos
+
+* E: &amp; - será verdadeiro se os dois forem TRUE
+
+
+```r
+x &lt;- 15
+x &gt; 10 &amp; x &lt; 30
+  #&gt; [1] TRUE
+
+x &lt; 10 &amp; x &lt; 30
+  #&gt; [1] FALSE
+```
+
+--
+
+* OU: | - será verdadeiro se um dos dois for TRUE
+
+
+```r
+x &gt; 10 | x &gt; 30
+  #&gt; [1] TRUE
+```
+
+--
+
+* Negação: ! 
+
+
+```r
+x &lt;- 15
+!x&lt;30
+  #&gt; [1] FALSE
+```
+
+---
+class: middle
+
+### If e else
+
+
+```r
+a &lt;- 224
+b &lt;- 225
+if (a == b) { 
+  v &lt;- 10
+} else {
+  v &lt;- 15
+}
+v
+  #&gt; [1] 15
+```
+
+
+```r
+a &lt;- 224
+b &lt;- 225
+if (a == b) { 
+  v &lt;- 10
+} else if (a &gt; b) {
+  v &lt;- 15
+} else {
+  v &lt;- 25}
+v
+  #&gt; [1] 25
+```
+
+---
+class: to~
+
+### For
+
+```r
+sexo &lt;- c("H", "M", "H", "H", "M")
+```
+
+Quero criar um novo vetor, p digamos,  que reescreva os códigos de `sexo` 
+para "Mulher" e "Homem".
+
+--
+
+Veja como podemos fazer isso.
+
+```r
+p &lt;- character(length = length(sexo))
+for (i in 1:length(sexo)){
+  if (sexo[i] == "M") p[i] &lt;- "Mulher"
+  else p[i] &lt;- "Homem"
+}
+p
+  #&gt; [1] "Homem"  "Mulher" "Homem"  "Homem"  "Mulher"
+```
+
+Note que primeiro definimos o objeto p. 
+
+---
+class: middle
+
+### Funções 
+
+```r
+f.soma &lt;- function(x, y) {
+  out &lt;- x + y
+  return(out)
+}
+```
+ * o nome: `f.soma`;
+ 
+ * os argumentos: `x` e `y`;
+ 
+ * o corpo `out &lt;- x+y`  e
+ 
+ * o que retorna `return(out)`.
+
+Vamos agora chamar a função:
+
+```r
+f.soma(x = 10, y = 20)
+  #&gt; [1] 30
+
+f.soma(10, 20)
+  #&gt; [1] 30
+```
+
+---
+class: middle
+
+## Dados faltantes, infinitos e indefinições matemáticas
+
+* NA (Not Available): dado faltante/indisponível. 
+
+* NaN (Not a Number): indefinições matemáticas. Como 0/0 e log(-1).
+
+* Inf (Infinito): número muito grande ou o limite matemático. Aceita sinal negativo -Inf.
+
+
+---
+class: middle
+
+### Como obter ajuda no R
+
+  * Help/documentação do R 
+
+```r
+help(mean) #ou
+?mean
+```
+
+* Google.
+&lt;img src="figures/help_R.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+* Comunidade.
+
+[Stack Overflow](https://stackoverflow.com/) e o [Stack Overflow em Português](https://pt.stackoverflow.com/). 
+
+
+
+---
+class: middle
+
+
+## Pacotes
+
+### Instalação
+
+* Via CRAN: install.packages("nome-do-pacote").
+
+`install.packages("tidyverse")`
+
+Note que o nome do pacote está entre aspas. 
+
+* Via Github, usando o pacote `devtools`:
+
+`install_github("tidyverse/dplyr")`
+
+### Carregar pacotes:
+
+library(nome-do-pacote)
+
+Para carregar o pacote, não usar aspas.
+
+Só é necessário instalar o pacote uma vez, mas precisa carregá-lo toda vez que começar uma nova sessão.
+
+
+---
+class: middle
+
+# Importação de dados
+
+## Extensão .txt ou .csv
+
+Opção com o pacote **readr**.
+
+
+```r
+library(readr) #pacote readr
+dados_csv &lt;- read_csv(file = "dados1.csv")
+dados_txt &lt;- read_delim(file = "caminho-para-o-arquivo/dados1.txt", delim = " ")
+```
+
+&lt;!-- O argumento file= representa o caminho onde o arquivo está alocado. Se o arquivo estiver no diretório de trabalho, não precisa especificar o caminho até o arquivo. O argumento delim= indica qual caracter separa cada coluna no arquivo de texto. --&gt;
+ 
+Outra opção: 
+&lt;!-- para leitura de arquivo .txt é usar a função read.table que já está salva na base, ou seja, não é necessário instalar pacote.  --&gt;
+
+
+```r
+dados_txt2 &lt;- read.table(file="dados1.txt",header=T)
+```
+
+&lt;!-- O argumento header indica se a primeira linha do arquivo consta o nome das variáveis. Se for T (TRUE), a primeira linha é indicada como nome das variáveis. O default é header=F.  --&gt;
+
+Vale ressaltar que para cada função read_, existe uma respectiva função write_ para salvar o arquivo no formato de interesse. Como exemplo, queremos salvar a base de dados cars. 
+
+
+```r
+write_csv(x = mtcars, path = "cars.csv")
+write_delim(x = mtcars, delim = " ", path = "cars.txt"))
+```
+
+---
+class: middle
+
+## Arquivos em Excel
+
+O pacote **readxl** pode ser utilizado para leiturade arquivos do Excel, como .xls e xlsx.
+
+
+```r
+library(readxl)
+dados_excel &lt;- read_xls(path = "dados1.xls") #Leitura do arquivo .xls
+dados_excelx &lt;- read_xlsx(path = "dados1.xlsx") #Leitura do arquivo .xlsx
+```
+
+Uma maneira mais simples é a utilização da função read_excel(), pois ela auto detecta a extensão do arquivo.
+
+```r
+library(readxl)
+dados_excel1 &lt;- read_excel(path = "dados1.xls")
+dados_excelx1 &lt;- read_excel(path = "dados1.xlsx")
+```
+
+
+
+## Arquivos de outros softwares
+
+&lt;!-- Para ler dados salvos em extensão de outros softwares: SPSS, STATA e SAS: pacote haven.  --&gt;
+
+
+```r
+library(haven)
+dados_stata &lt;- read_stata("dados1.dta")
+dados_spss &lt;- read_spss("dados1.sav")
+dados_sas &lt;- read_sas("dados1.sas7bdat")  
+```
+
+&lt;!-- Outra opção de pacote para importação de dados de outros softwares é o foreign. Além do SAS, STAT e SPSS, ele também lê dados do Octave, Minitab e Epi Info.  --&gt;
+
+
+---
+class: middle
+
+## Tratamento de dados
+
+A análise de consistência consiste em realizar uma primeira análise dos dados com o intuito de encontrar inconsistências. 
+* boas práticas para nome das variáveis. 
+* identificar erros de digitação;
+* indivíduos imputados mais de uma vez na planilha de dados de maneira errada; 
+* identificar casos missings e avaliar se a observação está ausente de maneira correta ou não;
+* identificar as categorias de variáveis qualitativas.
+
+Consideramos os dados do [painel](https://coronavirus.es.gov.br/painel-covid-19-es).
+
+Para importar a base de dados: 
+
+```r
+library(readxl)
+dados &lt;- read_excel(path = "microdados.xls", na = "-")
+```
+
+
+---
+class: middle
+
+### Nome das variáveis
+
+Utilizaremos os pacotes `tidyverse` e `janitor` para a arrumação da base de dados. 
+
+
+
+```r
+library(tidyverse)
+library(janitor)
+
+names(dados)
+# a função clean_names() para primeiro ajuste dos nomes das variaveis
+dados &lt;- clean_names(dados) 
+names(dados)
+```
+
+Veja como as colunas foram renomeadas, deixando todas as letras minusculas. 
+
+---
+class: middle
+
+###Linhas e colunas vazias 
+ Na base de dados em questão, não há linhas vazias, como pode ser visto na saída abaixo. 
+
+
+```r
+dados &lt;- remove_empty(dados, "rows")
+```
+
+Podemos incluir uma nova coluna vazia da seguinte forma:
+
+```r
+dados$coluna_vazia &lt;- ""
+dados$coluna_NA &lt;- NA
+names(dados)
+```
+
+Podemos eliminar a coluna vazia fazendo
+
+```r
+dados &lt;- remove_empty(dados, "cols")
+names(dados)
+```
+
+
+---
+class: middle
+
+
+### Identificar tipo e classe de todas as variáveis da base
+
+Para identificar a classe de todas as variáveis que o R está interpretando, usamos a função str(.).
+
+
+```r
+# Ver a estrutura dos dados
+str(dados)
+```
+
+Podemos alterar a classe da variável `data`, pois isso pode nos ajudar a fazer gráficos, por exemplo.
+
+
+```r
+dados$data  &lt;- as.Date(dados$data)
+str(dados)
+```
+
+
+---
+class: middle
+
+
+### Identificar tipo e classe de todas as variáveis da base
+
+Utilizamos a função as.Date(.) porque queríamos mudar para tipo data. Abaixo está a lista das funções para mudança de tipo.
+
+* as.character -  converte para variável texto.
+
+* as.numeric - converte para variável número.
+
+* as.factor - converte para variável categórica.
+
+* as.integer - converte para variável inteiro.
+
+* as.Date - converte para variável data.
+
+* as.POSIXct - converte para variável data e hora completa. 
+
+
+---
+class:  middle
+
+### Identificar erros
+Para variáveis qualitativas: podemos utilizar a tabela de frequências para verificar as categorias do banco de dados e suas quantidades. 
+
+
+```r
+#do pacote janitor
+tabyl(dados, raca_cor) 
+  #&gt;  raca_cor    n    percent
+  #&gt;   Amarela  791 0.05537277
+  #&gt;    Branca 4588 0.32117606
+  #&gt;  Ignorado 3269 0.22884144
+  #&gt;  Indigena   17 0.00119006
+  #&gt;     Parda 4709 0.32964648
+  #&gt;     Preta  911 0.06377319
+```
+
+Veja como a função `tabyl` já apresenta as porcentagens de cada categoria.
+
+Note que as categorias "Preta" e "Parda" estão separadas, porém podemos alterar isso.
+
+
+
+---
+class: middle
+
+A variável de sexo está categorizada como F para mulheres e H para homens.
+
+```r
+tabyl(dados, sexo) 
+  #&gt;  sexo    n      percent
+  #&gt;     F 7600 0.5320266013
+  #&gt;     I    3 0.0002100105
+  #&gt;     M 6682 0.4677633882
+```
+
+No R tem um pacote só para manipular fatores: o `forcats` (for categorial variables).
+
+Podemos, por exemplo, redefinir as categorias para 
+
+
+```r
+library(forcats)
+dados$sexo  &lt;- as.factor(dados$sexo)
+
+dados$sexo &lt;- fct_recode(dados$sexo,
+           Feminino = "F", 
+           Masculino = "H", 
+	   Ignorado = "I")
+
+tabyl(dados, sexo)
+```
+
+---
+class: middle
+
+Poderíamos também criar uma categoria para raça "Negra", considerando a junção das categorias "Preta"  e "Parda".
+
+
+```r
+dados$raca_cor &lt;- as.factor(dados$raca_cor)
+
+dados$raca_cor &lt;- fct_recode(dados$raca_cor,
+                    Negra = "Parda",
+                    Negra = "Preta")
+
+tabyl(dados, raca_cor)
+  #&gt;  raca_cor    n    percent
+  #&gt;   Amarela  791 0.05537277
+  #&gt;    Branca 4588 0.32117606
+  #&gt;  Ignorado 3269 0.22884144
+  #&gt;  Indigena   17 0.00119006
+  #&gt;     Negra 5620 0.39341967
+
+dados$raca_cor &lt;- fct_relevel(dados$raca_cor, "Amarela", "Branca", "Negra",
+                             "Indigena", "Ignorado")
+
+tabyl(dados, raca_cor)
+  #&gt;  raca_cor    n    percent
+  #&gt;   Amarela  791 0.05537277
+  #&gt;    Branca 4588 0.32117606
+  #&gt;     Negra 5620 0.39341967
+  #&gt;  Indigena   17 0.00119006
+  #&gt;  Ignorado 3269 0.22884144
+```
+
+
+---
+class: middle
+
+Para fazer análise geral de todas as variáveis da base de dados, usamos a função skim(.) do pacote **skimr**. 
+
+```r
+library(skimr)
+kable(skim(dados)) 
+  #&gt; Skim summary statistics  
+  #&gt;  n obs: 14285    
+  #&gt;  n variables: 28    
+  #&gt; 
+  #&gt; Variable type: character
+  #&gt; 
+  #&gt;          variable            missing    complete      n      min    max    empty    n_unique 
+  #&gt; --------------------------  ---------  ----------  -------  -----  -----  -------  ----------
+  #&gt;           bairro               296       13989      14285     3     39       0        1063   
+  #&gt;          cefaleia              216       14069      14285     3      3       0         2     
+  #&gt;       classificacao             0        14285      14285    11     11       0         1     
+  #&gt;        coluna_vazia             0        14285      14285     0      0     14285       1     
+  #&gt;     comorbidade_cardio         206       14079      14285     3      3       0         2     
+  #&gt;    comorbidade_diabetes        215       14070      14285     3      3       0         2     
+  #&gt;   comorbidade_obesidade        288       13997      14285     3      3       0         2     
+  #&gt;     comorbidade_pulmao         216       14069      14285     3      3       0         2     
+  #&gt;     comorbidade_renal          210       14075      14285     3      3       0         2     
+  #&gt;   comorbidade_tabagismo        219       14066      14285     3      3       0         2     
+  #&gt;           coriza               210       14075      14285     3      3       0         2     
+  #&gt;    criterio_confirmacao        136       14149      14285     7     21       0         3     
+  #&gt;          diarreia              215       14070      14285     3      3       0         2     
+  #&gt;  dificuldade_respiratoria      201       14084      14285     3      3       0         2     
+  #&gt;        dor_garganta            213       14072      14285     3      3       0         2     
+  #&gt;        escolaridade             0        14285      14285     8     59       0         11    
+  #&gt;          evolucao             4387        9898      14285     4     23       0         4     
+  #&gt;        faixa_etaria             0        14285      14285    10     15       0         11    
+  #&gt;           febre                210       14075      14285     3      3       0         2     
+  #&gt;      ficou_internado          3725       10560      14285     3      3       0         2     
+  #&gt;         municipio               0        14285      14285     4     27       0        155    
+  #&gt;     status_notificacao          0        14285      14285     9      9       0         2     
+  #&gt;           tosse                209       14076      14285     3      3       0         2     
+  #&gt;       viagem_brasil           4046       10239      14285     3      3       0         2     
+  #&gt;    viagem_internacional       5417        8868      14285     3      3       0         2     
+  #&gt; 
+  #&gt; Variable type: Date
+  #&gt; 
+  #&gt;  variable    missing    complete      n         min           max          median      n_unique 
+  #&gt; ----------  ---------  ----------  -------  ------------  ------------  ------------  ----------
+  #&gt;    data         0        14285      14285    2020-02-29    2020-06-27    2020-05-11       84    
+  #&gt; 
+  #&gt; Variable type: factor
+  #&gt; 
+  #&gt;  variable    missing    complete      n      n_unique                   top_counts                    ordered 
+  #&gt; ----------  ---------  ----------  -------  ----------  -------------------------------------------  ---------
+  #&gt;  raca_cor       0        14285      14285       5        Neg: 5620, Bra: 4588, Ign: 3269, Ama: 791     FALSE  
+  #&gt;    sexo         0        14285      14285       3            Fem: 7600, M: 6682, Ign: 3, NA: 0         FALSE
+```
+
+Utilizamos a função `kable` para melhorar a apresentação dos resultados.
+
+
+---
+class: middle
+
+## Pacote `dplyr`
+
+Para manipular banco de dados, um dos melhores pacotes atualmente se chama `dplyr`.
+
+As ações de "ordenar", "selecionar", "filtrar", "fazer transformações" são definidas em funções como:
+
+* `arrange()`
+* `select()`
+* `filter()`
+* `mutate()`
+
+E umas das novidades desse pacote é poder representar essas ações sequencialmente usando o operador "pipe" ou `%&gt;%`. 
+
+Uma rápida apresentação com exemplos usando esse pacote pode ser visto na [vignette](https://cran.r-project.org/web/packages/dplyr/vignettes/dplyr.html).
+
+---
+class: middle
+
+## Necessidade do operador pipe (`%&gt;%`)
+
+Considere que você quer fazer as seguintes operações no banco de dados.
+* Filtrar pessoas negras
+* Selecionar as variáveis "data", "faixa_etaria", "sexo", "Evolução".
+* Criar uma nova variável que é a combinação entre "sexo" e "faixa_etaria".
+* Ordenar o banco de dados de forma decrescente pela "data".
+
+Do ponto de vista computacional, o resultado de cada operação deve ser oferecido para operação seguinte. No R, faríamos o seguinte por exemplo:
+
+
+```r
+dados_resumidos &lt;- arrange(mutate(select(filter(dados, raca_cor == "Negra"), data, faixa_etaria, sexo, evolucao), sexo_idade = paste(sexo, faixa_etaria, sep = " - ")), desc(data))
+```
+
+
+---
+class: middle
+
+Para facilitar a leitura do código, poderíamos fazer:
+
+
+```r
+dados_resumidos &lt;- 
+  arrange(
+    mutate(
+      select(
+        filter(
+	  dados, raca_cor == "Negra"
+        ),
+        data, faixa_etaria, sexo, evolucao
+      ),
+      sexo_idade = paste(sexo, faixa_etaria, sep = " - ")
+    ),
+    desc(data)
+  )
+```
+
+Podemos reescrever esse código utilizando o operador `%&gt;%`!
+
+---
+class: middle
+
+## Uso do operador pipe
+
+Ao usar o operador `%&gt;%`, podemos entender melhor o uso sequencial das funções.  
+
+
+```r
+dados_resumidos_pipe &lt;- dados %&gt;%
+  filter(raca_cor == "Negra") %&gt;%
+  select(data, faixa_etaria, sexo, evolucao) %&gt;%
+  mutate(sexo_idade = paste(sexo, faixa_etaria, sep = " - ")) %&gt;% 
+  arrange(desc(data))
+```
+
+Podemos checar se os dois bancos de dados são iguais inclusive.
+
+
+```r
+all.equal(dados_resumidos, dados_resumidos_pipe)
+  #&gt; [1] TRUE
+```
+
+
+---
+class: middle
+
+### Combinação de bases de dados
+
+Agora vamos considerar a base de dados com a lista de comunidades de Vitória, conforme obtido no site da prefeitura.
+
+
+```r
+dados_comunidades_vitoria &lt;- read.csv("lista_comunidades.csv", sep = ";")
+```
+
+Precisamos filtrar os dados do painel somente para a cidade de Vitoria.
+
+
+```r
+dados_vitoria &lt;- filter(dados, municipio == "VITORIA")
+```
+E agora temos que criar uma variável nesse banco de dados com a informação se a pessoa mora ou não em alguma comunidade. Como fazer isso?
+
+---
+class: middle
+
+## Algumas opções para combinar bases
+
+Há algumas funções de combinação de duas bases de dados no pacote **dplyr**. Aqui estão as mais úteis:
+
+* inner_join () - retorna valores de ambas as tabelas somente onde há uma correspondência.
+
+* left_join () - retorna todos os valores da primeira tabela mencionada, mais os da segunda tabela correspondente.
+
+* semi_join () - filtra a primeira tabela mencionada para incluir apenas os valores que possuem correspondências na segunda tabela.
+
+* anti_join () - filtra a primeira tabela mencionada para incluir apenas valores que não possuem correspondências na segunda tabela.
+
+
+---
+class: middle
+
+Antes de juntar as bases é preciso verificar se os nomes dos bairros estão de acordo.
+
+
+```r
+dados_vitoria &lt;- dados_vitoria %&gt;%
+  mutate(bairro = iconv(bairro, from = 'UTF-8', to = 'ASCII//TRANSLIT'), 
+	 bairro = str_trim(bairro), 
+	 bairro = gsub("JESUS DE NAZARETH", "JESUS DE NAZARE", bairro), 
+         bairro = gsub("JOANA DARC", "JOANA D'ARC", bairro))
+```
+Os nomes de dois bairros estão diferentes.
+
+
+```r
+dados_comunidades_vitoria &lt;- dados_comunidades_vitoria %&gt;%
+  mutate(nome_bairro = iconv(nome_bairro, from = 'UTF-8', to = 'ASCII//TRANSLIT'), 
+	 nome_bairro = str_trim(nome_bairro),
+	 nome_bairro = str_to_upper(nome_bairro))
+```
+
+Além disso, também é necessário retirar espaços em branco no início e no fim. 
+
+
+---
+class: top
+
+Após fazer essas alterações é possível juntar as bases de dados, utilizando a função `left_join`.
+
+
+```r
+dados_completo &lt;- left_join(dados_vitoria, dados_comunidades_vitoria, by = c("bairro" = "nome_bairro"))
+dados_completo
+```
+É interessante verificar se o número de linhas na base `dados_vitoria` aumentou após esse cruzamento.
+
+
+```r
+dim(dados_completo)[1] == dim(dados_vitoria)[1]
+  #&gt; [1] TRUE
+```
+
+Por que usamos `left_join`?
+
+Queremos:
+* manter a base de dados com todos os infectados (`dados_vitoria`);
+* adicionar as informações das comunidades (`dados_comunidades_vitoria`).
+
+
+---
+class:  center, middle
+
+## Obrigado!
+![título](https://media.giphy.com/media/l3q2u6MXJJEKiTZIY/giphy.gif)
+
+---
+
+class:  center, middle
+
+## Obrigado!
+
+- Contato:
+
+  - Website RLadies Global: [https://rladies.org/](https://rladies.org/)
+  
+  - MeetUp: [https://www.meetup.com/pt-BR/R-Ladies-Vitoria](https://www.meetup.com/pt-BR/R-Ladies-Vitoria)
+
+  - Twitter: [@RLadiesGlobal](https://twitter.com/rladiesglobal), [@rladiesvix](https://twitter.com/rladiesvix)
+
+  - Instagram: [@RLadiesVix](http://instagram.com/rladiesvix)
+
+  - Github: [https://github.com/rladies/meetup-presentations_vitoria](https://github.com/rladies/meetup-presentations_vitoria)
+
+  - Email: vitoria@rladies.org
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
