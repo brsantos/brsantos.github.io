@@ -3,7 +3,7 @@
   <head>
     <title>R básico</title>
     <meta charset="utf-8" />
-    <meta name="author" content="     R-Ladies Vitória" />
+    <meta name="author" content="     Bruno Santos" />
     <link rel="stylesheet" href="css/kunoichi.css" type="text/css" />
     <link rel="stylesheet" href="css/ninjutsu.css" type="text/css" />
     <link rel="stylesheet" href="css/rladies-fonts.css" type="text/css" />
@@ -14,7 +14,7 @@ class: center, middle, inverse, title-slide
 
 # R básico <br>
 ## meus primeiros passos no R <br><br><br>
-### <br><br><br><br> R-Ladies Vitória
+### <br><br><br><br> Bruno Santos
 ### mai/2020
 
 ---
@@ -23,10 +23,8 @@ layout: true
 
 &lt;div class="my-footer"&gt;&lt;span&gt;
 
-&lt;a href="https://www.meetup.com/pt-BR/R-Ladies-Vitoria"&gt;Meetup&lt;/a&gt; |
-&lt;a href="https://twitter.com/rladiesvix"&gt;Twitter&lt;/a&gt; | 
-&lt;a href="http://instagram.com/rladiesvix"&gt;Instagram&lt;/a&gt; |
-&lt;a href="https://github.com/rladies/meetup-presentations_vitoria"&gt;Github&lt;/a&gt; 
+&lt;a href="https://twitter.com/brsantos86"&gt;Twitter&lt;/a&gt; | 
+&lt;a href="https://github.com/brsantos"&gt;Github&lt;/a&gt; 
 
 
 &lt;/span&gt;&lt;/div&gt; 
@@ -49,50 +47,6 @@ class: middle
 
 - Tratamento de dados
 
-- Medidas descritivas
-
-&lt;!-- R-Ladies --&gt;
----
-class:  center
-
-&lt;div class="figure" style="text-align: center"&gt;
-&lt;img src="img/hexlogorladies.jpeg" alt="&amp;lt;center&amp;gt;&amp;lt;b&amp;gt; &amp;lt;/center&amp;gt;&amp;lt;/b&amp;gt;" width="18%" /&gt;
-&lt;p class="caption"&gt;&lt;center&gt;&lt;b&gt; &lt;/center&gt;&lt;/b&gt;&lt;/p&gt;
-&lt;/div&gt;
-
-
-- R-Ladies é uma organização mundial que **promove a diversidade de gênero** na comunidade R.
-
-- Capacitar pessoas de gêneros sub-representados, criando e fortalecendo redes colaborativas dentro da comunidade R para que elas alcancem todas e quaisquer funções e áreas de participação no mundo da tecnologia.
-
-
-**Como**
-
-* Promovendo meetups (encontros) e mentorias. 
-
-* Garantindo espaço amigável e seguro. 
-
----
-class:  center
-
-&lt;div class="figure" style="text-align: center"&gt;
-&lt;img src="img/rladies_vix.png" alt="&amp;lt;center&amp;gt;&amp;lt;b&amp;gt; &amp;lt;/center&amp;gt;&amp;lt;/b&amp;gt;" width="40%" /&gt;
-&lt;p class="caption"&gt;&lt;center&gt;&lt;b&gt; &lt;/center&gt;&lt;/b&gt;&lt;/p&gt;
-&lt;/div&gt;
-
-O Capítulo da cidade de Vitória foi criado em 29 de setembro de 2019.
-
-
-
-- [Código de conduta - R-Ladies](https://github.com/rladies/starter-kit/wiki/Code-of-Conduct#portuguese)
-
-
-- Saiba mais:
-  - RLadies Global: [https://rladies.org/](https://rladies.org/)
-  - MeetUp: [https://www.meetup.com/pt-BR/R-Ladies-Vitoria](https://www.meetup.com/pt-BR/R-Ladies-Vitoria)
-  - Twitter: [@RLadiesGlobal](https://twitter.com/rladiesglobal), [@rladiesvix](https://twitter.com/rladiesvix)
-  - Instagram: [@RLadiesVix](http://instagram.com/rladiesvix)
-  - Github: [https://github.com/rladies/meetup-presentations_vitoria](https://github.com/rladies/meetup-presentations_vitoria)
 
 
 &lt;!-- R --&gt;
@@ -140,7 +94,7 @@ class: middle
 # RStudio
 
 &lt;div class="figure" style="text-align: center"&gt;
-&lt;img src="figures/rstudio1.png" alt="&amp;lt;center&amp;gt;&amp;lt;b&amp;gt; &amp;lt;/center&amp;gt;&amp;lt;/b&amp;gt;" width="100%" /&gt;
+&lt;img src="img/rstudio1.png" alt="&amp;lt;center&amp;gt;&amp;lt;b&amp;gt; &amp;lt;/center&amp;gt;&amp;lt;/b&amp;gt;" width="100%" /&gt;
 &lt;p class="caption"&gt;&lt;center&gt;&lt;b&gt; &lt;/center&gt;&lt;/b&gt;&lt;/p&gt;
 &lt;/div&gt;
 ---
@@ -213,7 +167,7 @@ class: middle
 # Shall we?
 
 &lt;div class="figure" style="text-align: center"&gt;
-&lt;img src="img/allisonhorst/community1.jpg" alt="&amp;lt;center&amp;gt;&amp;lt;b&amp;gt;Ilustração por Allison Horst - Twitter: &amp;lt;a href='https://twitter.com/allison_horst/'&amp;gt; @allison_horst&amp;lt;/a&amp;gt; &amp;lt;/b&amp;gt;&amp;lt;/center&amp;gt;" width="40%" /&gt;
+&lt;img src="img/community1.jpg" alt="&amp;lt;center&amp;gt;&amp;lt;b&amp;gt;Ilustração por Allison Horst - Twitter: &amp;lt;a href='https://twitter.com/allison_horst/'&amp;gt; @allison_horst&amp;lt;/a&amp;gt; &amp;lt;/b&amp;gt;&amp;lt;/center&amp;gt;" width="40%" /&gt;
 &lt;p class="caption"&gt;&lt;center&gt;&lt;b&gt;Ilustração por Allison Horst - Twitter: &lt;a href='https://twitter.com/allison_horst/'&gt; @allison_horst&lt;/a&gt; &lt;/b&gt;&lt;/center&gt;&lt;/p&gt;
 &lt;/div&gt;
 
@@ -507,14 +461,14 @@ Operações matriciais
 xa &lt;- x2[1:2, 1:2]
 xb &lt;- matrix(rnorm(4), 2, 2)
 xa * xb #multiplicacao ponto a ponto
-  #&gt;      [,1]       [,2]
-  #&gt;  8.524992 -19.219678
-  #&gt;  2.153431   1.720992
+  #&gt;       [,1]        [,2]
+  #&gt;  -3.274377 -4.88644558
+  #&gt;  -3.136322 -0.02721265
 
 xa %*% xb #multiplicacao matricial
-  #&gt;       [,1]        [,2]
-  #&gt;  24.675727 -12.3545741
-  #&gt;   7.771831  -0.8416316
+  #&gt;        [,1]       [,2]
+  #&gt;  -26.796790 -4.3029511
+  #&gt;   -9.912715 -0.6787387
 
 solve(xa) #inversa de xa
   #&gt;                            
@@ -657,17 +611,17 @@ dim3 &lt;- array(rnorm(18),dim = c(3,3,2))
 dim3
   #&gt; , , 1
   #&gt; 
-  #&gt;             [,1]      [,2]        [,3]
-  #&gt; [1,] -0.02337547  0.181575  1.10341822
-  #&gt; [2,]  0.38777529 -1.664429 -0.34859248
-  #&gt; [3,] -1.90143561  0.741697  0.07032957
+  #&gt;           [,1]       [,2]      [,3]
+  #&gt; [1,] -1.256592  1.1271772 -1.259518
+  #&gt; [2,]  1.502308  0.4714637  1.957501
+  #&gt; [3,] -1.088864 -0.8326655  1.154979
   #&gt; 
   #&gt; , , 2
   #&gt; 
   #&gt;            [,1]       [,2]       [,3]
-  #&gt; [1,] -0.4199125 0.06417912  0.1564156
-  #&gt; [2,]  0.6122967 0.60075361 -1.0202387
-  #&gt; [3,]  1.1386135 0.57797530  0.6874354
+  #&gt; [1,] -2.2490755 -1.5949031  0.4380637
+  #&gt; [2,] -0.6181296 -0.7223624  0.6106770
+  #&gt; [3,]  0.2865396 -1.4393821 -0.4837067
 ```
 
 ---
@@ -687,9 +641,9 @@ ls
   #&gt; [1] 1 2 3
   #&gt; 
   #&gt; $ls3
-  #&gt;             [,1]       [,2]       [,3]
-  #&gt; [1,] -0.01338534 -1.1116297 -0.7199607
-  #&gt; [2,]  1.57524972 -0.5184335 -0.2677496
+  #&gt;            [,1]        [,2]       [,3]
+  #&gt; [1,] -0.8683294  1.65026987 -0.6138973
+  #&gt; [2,] -0.4789702 -0.01783926 -1.0316965
 ```
 
 ---
@@ -873,7 +827,7 @@ help(mean) #ou
 ```
 
 * Google.
-&lt;img src="figures/help_R.png" width="60%" style="display: block; margin: auto;" /&gt;
+&lt;img src="img/help_R.png" width="60%" style="display: block; margin: auto;" /&gt;
 
 * Comunidade.
 
@@ -1194,53 +1148,9 @@ Para fazer análise geral de todas as variáveis da base de dados, usamos a fun�
 ```r
 library(skimr)
 kable(skim(dados)) 
-  #&gt; Skim summary statistics  
-  #&gt;  n obs: 14285    
-  #&gt;  n variables: 28    
-  #&gt; 
-  #&gt; Variable type: character
-  #&gt; 
-  #&gt;          variable            missing    complete      n      min    max    empty    n_unique 
-  #&gt; --------------------------  ---------  ----------  -------  -----  -----  -------  ----------
-  #&gt;           bairro               296       13989      14285     3     39       0        1063   
-  #&gt;          cefaleia              216       14069      14285     3      3       0         2     
-  #&gt;       classificacao             0        14285      14285    11     11       0         1     
-  #&gt;        coluna_vazia             0        14285      14285     0      0     14285       1     
-  #&gt;     comorbidade_cardio         206       14079      14285     3      3       0         2     
-  #&gt;    comorbidade_diabetes        215       14070      14285     3      3       0         2     
-  #&gt;   comorbidade_obesidade        288       13997      14285     3      3       0         2     
-  #&gt;     comorbidade_pulmao         216       14069      14285     3      3       0         2     
-  #&gt;     comorbidade_renal          210       14075      14285     3      3       0         2     
-  #&gt;   comorbidade_tabagismo        219       14066      14285     3      3       0         2     
-  #&gt;           coriza               210       14075      14285     3      3       0         2     
-  #&gt;    criterio_confirmacao        136       14149      14285     7     21       0         3     
-  #&gt;          diarreia              215       14070      14285     3      3       0         2     
-  #&gt;  dificuldade_respiratoria      201       14084      14285     3      3       0         2     
-  #&gt;        dor_garganta            213       14072      14285     3      3       0         2     
-  #&gt;        escolaridade             0        14285      14285     8     59       0         11    
-  #&gt;          evolucao             4387        9898      14285     4     23       0         4     
-  #&gt;        faixa_etaria             0        14285      14285    10     15       0         11    
-  #&gt;           febre                210       14075      14285     3      3       0         2     
-  #&gt;      ficou_internado          3725       10560      14285     3      3       0         2     
-  #&gt;         municipio               0        14285      14285     4     27       0        155    
-  #&gt;     status_notificacao          0        14285      14285     9      9       0         2     
-  #&gt;           tosse                209       14076      14285     3      3       0         2     
-  #&gt;       viagem_brasil           4046       10239      14285     3      3       0         2     
-  #&gt;    viagem_internacional       5417        8868      14285     3      3       0         2     
-  #&gt; 
-  #&gt; Variable type: Date
-  #&gt; 
-  #&gt;  variable    missing    complete      n         min           max          median      n_unique 
-  #&gt; ----------  ---------  ----------  -------  ------------  ------------  ------------  ----------
-  #&gt;    data         0        14285      14285    2020-02-29    2020-06-27    2020-05-11       84    
-  #&gt; 
-  #&gt; Variable type: factor
-  #&gt; 
-  #&gt;  variable    missing    complete      n      n_unique                   top_counts                    ordered 
-  #&gt; ----------  ---------  ----------  -------  ----------  -------------------------------------------  ---------
-  #&gt;  raca_cor       0        14285      14285       5        Neg: 5620, Bra: 4588, Ign: 3269, Ama: 791     FALSE  
-  #&gt;    sexo         0        14285      14285       3            Fem: 7600, M: 6682, Ign: 3, NA: 0         FALSE
 ```
+
+
 
 Utilizamos a função `kable` para melhorar a apresentação dos resultados.
 
@@ -1422,7 +1332,7 @@ Queremos:
 class:  center, middle
 
 ## Obrigado!
-![título](https://media.giphy.com/media/l3q2u6MXJJEKiTZIY/giphy.gif)
+.center[ ![título](https://media.giphy.com/media/l3q2u6MXJJEKiTZIY/giphy.gif)]
 
 ---
 
@@ -1432,17 +1342,11 @@ class:  center, middle
 
 - Contato:
 
-  - Website RLadies Global: [https://rladies.org/](https://rladies.org/)
-  
-  - MeetUp: [https://www.meetup.com/pt-BR/R-Ladies-Vitoria](https://www.meetup.com/pt-BR/R-Ladies-Vitoria)
+  - Website: [https://brsantos.github.io/](https://brsantos.github.io/)
 
-  - Twitter: [@RLadiesGlobal](https://twitter.com/rladiesglobal), [@rladiesvix](https://twitter.com/rladiesvix)
+  - Github: [https://github.com/rladies/brsantos](https://github.com/rladies/brsantos)
 
-  - Instagram: [@RLadiesVix](http://instagram.com/rladiesvix)
-
-  - Github: [https://github.com/rladies/meetup-presentations_vitoria](https://github.com/rladies/meetup-presentations_vitoria)
-
-  - Email: vitoria@rladies.org
+  - Email: bruno.santos.31@ufes.br
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
