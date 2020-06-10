@@ -17,7 +17,7 @@ background-size: cover
 
 # Modelagem estatística em tempos de pandemia &lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
 
-.large[Bruno Santos | Webnário PPGMAT | 10 Jun 2020]
+#### Bruno Santos | Webnário PPGMAT | 10 Jun 2020
 
 ---
 class: top, center
@@ -99,7 +99,7 @@ class: top
 
 --
 
-`$$f(x; \mu, \sigma^2) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp\left\{\frac{1}{2} \left(\frac{x-\mu}{\sigma}\right)^2 \right\}, \quad x \in \mathbb{R}$$`
+`$$f(x; \mu, \sigma^2) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp\left\{-\frac{1}{2} \left(\frac{x-\mu}{\sigma}\right)^2 \right\}, \quad x \in \mathbb{R}$$`
   * Parâmetros: `\(\theta = (\mu, \sigma^2), \mu \in \mathbb{R} \mbox{ e } \sigma^2 &gt; 0\)`.
   
     * Média: `\(\int_\mathbb{R} x f(x)dx = \mu\)`
@@ -375,6 +375,7 @@ class: inverse, center, middle
 # Um pouco da minha pesquisa
 
 ---
+class: middle
 
 # Regressão quantílica
 
@@ -385,11 +386,12 @@ class: inverse, center, middle
   * `\(P(Y \geq Q_y) = \tau\)`
   * `\(\int_{-\infty}^{Q_y} f(x)dx = \tau\)`
   
-.center[
+.pull-left[
 ![](figuras/quantis.png)
 ]
 
-.center[
+.pull-right[
+&lt;br&gt;&lt;br&gt;
 `\(Q_y(\tau) = X \beta(\tau)\)`
 ]
 
@@ -433,7 +435,7 @@ class: center, middle
 Variáveis:
 
 * `\(y_1\)`: nota em ciências humanas;
-* `\(y_2\)`: nota em ciências biológicas;
+* `\(y_2\)`: nota em ciências naturais;
 * `\(y_3\)`: nota em matemática.
 
 
@@ -457,9 +459,11 @@ class: middle
 .center[
 ![](figuras/new_school_tau_3.gif)
 
-]
+] 
 
+* Há uma diferença grande nas disciplinas de Matemática e Ciências Naturais
 
+* Essa diferença é menor nas Ciências Humanas, principalmente entre os alunos com pior rendimento.
 
 ---
 class: inverse, bottom, left
@@ -473,6 +477,10 @@ background-size: contain
 class: inverse, center, middle
 
 # Quando modelos estatísticos erram?
+
+&lt;br&gt;
+
+# Alguns modelos para a Covid-19
 
 ---
 class: center
@@ -489,7 +497,6 @@ class: center
 
 --
 
-&lt;br&gt;
 ### O que deu errado?
 
 --
@@ -497,15 +504,173 @@ class: center
 ### O que podemos aprender?
 
 
+---
 
+# Exemplo da Science
+
+![](figuras/science_paper.png)
+
+---
+
+# Boas práticas
+
+* Resultados reproduzíveis
+
+  * Dados fornecidos
+  * Rotinas computacionais fornecidas
+  
+* Análise de sensibilidade
+
+  * Verificação se outras suposições chegariam a outros resultados
+  * Checagem se condições iniciais afetam o sistema
+  
+* Os autores verificam a identificabilidade do modelo.
+
+* Ressalvas sobre certas conclusões
+
+  * Principalmente com relação a desfechos relativos a alterações bruscas devido a novas políticas.
+
+* _Peer reviewed_
+
+---
+
+# Alguns resultados
+
+* O artigo foi publicado online em meados de março.
+
+--
+
+* Os autores consideram os casos de SARS-Cov-2 na China:
+
+  * modelam a natureza espaço temporal dos casos;
+  * utilizam informações de deslocamento das pessoas dentre as diferentes cidades.
+
+--
+  
+* Separam infecções em dois casos:
+
+  * pessoas confirmadas com sintomas e a doença;
+  * pessoas que nunca tiveram confirmação da doença.
+
+--
+  
+* Modelam as trajetórias de suscetíveis, expostos, infectados documentados e não documentados.
+
+  * Somente 14% dos casos foram identificados [10% - 18%].
+  * Casos não identificados foram 55% tão contagiosos quanto aqueles identificados.
+
+
+---
+
+## Modelo para acompanhamento dos casos no Brasil
+
+* Iniciativa do Depto. de Estatística da UFMG:
+
+  * [https://dest-ufmg.shinyapps.io/app_COVID19/](https://dest-ufmg.shinyapps.io/app_COVID19/)
+
+* Possível obter estimativas do Brasil e do mundo
+
+* Os responsáveis pelo modelo disponibilizam todos as rotinas computacionais para replicar os resultados.
+
+* Todas as suposições dos modelos são explicadas em seção a parte.
+
+
+---
+class: middle
+
+# Estrutura do aplicativo
+
+.center[
+![](figuras/covid_ufmg.png)
+]
+
+--
+
+* O modelo é bastante volátil:
+
+  * as previsões para possível pico da infecção e total de mortos varia bastante.
+  
+--
+
+* Isso não é uma crítica ao modelo, mas sim uma observação sobre a dificuldade de modelar esses dados: 
+
+
+---
+
+# Dados sobre Covid-19 no ES
+
+.center[
+![](figuras/painel_es.png)
+]
+
+* É possível baixar os dados com informações sobre:
+
+  * Sexo
+  * Faixa de idade
+  * Raça/Cor
+  * Comorbidades
+
+
+---
+
+## Taxa de letalidade - entre pessoas negras e brancas 
+
+.center[
+![](figuras/mortes.png)
+]
+
+---
+
+## Taxa de letalidade - entre pessoas negras e brancas 
+
+#### por sexo
+
+.center[
+![](figuras/mortes_sexo.png)
+]
+
+---
+
+## Taxa de letalidade - entre pessoas negras e brancas 
+
+#### por faixa etária
+
+.center[
+![](figuras/mortes_idade.png)
+]
+
+
+---
+
+## Taxa de letalidade - entre pessoas negras e brancas 
+
+#### por sexo e faixa etária
+
+.center[
+![](figuras/mortes_grid.png)
+]
 
 ---
 class: inverse, center, middle
 
-# Alguns modelos para a Covid-19
+# Conclusões
 
+---
+class: middle
 
+# Conclusões
 
+Com relação a modelos estatísticos:
+
+* Transparência é essencial
+
+* Cuidado com suposições do modelo
+
+* Modelos são aproximações da realidade
+
+* Importante checar a fonte dos resultados
+
+* Importante mencionar a incerteza com relação aos resultados
 
 
 ---
@@ -520,22 +685,20 @@ class: center, middle
 ### https://www.data-imaginist.com/art
 
 .pull-left[
+
 &lt;img src="figuras/genesis4321.png" width="300" /&gt;
 ]
 
 .pull-right[
+&lt;br&gt;
 &lt;img src="figuras/genesis4563.png" width="350" /&gt;
 ]
-
-
 
 
 ---
 class: center, middle
 
 # Obrigado!
-
-
 
 
 
