@@ -126,7 +126,7 @@ dados_plot <- data.frame(x = c(x1, x2),
                          group = c(group1, group2))
 
 g <- ggplot(dados_plot, aes(x = x, y = y, group = group)) + 
-  geom_bar(stat = 'identity', fill = 'royalblue', width = 0.4) + 
+  geom_bar(stat = 'identity', fill = 'royalblue', width = 0.30) + 
   theme_minimal() + ylab("") + xlab("") + 
   theme(axis.text.y = element_blank())
 anim3 <- g + 
@@ -452,7 +452,6 @@ g
 dev.off()
 
 
-## Animação verossimilhança
 sample_sizes <- seq(50, 350, by = 25)
 mu_grid_values <- seq(7, 10, length = 200)
 
@@ -482,7 +481,7 @@ anim11 <- g +
   view_follow() + 
   ggtitle('Tamanho da amostra = {closest_state}')
 
-anim_save("figuras/anim11.gif", anim11, width = 300, height = 300)
+anim_save("figuras/anim11.gif", anim11, width = 350, height = 350)
 
 
 ## Comparação priori e posteriori 
@@ -490,17 +489,10 @@ verossimilhanca_bin <- function(p, n, y){
   dbinom(y, size = n, prob = p) 
 }
 
-png('figuras/likelihood1.png', width = 350, height = 200)
+png('figuras/posteriori1.png', width = 350, height = 350)
 ggplot(data.frame(x = c(0, 1)), aes(x)) + 
   theme_minimal() +
-  xlab(expression(theta)) + 
-  stat_function(fun = verossimilhanca_bin, args = list(n = 6, y = 2)) +
-  labs(title = expression(paste("Função de verossimilhança ", theta)))
-dev.off()
-
-png('figuras/posteriori1.png', width = 350, height = 200)
-ggplot(data.frame(x = c(0, 1)), aes(x)) + 
-  theme_minimal() +
+  stat_function(fun = verossimilhanca_bin, args = list(n = 6, y = 2)) + 
   stat_function(fun = dbeta, args = list(shape1 = 3, shape2 = 5), 
                 color = 'red') +
   stat_function(fun = dbeta, args = list(shape1 = 4, shape2 = 6), 
@@ -508,7 +500,8 @@ ggplot(data.frame(x = c(0, 1)), aes(x)) +
   stat_function(fun = dbeta, args = list(shape1 = 5, shape2 = 6), 
                 color = 'green') +
   xlab(expression(theta)) + 
-  labs(title = expression(paste("Posteriori de ", theta), "para diferentes prioris"))
+  labs(title = expression(paste("Posteriori de ", theta), "para diferentes prioris"), 
+       subtitle = "Verossimilhança na linha preta")
 dev.off()
 
 
@@ -525,16 +518,11 @@ ggplot(data.frame(x = c(0, 1)), aes(x)) +
   labs(title = expression(paste("Diferentes prioris para  ", theta)))
 dev.off()
 
-png('figuras/likelihood2.png', width = 350, height = 200)
-ggplot(data.frame(x = c(0, 1)), aes(x)) + 
-  theme_minimal() +
-  stat_function(fun = verossimilhanca_bin, args = list(n = 60, y = 20)) +
-  labs(title = expression(paste("Função de verossimilhança ", theta)))
-dev.off()
 
-png('figuras/posteriori2.png', width = 350, height = 200)
+png('figuras/posteriori2.png', width = 350, height = 350)
 ggplot(data.frame(x = c(0, 1)), aes(x)) + 
   theme_minimal() +
+  stat_function(fun = verossimilhanca_bin, args = list(n = 60, y = 20)) + 
   stat_function(fun = dbeta, args = list(shape1 = 21, shape2 = 41), 
                 color = 'red') +
   stat_function(fun = dbeta, args = list(shape1 = 22, shape2 = 42), 
@@ -542,7 +530,8 @@ ggplot(data.frame(x = c(0, 1)), aes(x)) +
   stat_function(fun = dbeta, args = list(shape1 = 23, shape2 = 42), 
                 color = 'green') +
   xlab(expression(theta)) + 
-  labs(title = expression(paste("Posteriori de ", theta), "para diferentes prioris"))
+  labs(title = expression(paste("Posteriori de ", theta), "para diferentes prioris"), 
+       subtitle = "Verossimilhança na linha preta")
 dev.off()
 
 
@@ -567,7 +556,7 @@ g <- g + geom_line() +
   scale_x_continuous(breaks = break_5,
                      labels = "Q_y") 
 
-png('figuras/quantis.png', width = 300, height = 300)
+png('figuras/quantis.png', width = 350, height = 350)
 g
 dev.off()
 
