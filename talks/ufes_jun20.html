@@ -92,18 +92,19 @@ class: top
 # Distribuições de probabilidade
 
 * Caso contínuo, função de densidade `\(f(x)\)`:
+  
   * `\(f(x) \geq 0, \forall x \in \mathbb{R}\)`, 
   * `\(\int_\mathbb{R} f(x)dx = 1\)`.
 
-* Exemplo: distribuição normal 
-
 --
+
+* Exemplo: distribuição normal 
 
 `$$f(x; \mu, \sigma^2) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp\left\{-\frac{1}{2} \left(\frac{x-\mu}{\sigma}\right)^2 \right\}, \quad x \in \mathbb{R}$$`
   * Parâmetros: `\(\theta = (\mu, \sigma^2), \mu \in \mathbb{R} \mbox{ e } \sigma^2 &gt; 0\)`.
   
     * Média: `\(\int_\mathbb{R} x f(x)dx = \mu\)`
-    * Variância: `\(\int_\mathbb{R} (x-\mu)^2 f(x)dx = \mu\)`
+    * Variância: `\(\int_\mathbb{R} (x-\mu)^2 f(x)dx = \sigma^2\)`
 
 ---
 class: top
@@ -129,7 +130,7 @@ class: top
 
 * Estudo de distribuições de probabilidade condicionais
 
-* `\(X\)`: tempo de incubação do novo coronavirus:
+* `\(Y\)`: tempo de incubação do novo coronavirus:
 
   * como função do sexo da pessoa.
 
@@ -230,47 +231,6 @@ class: top
 
 
 ---
-
-# Modelos lineares generalizados
-
-* Nelder e Wedderburn (1972). _Generalized linear models_
-
-* `\(Y\)` pertence à família exponencial de distribuições
-
-  * Normal
-  * Gama
-  * Binomial
-  * ...
-
-* `\(E(Y) = \mu\)`
-
-  * `\(g(\mu) = X\beta\)`
-  * Se `\(\mu \in [0, 1]\)`, `\(g(\mu) = \log\left(\frac{\mu}{1 - \mu}\right)\)`
-
-
----
-
-# Modelos aditivos generalizados
-
-* Hastie e Tibshirani (1990). _Generalized additive models_
-
-* `\(E(Y) = \mu\)`
-
-  * `\(g(\mu) = \beta_0 + f_1(X_1) + f_2(X_2) + \cdots + f_p(X_p)\)`
-  
---
-  
-* Rigby e Stasinopoulos (2005). _Generalized additive models for location, scale and shape_ 
-
-  * `\(\nu_1(\theta_1) = \beta_0 + f_1(X_1) + f_2(X_2) + \cdots + f_p(X_p)\)`
-  * `\(\nu_2(\theta_2) = \gamma_0 + g_1(X_1) + g_2(X_2) + \cdots + g_p(X_p)\)`
-  * `\(\nu_3(\theta_3) = \lambda_0 + h_1(X_1) + h_2(X_2) + \cdots + h_p(X_p)\)`
-
-
-* Todos os parâmetros são escritos como função de variáveis preditoras:
-  * podem ser considerados efeitos lineares também.
-
----
 class: inverse, top, right
 background-image: url("figuras/gauss.jpg")
 background-size: contain
@@ -290,13 +250,13 @@ class: top
 
 # Função de verossimilhança
 
-- Considere que temos uma amostra de tempos de incubação para `\(n\)` pessoas. `\(Y_1 = 7,8; Y = 8,5; \cdots; Y_n = 10,1.\)`
+- Considere que temos uma amostra de tempos de incubação para `\(n\)` pessoas. `\(Y_1 = 7,8; Y_2 = 8,5; \cdots; Y_n = 10,1.\)`
 
 .center[
 ![](figuras/hist_tempo.png)
 ]
 
-* Se `\(Y \sim N(\mu, \sigma)\)` é verdadeira:
+* Se `\(Y \sim N(\mu, \sigma^2)\)` é verdadeira:
 
   * quais valores de `\(\mu\)` e `\(\sigma^2\)` devem ter gerado essa amostra?
   
@@ -316,20 +276,18 @@ class: top
 ![](figuras/anim11.gif)
 ]
 
-* O problema do método é falar sobre as incertezas acerca de estimativas de `\(\theta\)`.
-
 ---
 
 # Teorema de Bayes
 
 * Mecanismo probabilístico para atualizar suas crenças sobre qualquer valor desconhecido.
 
-`$$p(\theta | y) = \frac{f(y|\theta)}{f(y)} p(\theta)$$`
+`$$f(\theta | y) = \frac{f(y|\theta)}{f(y)} f(\theta)$$`
 
 --
 
 Podemos reescrever o teorema como
-`$$p(\theta | y) \propto f(y|\theta) p(\theta)$$`
+`$$f(\theta | y) \propto f(y|\theta) f(\theta)$$`
 
 --
 
@@ -345,12 +303,15 @@ A inferência bayesiana permite falar sobre probabilidades associadas a `\(\thet
 # Exemplo considerando diferentes priori's
 
 .pull-left[
+&lt;br&gt;
 ![](figuras/priori1.png)
 ]
 
 --
 
 .pull-right[
+![](figuras/likelihood1.png)
+
 ![](figuras/posteriori1.png)
 ]
 
@@ -360,12 +321,14 @@ A inferência bayesiana permite falar sobre probabilidades associadas a `\(\thet
 # Quando o tamanho da amostra aumenta
 
 .pull-left[
+&lt;br&gt;
 ![](figuras/priori1.png)
 ]
 
 --
 
 .pull-right[
+![](figuras/likelihood2.png)
 ![](figuras/posteriori2.png)
 ]
 
@@ -397,7 +360,7 @@ class: middle
 
 ---
 
-# Pró e contras
+# Prós e contras
 
 .pull-left[.center[### Vantagens]
 
@@ -407,6 +370,8 @@ class: middle
 
 * Permite obter conclusões locais sobre o problema em questão.
 ]
+
+--
 
 .pull-right[### Desvantagens
 
@@ -446,7 +411,7 @@ class: middle
 
 .center[![](figuras/directions_1.gif)]
 
-* 512 directions consideradas na estimação do modelo
+* 512 direções consideradas na estimação do modelo
 
 * Para cada direção, é construída uma base ortonormal:
   
@@ -576,7 +541,6 @@ class: center
 
 
 ---
-class: middle
 
 # Estrutura do aplicativo
 
@@ -653,7 +617,7 @@ class: middle
 ---
 class: inverse, center, middle
 
-# Conclusões
+# Mensagens para levar pra casa
 
 ---
 class: middle
@@ -703,6 +667,11 @@ class: center, middle
 
 
 Slides foram criados com pacote do R [**xaringan**](https://github.com/yihui/xaringan).
+
+&lt;br&gt;
+
+Slides disponíveis em 
+  * [https://brsantos.github.io/talks/ufes_jun20.html](https://brsantos.github.io/talks/ufes_jun20.html)
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
