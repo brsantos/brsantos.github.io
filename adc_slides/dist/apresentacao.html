@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Distribuições de probabilidade</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2020-09-29" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle
+
+# Distribuições de probabilidade
+
+*****
+
+## Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+
+
+
+
+
+---
+class: center, middle, inverse
+
+# Distribuição binomial
+
+
+---
+
+# Distribuição binomial
+
+Se `\(X_i \sim Ber(p), \quad i=1, \ldots, n\)`, variáveis aleatórias independentes, então se 
+
+--
+
+`$$W = \sum_{i=1}^n X_i \Rightarrow W \sim Bin(n, p)$$`
+--
+
+A função de probabilidade de `\(W\)` é
+
+
+$$
+P(W = w) = \frac{n!}{w!(n-w)!} p^w (1-p)^{n-w}, \quad w = 0, 1, \cdots, n.
+$$
+
+--
+
+As propriedades de `\(W\)` são dadas por
+
+$$
+E(W) = np, \quad Var(W) = np(1-p)
+$$
+
+--
+
+### Exemplos:
+
+- Número de alunos aprovados na disciplina de "Análise de Dados Categorizados".
+
+---
+
+# Gráfico de distribuição
+
+
+
+&lt;img src="apresentacao_files/figure-html/graf10-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Exemplo
+
+Se definirmos a seguinte variável, 
+
+`$$Y_i = \begin{cases}
+1, &amp; \mbox{se a pessoa está infectada por uma certa doença}, \\
+0, &amp; \mbox{caso contrário}.
+    \end{cases}$$`
+
+--
+
+&lt;br&gt;
+
+Para uma amostra de 10 pessoas independentes, podemos falar sobre 
+a distribuição de `\(\displaystyle W = \sum_{i=1}^{10} Y_i\)`, em que
+
+`$$W =  \mbox{Número de pessoas infectadas}$$`
+
+--
+
+&lt;br&gt; 
+
+Se consideramos `\(p = 0,5\)`, podemos fazer afirmações sobre `\(P(W = 5)\)`.
+
+$$
+P(W = 5) = {10 \choose 5} 0.5^5 (1-0.5)^{10 - 5} = 0,2461
+$$
+
+---
+
+# Aproximação pela distribuição Normal
+
+&lt;img src="apresentacao_files/figure-html/graf11-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# Aproximação pela distribuição Normal
+
+&lt;img src="apresentacao_files/figure-html/graf12-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+Considerando médias `\(\mu = np\)` e desvio padrão `\(\sigma = \sqrt{np(1-p)}\)`.
+
+---
+class: center, middle, inverse
+
+# Distribuição multinomial
+
+---
+
+# Distribuição multinomial
+
+- Variável aleatória multivariada
+
+--
+
+- Considere o caso em que uma v.a. discreta pode assumir três valores diferentes: 
+
+  - "Não"
+  - "Sim"
+  - "Talvez"
+
+--
+
+- Então, poderíamos definir:
+
+  - `\(Y_1 = 1, \mbox{ se resposta é sim, e } Y_1 = 0, \mbox{caso contrário}\)`
+  - `\(Y_2 = 1, \mbox{ se resposta é não, e } Y_2 = 0, \mbox{caso contrário}\)`
+  - `\(Y_3 = 1, \mbox{ se resposta é talvez, e } Y_3 = 0, \mbox{caso contrário}\)`
+  
+--
+
+- Generalização da variável aleatória Binomial
+
+  - `\(W = (W_1, W_2, W_3) \sim Mult(n, \boldsymbol{p})\)`, em que `\(p = (p_1, p_2, p_1)\)`
+  - `\(W_i = \displaystyle \sum_{i=1}^{n} Y_i, \quad i=1,2,3.\)`
+  
+  
+---
+
+# Distribuição de probabilidade
+
+- Considere que temos `\(k\)` categorias.
+
+- Podemos definir as probabilidades de cada uma das categorias pelo vetor `\(\{p_1, p_2, \cdots, p_k\}\)`, em que
+
+`$$\sum_{i=1}^k p_i = 1.$$`
+
+--
+
+- Considere os valores `\(w_1, w_2, \cdots, w_k\)`, em que `\(w_i\)` representa a quantidade de observações, dentre os `\(n\)` ensaios independentes, que são classificados na `\(i\)`-ésima categoria, em que 
+`$$\sum_{i=1}^k w_i = n.$$`
+
+- Assim, podemos definir a função de probabilidade como 
+
+$$
+P(W_1 = w_1, W_2 = w_2, \cdots, W_k = w_k) = 
+\frac{n!}{w_1!w_2!\cdots w_k!} p_1^{w_1} p_2^{w_2} \cdots p_k^{w_k}
+$$
+
+---
+
+# Exemplo - caso trivariado
+
+- `\(n = 10\)`
+- `\((p_1, p_2, p_3) = (0,4; 0,4; 0,2)\)`
+
+&lt;img src="apresentacao_files/figure-html/graf13-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# Exemplo - caso trivariado
+
+- `\(n = 10\)`
+- `\((p_1, p_2, p_3) = (0,10; 0,25; 0,65)\)`
+
+&lt;img src="apresentacao_files/figure-html/graf14-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+
+---
+class: center, middle, inverse
+
+# Distribuição Dirichlet
+
+---
+
+# Distribuição Beta
+
+- `\(Y \in [0, 1]\)`.
+
+--
+
+- `\(Y \sim Beta(a, b)\)`, em que `\(a &gt; 0\)` e `\(b &gt; 0\)`, se a função densidade é dada por
+
+`$$f(y | a, b) = \frac{\Gamma(a+b)}{\Gamma(a)\Gamma(b)} y^{a-1}(1-y)^{b-1}.$$`
+
+--
+
+&lt;br&gt;
+
+- Propriedades
+
+  - `\(E(Y) = a/(a+b)\)`
+  - `\(Var(Y) = (a+b)/[(a+b)^2(a+b+1)]\)`
+  
+--
+
+&lt;br&gt;
+
+- Exemplo:
+
+  - Proporção de pessoas com acesso a internet
+  - Proporção de clientes endividados que não pagam o total das dívidas
+  
+---
+
+# Exemplo da função de densidade
+
+&lt;img src="apresentacao_files/figure-html/graf15-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Distribuição Dirichlet
+
+- Extensão multivariada para a distribuição Beta.
+
+--
+
+- Vetor aleatório `\(\boldsymbol Y = (Y_1, Y_2, \ldots , Y_k)\)` em que `$$\sum_{i=1}^k Y_i = 1.$$`
+
+--
+
+- `\(\boldsymbol Y\)` segue uma dist. Dirichlet com parâmetro `\(\boldsymbol \alpha, \alpha \in \mathbb{R}_+^k\)`, quando 
+
+`$$f(y_1, \cdots, y_k | \boldsymbol \alpha) = \frac{1}{B(\boldsymbol \alpha)} 
+\prod_{i=1}^k y_i^{\alpha_i - 1}$$`
+
+--
+
+- Distribuição de probabilidade importante para o caso bayesiano.
+
+---
+
+# Exemplo 
+
+
+
+&lt;img src="apresentacao_files/figure-html/unnamed-chunk-1-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Exemplo
+
+&lt;img src="apresentacao_files/figure-html/unnamed-chunk-2-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Exemplo
+
+&lt;img src="apresentacao_files/figure-html/unnamed-chunk-3-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Exemplo
+
+&lt;img src="apresentacao_files/figure-html/unnamed-chunk-4-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Exemplo
+
+&lt;img src="apresentacao_files/figure-html/unnamed-chunk-5-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
