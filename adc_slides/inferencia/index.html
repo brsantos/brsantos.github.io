@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Métodos de inferência</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2020-10-01" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle
+
+# Métodos de inferência
+
+*****
+
+## Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+
+
+
+
+
+---
+class: center, middle, inverse
+
+# Motivação
+
+
+---
+
+# Inferência Estatística
+
+- Modelos estatísticos:
+
+  - Binomial `\((n, p)\)`;
+  
+  - Multinomial `\((n, {\boldsymbol p})\)`, `\(p\)` de dimensão `\(k\)`.
+    
+  
+&lt;br&gt;
+--
+
+- `\(p\)` é **desconhecido**
+
+  - Inferência estatística.
+
+&lt;br&gt;  
+--
+
+- **Métodos**:
+
+  - Máxima verossimilhança;
+  
+  - Inferência bayesiana.
+  
+  
+---
+class: center, middle, inverse
+
+# Máxima verossimilhança
+
+
+---
+# Função de verossimilhança
+
+- Caso binomial
+
+--
+
+- `\(X \sim Bin(n = 6, p)\)`
+
+--
+
+- `\(X = 2\)`
+
+--
+
+- **Pergunta:** Quais valores de `\(p\)` podem ter gerado essa observação?
+
+--
+
+- **Resposta:** Função de verossimilhança nos ajuda a resolver essa questão!
+
+--
+
+- Considere a função de probabilidade como função do parâmetro `\(p\)`.
+
+`$$\begin{eqnarray} L(p) = P(X = 2|p) &amp;= {6 \choose 2} p^2 (1-p)^4 \\
+&amp;= \frac{6!}{2!4!} p^2 (1-p)^4
+\end{eqnarray}$$`
+
+--
+
+- *Observação importante:* A função de verossimilhança não é uma função de probabilidade!
+
+---
+# Verossimilhança no R
+
+
+```r
+verossimilhanca_bin &lt;- function(p, n, y){
+  dbinom(y, size = n, prob = p) 
+}
+
+curve(verossimilhanca_bin(x, n = 6, y = 2), ylab = "", xlab = "")
+```
+
+&lt;img src="index_files/figure-html/vero_bin-1.png" width="375" style="display: block; margin: auto;" /&gt;
+
+
+---
+# Verossimilhança no R
+
+
+```r
+verossimilhanca_bin &lt;- function(p, n, y){
+  dbinom(y, size = n, prob = p) 
+}
+
+curve(verossimilhanca_bin(x, n = 6, y = 2), ylab = "", xlab = "")
+abline(v = 2/6, col = 2)
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-1-1.png" width="375" style="display: block; margin: auto;" /&gt;
+
+
+---
+# Estimador de máxima verossimilhança
+
+Para o caso binomial, podemos escrever a função de verossimilhança como
+`$$L(p) = {n \choose y} p^y (1-p)^{n-y},$$`
+--
+
+É possível mostrar que o estimador de máxima verossimilhança (EMV) é dado por 
+$$
+\hat{p} = \frac{y}{n},
+$$
+
+No exemplo anterior, teríamos `$$\hat{p} = \frac{2}{6} = \frac{1}{3}.$$`
+
+---
+
+# Propriedades - EMV
+
+- EMV tem boas propriedades assintóticas
+
+$$
+\frac{\hat{\theta} - \theta}{I(\theta)} \stackrel{a}{\sim} N(0, 1),
+$$
+
+em que `\(I(\theta)\)` é a informação de Fisher. 
+
+--
+
+- o EMV é assintoticamente não viesado para estimar `\(\theta\)`.
+
+--
+
+- No caso binomial, temos que
+`$$\hat{p} \sim N\left(p, \frac{p(1-p)}{n} \right).$$`
+
+--
+
+- Esse resultado também pode ser justificado pelo Teorema Central do Limite.
+
+--
+
+- Incerteza sobre `\(p\)`
+
+  - Intervalos de confiança
+  - Testes de hipóteses
+
+
+---
+
+# Exemplificação
+
+&lt;img src="index_files/figure-html/vero_bin2-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# EMV - Caso multinomial
+
+- É possível mostrar que 
+
+`$$\hat{p}_i = \frac{y_i}{n}$$`
+
+--
+
+- Lembre que a função de distribuição é dada por 
+`$$P(Y_1 = y_1, \cdots, Y_k = y_k | p_1, \cdots, p_k) = 
+\frac{n!}{\prod_{i=1}^k y_i!} \prod_{i=1}^k p_i^{y_i}$$`
+
+--
+
+- Logo, o logaritmo da função de verossimilhança é dado por 
+`$$\log L(p_1, \ldots, p_k) = \log n! - \sum_{i=1}^k \log y_i! + \sum_{i=1}^k y_i \log p_i$$`
+
+--
+
+- Devido a restrição `\(\sum_{i=1}^k p_i = 1\)` deve-se considerar multiplicadores de Lagrange para obter o EMV.
+
+---
+class: center, middle, inverse
+
+# Métodos bayesianos
+
+---
+# Teorema de Bayes
+
+- Temos interesse no estimando `\(\theta \in \mathbb{R}\)`.
+
+--
+
+- Supomos uma distribuição a priori `\(p(\theta)\)`.
+
+`$$p(\theta | y) = \frac{L(\theta)}{p(y)} p(\theta),$$`
+
+--
+
+- `\(L(\theta)\)` é a verossimilhança dos dados
+
+--
+
+- Distribuição marginal dos dados: `$$p(y) = \int_\mathbb{R} p(y|\theta) p(\theta) d(\theta)$$`
+
+--
+
+- Densidade a posteriori
+$$
+p(\theta | y) \propto L(\theta) p(\theta),
+$$
+
+---
+# Ilustração 
+
+- Caso binomial, `\(X = 2\)`, priori `\(\theta \sim U(0, 1) \rightarrow p(\theta) = 1\)`
+
+--
+
+.pull-left[
+&lt;img src="index_files/figure-html/unnamed-chunk-2-1.png" width="375" style="display: block; margin: auto;" /&gt;
+]
+
+--
+
+.pull-right[
+&lt;img src="index_files/figure-html/unnamed-chunk-3-1.png" width="375" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+# Elicitação da distribuição a priori
+
+
+- `\(X \sim Bin(n, p)\)`, n conhecido.
+
+--
+
+- `\(p \in (0, 1)\)`.
+
+--
+
+- Todos os valores são equiprováveis a priori? 
+--
+**Sim**
+
+&lt;img src="index_files/figure-html/unnamed-chunk-4-1.png" width="325" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Elicitação da distribuição a priori
+
+
+- `\(X \sim Bin(n, p)\)`, n conhecido.
+
+- `\(p \in (0, 1)\)`.
+
+- Todos os valores são equiprováveis a priori? 
+--
+**Não**
+
+&lt;img src="index_files/figure-html/unnamed-chunk-5-1.png" width="325" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Elicitação da distribuição a priori
+
+
+- `\(X \sim Bin(n, p)\)`, n conhecido.
+
+- `\(p \in (0, 1)\)`.
+
+- Todos os valores são equiprováveis a priori? 
+--
+**Não**
+
+
+&lt;img src="index_files/figure-html/unnamed-chunk-6-1.png" width="325" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# Elicitação da distribuição a priori
+
+
+- `\(X \sim Bin(n, p)\)`, n conhecido.
+
+- `\(p \in (0, 1)\)`.
+
+- Todos os valores são equiprováveis a priori? 
+--
+**Não**
+
+&lt;img src="index_files/figure-html/unnamed-chunk-7-1.png" width="325" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# Distribuição Beta(a, b)
+
+- Pode ser utilizada para "aproximar" nossas crenças a priori.
+
+&lt;img src="index_files/figure-html/unnamed-chunk-8-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Distribuição a posteriori
+
+- `\(Y \sim Bin(n, p)\)`, n conhecido.
+
+--
+
+- `\(p \sim Beta(a, b)\)`
+
+--
+
+- Obtenção da distribuição a posteriori:
+
+`$$\begin{aligned} 
+\pi(p| y) &amp;\propto L(p) \pi(p) \\ 
+&amp;\propto p^{y} (1-p)^{n-y} p^{a - 1}(1-p)^{b-1} \\ 
+&amp;= p^{y + a - 1}(1-p)^{n - y + b - 1}.
+\end{aligned}$$`
+
+--
+
+- **Núcleo de uma distribuição Beta!**
+
+--
+
+- Distribuição a posteriori
+
+`$$p|Y = y \sim Beta(y + a, n - y + b).$$`
+
+--
+
+- Dizemos que a distribuição Beta é a família conjugada para o modelo Binomial.
+
+
+---
+
+# Exemplo
+
+- `\(Y \sim Bin(n, p)\)`, n = 6.
+
+- `\(Y = 2\)`.
+
+.left-column[
+&lt;br&gt;&lt;br&gt;&lt;br&gt;
+
+Informação | Linha
+--- | --- 
+priori | pontilhada 
+posteriori | cheia 
+
+]
+
+.right-column[
+&lt;img src="index_files/figure-html/posteriori_exemplo-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+# Exemplo
+
+- `\(Y \sim Bin(n, p)\)`, n = 60.
+
+- `\(Y = 20\)`.
+
+.left-column[
+&lt;br&gt;&lt;br&gt;&lt;br&gt;
+
+Informação | Linha
+--- | --- 
+priori | pontilhada 
+posteriori | cheia 
+
+]
+
+.right-column[
+&lt;img src="index_files/figure-html/unnamed-chunk-9-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+# Importância dos métodos inferenciais
+
+- Utilizamos modelos probabilísticos para descrever nossa incerteza sobre o mundo.
+
+--
+
+- Esses modelos são definidos a partir de parâmetros.
+
+--
+
+- Gostaríamos de falar sobre possíveis desses parâmetros depois que observamos os dados.
+
+--
+
+- Primeira alternativa: máxima verossimilhança.
+
+  - pode depender de resultados assintóticos.
+  
+--
+
+- Segunda alternativa: métodos bayesianos.
+
+  - precisa definir uma distribuição a priori.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
