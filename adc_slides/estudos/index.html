@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Tipos de estudos e estrutura de probabilidade para tabelas de contingência</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2020-10-12" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle
+
+## Tipos de estudos e estrutura de probabilidade para tabelas de contingência
+
+*****
+
+### Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+
+
+
+
+
+---
+class: center, middle, inverse
+
+# Independência
+
+
+---
+
+# Definição
+
+- Lembrem que:
+
+  - se `\(X\)` e `\(Y\)` são independentes
+  
+  `$$P(X = x|Y = y) = P(X = x)$$`
+
+--
+
+  - Consequentemente: `\(P(X = x, Y = y) = P(X = x)P(Y = y)\)`
+
+
+--
+
+- Em tabelas de contingência:
+
+--
+
+  - a distribuição de probabilidade nas linhas deve ser a mesma.
+  
+  - a distribuição de probabilidade nas colunas deve ser a mesma.
+
+--
+
+- De forma equivalente, 
+
+`$$\begin{align} P(X = i, Y = j) &amp;= P(X = i)P(Y = j) \\ 
+\pi_{ij} &amp;= \pi_{i+}\pi_{+j}\end{align}$$`
+
+---
+
+# Exemplo
+
+- Óbito pela Covid-19 vs Febre
+
+&lt;img src="fig/tabela_febre.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+--
+
+- Distribuição condicional amostral
+
+&lt;img src="fig/tab_condicional_febre.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+--
+
+- Será que esses valores amostrais nos permitem concluir sobre os valores populacionais? 
+
+
+---
+class: inverse, middle, center
+
+# Tipos de estudos
+
+---
+
+# Exemplos de estudos clínico-epidemiológicos
+
+- Estudos prospectivos
+
+  - Estudo de coorte
+  - Estudo clínico aleatorizado
+
+- Estudos retrospectivos
+
+  - Estudo caso-controle
+  
+- Estudos transversais
+
+---
+class: inverse, middle, center
+
+# Estudos de coorte
+
+
+---
+
+# Características
+
+- Inicialmente existe um grupo de indíviduos, denominado coorte, livres da doença.
+
+--
+
+- Essas observações são agrupadas em alguma característica em comum, a qual acredita-se estar associada a doença de interesse.
+
+--
+
+- Esses grupos são observados por um longo período de tempo.
+
+--
+
+- Período de observação deve estar em acordo com a história natural da doença.
+
+--
+
+- Também podem ser chamados de:
+
+  - estudos longitudinais;
+  - estudos prospectivos;
+  - estudos de incidência.
+  
+`$$\mbox{incidência} = \frac{\mbox{# de novos casos no período de seguimento}}{\mbox{# de pessoas no início do estudo}}$$`
+
+---
+
+## Representação - Estudo de Coorte
+
+- Retirado de Giolo (2017).
+
+&lt;img src="fig/coorte.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# Exemplo
+
+- Retirado do livro Giolo (2017).
+
+- Associação entre câncer de pulmão e tabagismo.
+
+&lt;img src="fig/tab_tabaco.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+--
+
+- Notem que `\(n_{1+}\)` e `\(n_{2+}\)` são determinísticos:
+
+  - valores fixados no delineamento amostral.
+  
+--
+  
+- Os valores `\(n_{ij}\)` dependem da realização do estudo para serem conhecidos.
+
+
+---
+
+# Desvantagens:
+
+- Estudo demorado:
+
+  - custo elevado para manter acompanhamento.
+
+--
+
+&lt;br&gt;
+
+- Não disponibiliza resultados em curto prazo.
+
+--
+
+&lt;br&gt;
+
+- Participantes da pesquisa não ficam sob controle do pesquisador,
+
+  - pode ocorrer perda de seguimento de alguns deles.
+  
+--
+
+&lt;br&gt;
+
+- Não é viável para doenças raras.
+
+
+---
+class: inverse, middle, center
+
+# Estudos caso-controle
+
+---
+
+# Características
+
+- Objetivo similar ao estudo de coorte:
+
+  - avaliar associação entre doença e um fator suspeito.
+  
+--
+
+- Forma de seleção e de coleta de informações é diferente.
+
+--
+
+- Pesquisa seleciona pessoas com a doença de interesse:
+
+  - chamados de **casos**.
+  
+--
+
+- E um outro grupo de pessoas sem a doença:
+
+  - chamados de **controles**.
+
+--
+
+- Controles devem ser comparáveis ao caso.
+
+--
+
+- Casos e controle devem ter tido chances iguais de exposição ao fator de interesse.
+
+---
+
+# Características (cont.)
+
+- Para determinar a exposição ou não ao fator, considera-se informações passadas:
+
+--
+
+  - depende da memória dos participantes ou da qualidade de registros.
+
+--
+
+&lt;br&gt;
+- Isso pode ocasionar em vieses na coleta de informação.
+
+--
+
+&lt;br&gt;
+- Vantagem:
+
+  - menor tempo e custo para obtenção da resposta.
+  
+  - pode ser útil para doenças raras.
+  
+
+
+---
+
+## Representação - Caso-controle
+
+- Retirado de Giolo (2017).
+
+&lt;img src="fig/caso_controle.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+
+
+---
+
+## Reconsideração do exemplo
+
+- Associação entre câncer de pulmão e tabagismo.
+
+&lt;img src="fig/tab_tabaco.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+--
+
+- Considere agora que os dados tivessem sido obtidos um estudo de caso-controle.
+
+--
+
+- Nesse caso, `\(n_{+1}\)` e `\(n_{+2}\)` seriam determinísticos:
+
+  - valores fixados no delineamento amostral.
+  
+--
+  
+- Os valores `\(n_{ij}\)` dependem da realização do estudo para serem conhecidos.
+
+---
+class: inverse, middle, center
+
+# Estudo transversal
+
+
+---
+
+# Características
+
+- Considere um grupo ou população em um determinado ponto no tempo. 
+
+--
+
+- Informações sobre diversas variáveis são coletadas simultaneamente.
+
+--
+
+- Importante para investigar associação entre fatores suspeitos e a doença.
+
+--
+
+- Esse tipo de estudo pode ser importante para planejar novas pesquisas.
+
+--
+
+- É possível calcular a prevalência da doença:
+
+`$$\mbox{prevalência} = \frac{\mbox{# de pessoas com a doença naquele instante}}{\mbox{# de pessoas pesquisadas naquele instante}}$$`
+
+--
+
+- Dificultam a discussão sobre causalidade:
+
+  - não podemos estabelecer se exposição ocorreu antes ou depois da doença.
+
+
+---
+
+### Representação - Estudo transversal
+
+- Retirado de Giolo (2017).
+
+&lt;img src="fig/transversal.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# Exemplo
+
+- Estudo com crianças para verificar a presença de doenças respiratórias.
+
+- Registrou o sexo das crianças.
+
+- Presença ou não de doenças respiratórias.
+
+&lt;img src="fig/tab_respiratorias.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+--
+
+- Em um estudo transversal o total amostral `\(n\)` é fixo.
+
+---
+class: inverse, center, middle
+
+# Ensaio clínico-aleatorizado
+
+---
+
+# Características:
+
+- Objetivo: **comparar dois ou mais tratamentos.**
+
+--
+
+- Em geral, é importante estabelecer quais individuos são elegíveis.
+
+--
+
+- Selecionados os individuos:
+
+  - os tratamentos são alocados aleatoriamente.
+  
+--
+
+- Esse tipo de ensaio deve ser aprovado por um comitê de ética antes de ser feito.
+
+- Participantes devem dar consentimento.
+
+--
+
+- Não se trata de um estudo observacional, diferente de:
+
+  - estudos de coorte;
+  - estudos de caso-controle;
+  - estudos transversais.
+  
+--
+
+- Podem ser do tipo **"cegos"** ou **"duplo-cegos"**.
+
+---
+
+### Representação - Clinico-aleatorizado
+
+- Retirado de Giolo (2017).
+
+&lt;img src="fig/clinico_aleatorizado.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+
+---
+class: inverse, middle, center
+
+# Modelos probabílisticos
+
+
+---
+
+# Distribuições de probabilidade
+
+- Já vimos que a distribuição Binomial e a distribuição Multinomial são ideias para explicar a aleatoriedade associada a variáveis categóricas.
+
+--
+
+- Lembrando que se `\(W \sim Bin(n, p)\)`, então sua função de probabilidade é
+
+$$
+P(W = w) = \frac{n!}{w!(n-w)!} p^w (1-p)^{n-w}, \quad w = 0, 1, \cdots, n.
+$$
+--
+
+- E no caso multinomial:
+
+  - Temos `\(k\)` categorias, `\((W_1,\ldots,W_k) \sim Mult(n, [p_1, \ldots, p_k])\)`
+
+- Assim, podemos definir a função de probabilidade como 
+
+$$
+P(W_1 = w_1, W_2 = w_2, \cdots, W_k = w_k) = 
+\frac{n!}{w_1!w_2!\cdots w_k!} p_1^{w_1} p_2^{w_2} \cdots p_k^{w_k}
+$$
+
+
+---
+class: inverse, center, middle
+
+# Modelo Produto de Binomiais
+
+
+---
+
+# Produto de Binomiais
+
+- Suponha que a sua população alvo seja dividida em `\(m\)` sobpopulações.
+
+--
+
+- Para facilitar, tome `\(m = 2\)`.
+
+--
+
+- No exemplo de estudo de coorte, considere os grupos de exposição ao tabaco, "Sim" e "Não".
+
+--
+
+- Nesse caso, observamos a presença ou não de câncer de pulmão. 
+
+--
+
+- Consideramos que os totais da linha seriam fixados no início do estudo.
+
+--
+
+- Utilizando definições de amostragem, estaríamos considerando:
+
+  - processo de amostragem estratificada.
+  
+---
+
+# Suposições
+
+- Seja `\(m = 2\)`, logo `\(i = 1, 2\)`.
+
+--
+
+- Em cada amostra, observamos uma sequência de `\(n_{i+}\)` ensaios Bernoulli.
+
+--
+
+- Assumindo, as condições seguintes:
+
+  1. ensaios independentes em cada sequência `\(i\)`.
+  
+  1. probabilidade constante de ocorrência da categoria `\(j = 1\)`, denotada por `\(p_{(i)1}\)`, `\(\, i=1, 2.\)`
+  
+  Podemos considerar o seguinte: 
+  
+  `$$N_{ij}|(n_{i+}, p_{(i)1}) \sim Bin(n_{i+}, p_{(i)1}), \quad i=1, 2.$$`
+  
+---
+
+# Produto de Binomiais
+
+- As distribuições associadas às variáveis `\(N_{i1}\)`, `\(i=1, 2.\)` são independentes.
+
+--
+
+- Logo, condicional a `\(n_{i+}\)`, `\(i=1,2\)`, podemos escrever a distribuição de probabilidade para o vetor `\((N_{11}, N_{12}, N_{21}, N_{22})'\)` pode ser descrita como
+
+`$$\begin{align} P({\boldsymbol N_1} = {\boldsymbol n_1}, {\boldsymbol N_2} = {\boldsymbol n_2}) &amp;= P({\boldsymbol N_1} = {\boldsymbol n_1}) P({\boldsymbol N_2} = {\boldsymbol n_2})  \\ &amp;= \prod_{i=1}^2 P(N_{i1} = n_{i1}, N_{i2} = n_{i2}) \\ &amp;= \prod_{i=1}^2 \left[ (n_{i+})! \prod_{j=1}^2 \frac{(p_{(i)j})^{n_{ij}}}{n_{ij}!} \right],
+\end{align}$$`
+em que `\((N_i = n_i) = (N_{i1} = n_{i1}, N_{i2} = n_{i2})\)`, para `\(i=1,2\)` e `\(p_{(i)j}\)` é a probabilidade de um individuo apresentar `\(Y = j\)` dado `\(X = i\)`, isto é,
+
+--
+
+`$$p_{(i)j} = P(Y = j |X = i)$$`.
+
+
+---
+
+### Estimadores de máxima verossimilhança
+
+- Podemos definir o seguinte estimador `\(\hat{p}_{(i)j}\)`, 
+
+`$$\hat{p}_{(i)j} = \frac{N_{ij}}{n_{i+}}, \quad i, j = 1, 2.$$`
+--
+
+&lt;img src="fig/tab_tabaco.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+--
+
+Nesse exemplo, teríamos
+
+`$$\hat{p}_{(1)1} = \frac{75}{120} = 0,625$$`
+`$$\hat{p}_{(2)1} = \frac{21}{77} = 0,273$$`
+
+---
+class: inverse, center, middle
+
+# Modelo Produto de Multinomiais
+
+
+
+---
+
+# Produto de Multinomiais
+
+- Similar ao modelo Produto de Binomiais, porém sua resposta agora pode apresentar mais de duas categorias.
+
+--
+
+- Antes consideramos isso,
+
+`$$N_{ij}|(n_{i+}, p_{(i)1}) \sim Bin(n_{i+}, p_{(i)1}), \quad i=1, 2.$$`
+
+--
+
+- Agora, supondo `\(k\)` categorias de resposta  temos
+
+`$$(N_{i1}, N_{i2}, \cdots, N_{ik})|(n_{i+}, \boldsymbol p_{i})' \sim Mult(n_{i+}, p_{i}), \quad i=1, 2.$$`
+em que 
+`$$p_{i} = (p_{(i)1}, p_{(i)2}, \cdots, p_{(i)k}),$$`
+tal que `\(\sum_{j=1}^k p_{(i)j} = 1\)` e `\(\sum_{j=1}^k n_{ij} = n_{i+}\)`
+
+---
+
+# Modelo estatístico
+
+- Supondo duas subpopulações novamente,
+
+`$$\begin{align} P({\boldsymbol N_1} = {\boldsymbol n_1}, {\boldsymbol N_2} = {\boldsymbol n_2}) &amp;= \prod_{i=1}^2 P(N_{i1} = n_{i1}, \cdots , N_{ik} = n_{ik}) \\ &amp;= \prod_{i=1}^2 \left[ (n_{i+})! \prod_{j=1}^k \frac{(p_{(i)j})^{n_{ij}}}{n_{ij}!} \right],
+\end{align}$$`
+em que `\((N_i = n_i) = (N_{i1} = n_{i1}, \cdots, N_{ik} = n_{ik})\)` e para `\(i = 1, 2\)` temos que `\(\sum_{j=1}^k p_{(i)j} = 1\)`.
+
+- Os estimadores de máxima verossimilhança são dados por 
+`$$\hat{p}_{(i)j} = \frac{N_{ij}}{n_{i+}}, \quad i= 1, 2, \, j = 1, \ldots, k.$$`
+
+---
+class: inverse, center, middle
+
+# Modelo Multinomial
+
+---
+
+# Modelo multinomial
+
+- Lembre dos estudos transversais:
+
+  - observação simultânea de `\((X, Y), i, j = 1, 2.\)`
+
+--
+
+- Nesse caso estamos considerando processos de amostragem:
+
+  - amostra aleatória simples de tamanho `\(n\)`.
+  
+--
+
+- Supondo válidas as condições
+
+  1. ocorrência somente de uma das k = 4 de respostas mutuamente exclusivas `\(\{(i=1, j=1), (i=1, j=2), (i=2, j=1), (i=2, j=2)\}\)`;
+  
+  1. independência entre as respostas dos `\(n\)` individuos;
+  
+  1. o vetor de probabilidades `\(p = (p_{11}, p_{12}, p_{21}, p_{22})\)` das `\(k\)` possíveis respostas é  sempre o mesmo para todas observações.
+  
+
+---
+
+# Modelo estatístico
+
+- Temos que o vetor aleatório `\(N = (N_{11}, N_{12}, N_{21}, N_{22})\)` tem distribuição multinomial com parâmetros `\(n\)`, ou seja 
+
+`$$N |n, p \sim Mult(n, p),$$`
+
+em que `\(p = (p_{11}, p_{12}, p_{21}, p_{22})\)`. 
+--
+Logo, sua função de probabilidade é dada
+
+`$$\begin{align} P(N = n) &amp;= P(N_{11} = n_{11}, N_{12} = n_{12}, N_{21} = n_{21}, N_{22} = n_{22}) \\ &amp;= n! \prod_{i=1}^2 \prod_{j=1}^2 \frac{(p_{ij})^{n_{ij}}}{n_{ij}!} \end{align}$$`
+em que `\(n_{ij} \geq 0\)`, `\(\sum_{i=1}^2 \sum_{j=1}^2 n_{ij} = n\)` e `\(\sum_{i=1}^2 \sum_{j=1}^2 p_{ij} = 1\)`.
+
+--
+
+Condicional a `\(n\)`, temos ainda
+
+`$$\mbox{Cov}(N_{ij}, N_{i'j'}) = \begin{cases} np_{ij}(1-p_{ij}) &amp; \mbox{quando } i = j = i' = j' \\ - np_{ij}p_{i'j'} &amp; \mbox{quando } i \ne i' \mbox{ e/ou } j \ne j' \end{cases}$$`
+
+---
+
+### Estimadores de máxima verossimilhança
+
+- Podemos obter que os EMV's do modelo multinomial são dados
+
+`$$\hat{p}_{ij} = \frac{N_{ij}}{n}, \quad i, j= 1, 2.$$`
+--
+
+- No exemplo das crianças, 
+
+&lt;img src="fig/tab_respiratorias.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+--
+
+- Obteríamos o seguinte para o vetor de probabilidades
+
+--
+
+`$$\begin{align} \hat{p} &amp;= \left(\frac{355}{1080}, \frac{125}{1080}, \frac{410}{1080}, \frac{190}{1080} \right)\\ &amp;= (0.329, 0.116, 0.379, 0.176) \end{align}$$`
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
