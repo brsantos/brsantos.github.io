@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Comparando proporções em tabelas 2x2</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2020-10-14" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle
+
+## Comparando proporções em tabelas 2x2
+
+*****
+
+### Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+
+
+
+
+
+---
+class: center, middle, inverse
+
+# Motivação
+
+
+---
+
+# Exemplo
+
+- Dados do Espírito Santo durante a pandemia.
+
+- Adultos: idade &gt;= 40 anos.
+
+&lt;img src="fig/tabela_etaria.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+--
+
+- Gostaríamos de comparar a letalidade da doença entre esses dois grupos.
+
+--
+
+- Definindo 
+
+`$$Y = \begin{cases} 1, &amp; \mbox{ pessoa veio a óbito pela doença.}  \\
+0, &amp; \mbox{ caso contrário. } \end{cases}$$`
+
+--
+
+- Queremos comparar 
+
+`$$p_1 = P(Y = 1|\mbox{Adultos}) \quad \mbox{ e } \quad p_2 = P(Y = 1|\mbox{Idosos})$$`
+
+---
+class: inverse, middle, center
+
+# Diferença de proporções
+
+---
+
+# Detalhes
+
+
+- Para facilitar, definamos os desfechos da variável binária:
+
+  - **sucesso** e **fracasso**.
+  
+--
+
+- `\(\pi_1\)` é a probabilidade de sucesso da linha 1.
+
+--
+
+  - `\(1-\pi_1\)` é a probabilidade de fracasso da linha 1.
+  
+--
+
+- Situação análoga para `\(\pi_2\)`.
+
+--
+
+- A **diferença de proporções** `\(\pi_1 - \pi_2\)` compara as probabilidades de sucesso entre as duas linhas.
+
+--
+
+  - Essa diferença pertence ao intervalo `\([-1, 1]\)`.
+  
+--
+
+- `\(p_1\)` e `\(p_2\)` são as proporções amostrais de sucessos.
+
+--
+
+- `\(p_1 - p_2\)` é um estimador para `\(\pi_1 - \pi_2\)`.
+
+---
+
+# Definição
+
+- Quando os valores de cada linha são independentes entre si,
+
+  - o erro padrão da diferença pode ser estimado como
+  
+--
+
+`$$\mbox{EP}(p_1-p_2) = \sqrt{\frac{p_1(1-p_1)}{n_{1+}} + \frac{p_2(1-p_2)}{n_{2+}}}$$`
+--
+
+- Um intervalo de confiança (para amostras grandes) 100 `\((1-\alpha)\)`% c.c. para `\(\pi_1 - \pi_2\)` é dado por 
+
+`$$p_1-p_2 \pm z_{\alpha/2}EP(p_1-p_2)$$`
+--
+
+- Para pequenas amostras, é necessário fazer algumas alterações:
+
+  - adicionar 1 a cada célula para que a probabilidade de cobertura esteja mais próxima dos valores nominais.
+  
+  
+---
+
+# Aplicação
+
+&lt;img src="fig/tabela_etaria.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+--
+
+- Temos `\(n_{1+} = 49524\)` e `\(n_{2+} = 21709\)`.
+
+- E também `\(p_1 = 713/49524 = 0,014\)` e `\(p_2 = 2791/21709 = 0,129\)`.
+
+--
+
+- Com isso, temos que a estimativa do erro padrão da diferença é:
+
+`$$\mbox{EP}(p_1-p_2) = \sqrt{\frac{0,014(1-0,014)}{49524} + \frac{0,129(1-0,129)}{21709}} = 0,0023$$`
+
+--
+
+O intervalo de confiança com 95% c.c. vai ser dado por
+
+`$$(0,014 - 0,129) \pm 1.96 \cdot 0,0023 = [-0,1187, -0,1096].$$`
+
+
+---
+class: inverse, center, middle
+
+# Risco relativo
+
+---
+
+# Motivação
+
+- Considere os seguintes casos:
+
+--
+
+  - `\(\pi_1 = 0.010\)` e `\(\pi_2 = 0.001\)`
+  - `\(\pi_1 = 0.410\)` e `\(\pi_2 = 0.401\)`
+  
+--
+
+- Nos dois casos, temos que `\(\pi_1 - \pi_2 = 0.009\)`.
+
+--
+
+- Porém, no primeiro caso `\(\pi_1\)` é dez vezes maior que `\(\pi_2\)`.
+
+--
+
+- Em situações como essas, a razão entre as proporções é mais interessante.
+
+--
+
+- Em tabelas 2x2, definimos essa quantidade como
+
+`$$\mbox{risco relativo} = \frac{\pi_1}{\pi_2}$$`
+--
+
+- No primeiro caso, teríamos um risco relativo igual a 10.
+
+- E no segundo caso, igual a 1.02.
+
+---
+
+# Exemplo
+
+- Tabela 2.3 Agresti (2017).
+
+&lt;img src="fig/tab_aspirina.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+--
+
+- Temos que `\(p_1 = 0,0171\)`, `\(p_2 = 0,0094\)`.
+
+--
+
+- A diferença entre as proporções amostrais é de apenas 0,008.
+
+--
+
+- Porém, o risco relativo é 
+
+`$$\frac{p_1}{p_2} = \frac{0,0171}{0,0094} = 1,82.$$`
+
+--
+
+- O que implica que o risco é 82% maior para o grupo placebo.
+
+---
+
+# Exemplo no R
+
+
+```r
+dados &lt;- read.csv("https://bi.static.es.gov.br/covid19/MICRODADOS.csv",
+                  sep = ";",
+                  fileEncoding = "ISO-8859-1")
+dados_confirmados &lt;- janitor::clean_names(dados) %&gt;%
+  filter(classificacao == 'Confirmados') %&gt;%
+  mutate(grupo_etario = forcats::fct_recode(faixa_etaria,
+                                            Jovens = "0 a 4 anos",
+                                            Jovens = "05 a 9 anos",
+                                            Jovens = "10 a 19 anos",
+                                            Jovens = "20 a 29 anos",
+                                            Jovens = "30 a 39 anos",
+                                            Adultos = "40 a 49 anos",
+                                            Adultos = "50 a 59 anos",
+                                            Idosos = "60 a 69 anos",
+                                            Idosos = "70 a 79 anos",
+                                            Idosos = "80 a 89 anos",
+                                      Idosos = "90 anos ou mais")) %&gt;%
+  filter(grupo_etario %in% c("Adultos", "Idosos")) %&gt;%
+  mutate(morte_covid = ifelse(evolucao == "Óbito pelo COVID-19",
+                              "Sim", "Não"),
+         grupo_etario = forcats::fct_drop(grupo_etario))
+```
+
+---
+
+# Exemplo no R (cont.)
+
+
+```r
+?summarytools::ctable
+```
+
+
+```r
+tabela &lt;- summarytools::ctable(dados_confirmados$grupo_etario,
+                     dados_confirmados$morte_covid, RR = TRUE,
+                     headings = FALSE)
+print(tabela, method = 'render')
+```
+
+<div class="container st-container">
+<table class="table table-bordered st-table st-table-bordered st-cross-table ">
+<thead>
+<tr>
+<th></th>
+<th colspan="8" align="center" class="st-protect-top-border">morte_covid</th>
+<th colspan="4"></th>
+</tr>
+<tr>
+<td align="center">
+<strong>grupo_etario</strong>
+</td>
+<th colspan="4" align="center">N&#0227;o</th>
+<th colspan="4" align="center">Sim</th>
+<th colspan="4" align="center">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<strong align="center">Adultos</strong>
+</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">49262</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">98.6%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">719</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">1.4%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">49981</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">100.0%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+</tr>
+<tr>
+<td>
+<strong align="center">Idosos</strong>
+</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">19036</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">87.1%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">2811</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">12.9%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">21847</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">100.0%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+</tr>
+<tr>
+<td>
+<strong align="center">Total</strong>
+</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">68298</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">95.1%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">3530</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">4.9%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">71828</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">100.0%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td colspan="100"><em><strong>R.R. </strong>(95% C.I.) = <strong>1.13</strong>&nbsp;&nbsp;(1.13 - 1.14)</em></td>
+</tr>
+</tfoot>
+</table>
+<p>Generated by <a href='https://github.com/dcomtois/summarytools'>summarytools</a> 0.9.6 (<a href='https://www.r-project.org/'>R</a> version 3.6.3)<br/>2020-10-14</p>
+</div>
+
+---
+
+# Exemplo no R (cont.)
+
+
+```r
+dados_confirmados &lt;- dados_confirmados %&gt;%
+  mutate(grupo_etario = forcats::fct_relevel(grupo_etario,
+                                             "Idosos", "Adultos"),
+         morte_covid = forcats::fct_relevel(morte_covid,
+                                             "Sim", "Não"))
+```
+
+<div class="container st-container">
+<table class="table table-bordered st-table st-table-bordered st-cross-table ">
+<thead>
+<tr>
+<th></th>
+<th colspan="8" align="center" class="st-protect-top-border">morte_covid</th>
+<th colspan="4"></th>
+</tr>
+<tr>
+<td align="center">
+<strong>grupo_etario</strong>
+</td>
+<th colspan="4" align="center">Sim</th>
+<th colspan="4" align="center">N&#0227;o</th>
+<th colspan="4" align="center">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<strong align="center">Idosos</strong>
+</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">2811</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">12.9%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">19036</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">87.1%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">21847</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">100.0%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+</tr>
+<tr>
+<td>
+<strong align="center">Adultos</strong>
+</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">719</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">1.4%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">49262</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">98.6%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">49981</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">100.0%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+</tr>
+<tr>
+<td>
+<strong align="center">Total</strong>
+</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">3530</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">4.9%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">68298</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">95.1%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">71828</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">100.0%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td colspan="100"><em><strong>R.R. </strong>(95% C.I.) = <strong>8.94</strong>&nbsp;&nbsp;(8.25 - 9.69)</em></td>
+</tr>
+</tfoot>
+</table>
+<p>Generated by <a href='https://github.com/dcomtois/summarytools'>summarytools</a> 0.9.6 (<a href='https://www.r-project.org/'>R</a> version 3.6.3)<br/>2020-10-14</p>
+</div>
+
+
+---
+class: inverse, middle, center
+
+# Razão de chance
+
+## *Odds ratio*
+
+---
+
+# Definição
+
+- Modelo logístico é um dos modelos mais importantes para dados categóricos.
+
+--
+
+- Interpretação desse modelo é feita a partir de razões de chances.
+
+--
+
+- Se consideramos a probabilidade de sucesso igual a `\(\pi\)`, então a chance de sucesso é dada por 
+
+`$$\mbox{chance} = \frac{\pi}{1-\pi}$$`
+--
+
+- Por exemplo, se `\(\pi = 0.8\)`, então a chance de sucesso é igual a `\(0,8/0,2 = 4\)`.
+
+- Logo, dizemos que o sucesso é quatro vezes mais provável que o fracasso.
+
+--
+
+- Se temos a chance, podemos obter a probabilidade também:
+
+`$$\pi = \frac{\mbox{chance}}{\mbox{chance} + 1}.$$`
+
+---
+
+# Razão de chances
+
+- Na tabela de contingência 2x2, podemos considerar as chances condicionais:
+
+--
+
+  - as chances em cada uma das linhas.
+  
+--
+
+- Teríamos então:
+
+  - `\(\mbox{chance}_1 = \pi_1/(1-\pi_1)\)`.
+  
+  - `\(\mbox{chance}_2 = \pi_2/(1-\pi_2)\)`.
+  
+--
+
+- A razão de chances é dada por
+
+`$$\theta = \frac{\mbox{chance}_1}{\mbox{chance}_2} = \frac{\pi_1/(1-\pi_1)}{\pi_2/(1-\pi_2)}.$$`
+
+--
+
+- O risco relativo mede a relação entre duas probabilidades, enquanto a razão de chances mede a razão de duas chances.
+
+---
+
+## Propriedades da razão de chances
+
+- A razão de chances pode ser qualquer valor não negativo `\((\mbox{chance} \geq 0).\)`
+
+--
+
+- Quando `\(X\)` e `\(Y\)` são independentes
+
+  - `\(\pi_1 = \pi_2\)`
+  
+--
+
+  - `\(\mbox{chance}_1 = \mbox{chance}_2\)`
+  
+--
+
+  - `\(\theta = \mbox{chance}_1/\mbox{chance}_2 = 1\)`
+  
+--
+
+- Normalmente utilizamos o valor 1 como referência.
+
+--
+
+- Quando `\(\theta &gt; 1\)`, então sucesso é mais provável na linha 1 do que na linha 2.
+
+  - `\(\pi_1 &gt; \pi_2.\)`
+  
+--
+
+- Quando `\(\theta &lt; 1\)`, então sucesso é menos provável na linha 1 do que na linha 2.
+
+  - `\(\pi_1 &lt; \pi_2.\)`
+  
+---
+
+# Propriedades (cont.)
+
+- No modelo Multinomial, a razão de chances pode ser calculada como
+
+`$$\theta =  \frac{\pi_{11}/\pi_{12}}{\pi_{21}/\pi_{22}} = \frac{\pi_{11}\pi_{22}}{\pi_{21}\pi_{12}}$$`
+--
+
+- A razão de chances nesse caso também é chamada de razão do produto cruzado (*cross-product ratio*).
+
+--
+
+- A razão de chances amostral é dado por 
+
+`$$\hat{\theta} = \frac{p_1/(1-p_1)}{p_2/(1-p_2)} = \frac{n_{11}/n_{12}}{n_{21}/n_{22}} = \frac{n_{11}n_{22}}{n_{11}n_{12}}$$`
+- Que é a razão da chances amostral calculada em cada uma das linhas.
+
+
+- Quando consideramos o modelo multinomial para as 4 células, esse é o estimador de máxima verossimilhança para `\(\theta\)`.
+
+
+---
+
+# Exemplo
+
+- Retornando ao exemplo das aspirinas e infarto do miocardio.
+
+--
+
+- Para o grupo placebo, a chance é dada por 
+
+`$$n_{11}/n_{12} = 189/10845 = 0,0174$$`
+
+- Podemos interpretar esse valor como 
+
+  - para cada 1,74 "Sim" observamos 100 "Não".
+  
+--
+
+- Para o grupo tomando aspirina, a chance é dada por 
+
+`$$n_{21}/n_{22} = 104/10933 = 0,0095$$`
+
+--
+
+- A razão de chances amostral é calculada como
+
+`$$\hat{\theta} = \frac{0,0174}{0,0095} = 1,83.$$`
+- A chance de infarto do miocardio para o grupo placebo é 83% maior em comparação com o grupo da aspirina.
+
+
+---
+class: inverse, middle, center
+
+
+# Inferência para razão de chance
+
+
+---
+
+# Resultados
+
+- A distribuição amostral de `\(\hat{\theta}\)` é bastante assimétrica,
+
+  - com exceção de casos em que o tamanho amostral é extremamente grande.
+  
+--
+
+- Por esse motivo, consideramos uma medida alternativa:
+
+  - `\(\log(\theta).\)`
+
+--
+
+- Independência é equivalente a `\(\log(\theta) = 0\)`.
+
+--
+
+- O logaritmo da razão de chances é simétrico em torno do zero.
+
+--
+
+- Dois valores de `\(\log(\theta)\)` que são os mesmos com exceção do sinal
+
+  - `\(\log(2) = 0.7\)`
+  - `\(\log(0.5) = -0.7\)`
+
+representam a mesma ideia de associação.
+
+---
+
+# Distribuição amostral
+
+- A distribuição amostral de `\(\log(\hat{\theta})\)` pode ser aproximada pela distribuição normal quando `\(n\)` é grande.
+
+--
+
+- Podemos dizer que 
+
+`$$\log(\hat{\theta}) \sim N\left(\log(\theta), Var[\log(\hat{\theta})]\right)$$`
+em que 
+
+`$$EP\left(\log(\hat{\theta})\right) = \sqrt{Var[\log(\hat{\theta})]} = \sqrt{\frac{1}{n_{11}}+\frac{1}{n_{12}}+\frac{1}{n_{21}}+\frac{1}{n_{22}}}$$`
+--
+
+- Intervalos de confiança podem ser construídos como 
+
+`$$\log(\hat{\theta}) \pm z_{\alpha/2}EP\left(\log(\hat{\theta})\right)$$`
+
+---
+
+# Exemplo
+
+- Retornando ao exemplo das aspirinas e infarto do miocardio.
+
+--
+
+- Temos que 
+
+`$$log(\hat{\theta}) = \log(1,832) = 0,605.$$`
+--
+
+- Da expressão apresentada anteriormente, podemos calcular o erro padrão
+
+`$$EP\left(\log(\hat{\theta})\right) = \sqrt{\frac{1}{189}+\frac{1}{10933}+\frac{1}{104}+\frac{1}{10845}} = 0,123$$`
+--
+
+- Logo, um intervalo de confiança com 95% de c.c. para `\(\log(\theta)\)`
+
+`$$\begin{align} 0,605 &amp;\pm 1,96 \cdot 0,123 \\
+(0,365 \, &amp;; \, 0,846)\end{align}$$`
+
+--
+
+- Correspondentemente para `\(\theta\)` temos 
+
+`$$\begin{align} [\exp(0,365) \, &amp;; \, \exp(0,846)] \\
+(1,44 \, &amp;; 2,33)\end{align}$$`
+
+---
+
+# Exemplo no R
+
+
+```r
+tabela &lt;- summarytools::ctable(dados_confirmados$grupo_etario,
+                     dados_confirmados$morte_covid, RR = TRUE, 
+                     OR = TRUE, headings = FALSE)
+print(tabela, method = 'render')
+```
+
+<div class="container st-container">
+<table class="table table-bordered st-table st-table-bordered st-cross-table ">
+<thead>
+<tr>
+<th></th>
+<th colspan="8" align="center" class="st-protect-top-border">morte_covid</th>
+<th colspan="4"></th>
+</tr>
+<tr>
+<td align="center">
+<strong>grupo_etario</strong>
+</td>
+<th colspan="4" align="center">Sim</th>
+<th colspan="4" align="center">N&#0227;o</th>
+<th colspan="4" align="center">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<strong align="center">Idosos</strong>
+</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">2811</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">12.9%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">19036</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">87.1%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">21847</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">100.0%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+</tr>
+<tr>
+<td>
+<strong align="center">Adultos</strong>
+</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">719</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">1.4%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">49262</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">98.6%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">49981</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">100.0%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+</tr>
+<tr>
+<td>
+<strong align="center">Total</strong>
+</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">3530</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">4.9%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">68298</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">95.1%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">71828</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">100.0%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td colspan="100"><em><strong>O.R. </strong>(95% C.I.) = <strong>10.12</strong>&nbsp;&nbsp;(9.31 - 11.00)</em><br/>
+                            <em><strong>R.R. </strong>(95% C.I.) = <strong>8.94</strong>&nbsp;&nbsp;(8.25 - 9.69)</em></td>
+</tr>
+</tfoot>
+</table>
+<p>Generated by <a href='https://github.com/dcomtois/summarytools'>summarytools</a> 0.9.6 (<a href='https://www.r-project.org/'>R</a> version 3.6.3)<br/>2020-10-14</p>
+</div>
+
+
+---
+class: inverse, center, middle
+
+# Relação entre razão de chances e risco relativo
+
+---
+
+### Relação entre razão de chances e risco relativo
+
+- Veja que no exemplo anterior, obtivemos
+
+  - Razão de chances = `\(\hat{\theta} = 1,83\)`.
+  - Risco relativo = `\(p_1/p_2 = 1,82\)`.
+  
+--
+
+- Note que 
+
+$$\mbox{Razão de chances = } = \frac{p_1/(1-p_1)}{p_2/(1-p_2)} = \mbox{Risco relativo } \times \left( \frac{1-p_2}{1-p_1} \right)  $$ 
+
+--
+
+- Quando `\(p_1\)` e `\(p_2\)` estão próximos de zero, então o último termo se aproxima de zero.
+
+--
+
+- Nesse caso, poderíamos dizer que `\(p_1\)` é **aproximadamente** 1,83 vezes o valor de `\(p_2\)`.
+
+--
+
+- Esse resultado é importante porque existem situações em que não é possível calcular o risco relativo, mas é possível calcular a razão de chances.
+
+---
+class: inverse, middle, center
+
+# Razão de chances em estudo de caso-controle
+
+---
+
+# Estudo caso-controle
+
+- Considere o seguinte estudo.
+
+&lt;img src="fig/tab_estudo.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+--
+
+- A primeira coluna refere-se aos casos da pesquisa.
+
+  - Mulheres (&lt;69 anos) admitidas no hospital no norte da Itália com infarto agudo do miocárdio.
+  
+
+--
+
+- Para cada caso, foram obtidos dois controles que foram pessoas admitidas no mesmo hospital com outros problemas agudos. 
+
+--
+
+- Todos foram classificados se já haviam sido fumantes em algum momento no passado.
+
+--
+
+- **Estudo retrospectivo**.
+
+---
+
+# Implicações do estudo
+
+- Gostaríamos de estudar a probabilidade de infarto de maneira condicional ao status de fumante.
+
+--
+
+- Temos fixado os valores das colunas. 
+
+--
+
+- Não é possível obter diretamente `\(p_1\)`, probabilidade de infarto entre fumantes.
+
+--
+
+- Nem `\(p_2\)` probabilidade de infarto entre não fumantes.
+
+--
+
+- Note que os dois valores se aproximam de `\(1/3\)` se usássemos a tabela anterior, mas isso é devido exatamente ao delineamento do estudo.
+
+--
+
+- Não é possível estimar as diferenças de proporções.
+
+--
+
+- E também não é possível estimar o risco relativo.
+
+
+---
+
+# O que podemos fazer?
+
+--
+
+- Note que podemos condicionar na variável resposta:
+
+  - Infarto do miocardio.
+  
+--
+
+- Assim obtemos as proporções de fumantes em cada um dos grupos. 
+
+--
+
+
+- Porém, a razão de chances tem uma propriedade de **simetria**.
+
+--
+
+`$$\theta = \frac{P(Y = 1|X = 1)/P(Y = 0|X = 1)}{P(Y = 1|X = 0)/P(Y = 0|X = 0)}$$`
+
+--
+
+`$$\theta = \frac{P(X = 1|Y = 1)/P(X = 0|Y = 1)}{P(X = 1|Y = 0)/P(X = 0|Y = 0)}$$`
+
+--
+
+- E nós somos capazes de fazer o seguinte cálculo no caso de estudos caso-controle.
+
+
+---
+
+# Resultado
+
+- No estudo citado, temos
+
+`$$\theta = \frac{0,656/(1-0,656)}{0,333(1-0,333)} = \frac{172 \times 346}{173 \times 90} = 3,8.$$`
+
+- Se considerarmos que `\(P(Y = 1)\)` é uma probabilidade pequena tanto para `\(X = 1\)` e `\(X = 0\)`, então a razão de chances é uma boa aproximação para o risco relativo.
+
+--
+
+- Se pensarmos que infarto de miocardio costuma ser raro para mulheres mais jovens,
+
+  - então `\(3,8\)` é uma boa aproximação do risco relativo nesse caso.
+  
+--
+
+- Podemos concluir então que mulheres que fumam são quatro vezes mais prováveis a ter problemas de infarto do miocardio do que mulheres que não fumam.
+
+---
+class: inverse, middle, center
+
+# Fim!!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
