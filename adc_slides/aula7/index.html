@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Teste qui-quadrado e independência para dados ordinais</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2020-10-19" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle
+
+## Teste qui-quadrado e independência para dados ordinais
+
+*****
+
+### Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+
+
+
+
+
+---
+class: center, middle, inverse
+
+# Teste Qui-quadrado
+
+
+---
+
+# Definição
+
+- Considerando testes de hipóteses, seja `\(H_0\)` hipótese nula,
+
+--
+
+  - sob `\(H_0\)`, as probabilidades nas células são iguais a `\(\pi_{ij}\)`.
+  
+--
+
+  - Considere uma amostra de tamanho `\(n\)` com valores nas células iguais a `\(n_{ij}\)`.
+  
+--
+
+  - *Frequências esperadas:* `\(\mu_{ij} = n \pi_{ij}\)`.
+  
+--
+
+  - Para verificar `\(H_0\)`, olhamos para `\(n_{ij} - \mu_{ij}\)`.
+  
+--
+
+### Teste Qui-quadrado de Pearson
+
+`$$X^2 = \sum \frac{(n_{ij} - \mu_{ij})^2}{\mu_{ij}}$$`
+
+---
+class: inverse, middle, center
+
+# Testes de independência
+
+
+---
+
+## Independência em tabelas de contingência
+
+
+- Considerando as probabilidades conjuntas `\({\pi_{ij}}\)` para `\(X\)` e `\(Y\)`,
+
+  - temos que a hipótese de independência pode ser escrita como
+  
+`$$H_0: \pi_{ij} = \pi_{i+} \pi_{+j}, \forall i, j.$$`
+
+--
+
+- Para testar `\(H_0\)`, temos que 
+
+`$$\mu_{ij} = n \pi_{ij} = n \pi_{i+} \pi_{+j}.$$`
+--
+
+- Como `\(\pi_{i+}\)` e `\(\pi_{+j}\)` são desconhecidos, devemos utilizar as proporções amostrais marginais
+
+`$$\hat{\mu}_{ij} = n p_{ij} = n p_{i+} p_{+j} = n \frac{n_{i+}}{n} \frac{n_{+j}}{n} =  \frac{n_{i+}n_{+j}}{n}.$$`
+
+- `\(\hat{\mu}_{ij}\)` é definida como frequência esperada estimada.
+
+---
+
+### Teste qui-quadrado de independência
+
+- Para tabelas de contingência `\(I \times J\)`, a estatística de teste qui-quadrado para independência é 
+
+`$$X^2 = \sum \frac{(n_{ij} - \hat{\mu}_{ij})^2}{\hat{\mu}_{ij}}$$`
+--
+
+- Para grandes amostras, `\(X^2 \sim \chi^2_\nu\)`, em que `\(\nu = (I-1)(J-1).\)` 
+
+--
+
+- A explicação para os graus de liberdade, utiliza:
+
+--
+
+  - existem `\((I-1)\)` parâmetros na linha para serem estimados sob `\(H_0\)`;
+  
+--
+
+  - existem `\((J-1)\)` parâmetros na linha para serem estimados sob `\(H_0\)`.
+  
+--
+
+  - Na hipótese alternativa, existem `\(IJ - 1\)` parâmetros a serem estimados.
+  
+--
+
+  - `\(\mbox{g.l.}\)` é a diferença de parâmetros em `\(H_a\)` e `\(H_0\)`
+  
+--
+
+`$$\mbox{g.l.} = (IJ - 1) - [(I - 1) + (J - 1)] = IJ - I - J + 1 = (I - 1)(J - 1)$$`
+
+---
+
+# Exemplo
+
+- Dados da Pesquisa Nacional por Amostra de Domicílios.
+
+- Informação de Vitória, Espírito Santo.
+
+--
+
+- Distribuição de anos de estudo para homens e mulheres.
+
+&lt;img src="fig/tab_PNAD_estudo.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+--
+
+- O que podemos dizer sobre a independência das duas variáveis?
+
+  - `\(X:\)` gênero das pessoas.
+  - `\(Y:\)` anos de estudo.
+
+---
+
+# Exemplo (cont.)
+
+- Sob a hipótese de independência, temos que 
+
+- `\(H_0: \pi_{ij} = \pi_{i+} \pi_{+j},  i = 1, 2; j = 1, 2, 3.\)`
+
+--
+
+- Temos que 
+
+  - `\(n_{1+} = 1584, n_{2+} = 1938.\)`
+  - `\(n_{+1} = 768, n_{+2} = 1263, n_{+3} = 1491.\)`
+
+--
+
+- Considerando 
+
+`$$\hat{\mu}_{ij} = \frac{n_{i+}n_{+j}}{n}.$$`
+
+--
+
+- Obtemos o seguinte para a tabela de valores esperados.
+
+&lt;img src="fig/tab_val_esperado.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Exemplo (cont.)
+
+- A estatística de teste 
+
+`$$X^2 = \sum \frac{(n_{ij} - \hat{\mu}_{ij})^2}{\hat{\mu}_{ij}} = 2.802$$`
+
+--
+
+- Como `\(I = 2\)` e `\(J = 3\)`, logo `\((I-1)(J-1) = 2\)`. Portanto `\(X^2 \sim \chi^2_2\)`.
+
+--
+
+- Podemos calcular o valor-p dessa estatística fazendo
+
+
+```r
+1 - pchisq(2.802, df = 2)
+```
+
+```
+## [1] 0.2463505
+```
+
+--
+
+- Logo, **não rejeitamos** a hipótese nula de independência porque o menor nível de significância para o qual poderíamos tomar essa decisão é muito grande.
+
+---
+
+# Exemplo no R
+
+
+```r
+dados_estudo &lt;- data.frame(grupo = c("Homens", "Mulheres"), 
+                           ate_8 = c(325, 443), 
+                           de_9a12 = c(578, 685), 
+                           mais_12 = c(681, 810))
+
+soma_linhas &lt;- apply(dados_estudo[,-1], 1, sum)
+soma_colunas &lt;- apply(dados_estudo[,-1], 2, sum)
+
+valores_esperados &lt;- 
+  expand.grid(soma_linhas, soma_colunas) %&gt;% 
+  apply(1, prod) / sum(soma_colunas) %&gt;% 
+  matrix(byrow = FALSE, nrow = 2, ncol = 3)
+valores_esperados
+```
+
+```
+##          [,1]     [,2]    [,3]
+## [1,] 345.4037 568.0273 670.569
+## [2,] 422.5963 694.9727 820.431
+```
+
+---
+
+# Exemplo no R (cont.)
+
+- Estatística de teste
+
+
+```r
+X2 &lt;- sum(((dados_estudo[, -1] - valores_esperados)^2)/valores_esperados)
+X2
+```
+
+```
+## [1] 2.803501
+```
+
+--
+
+- Valores críticos para diferentes níveis de significância.
+
+
+```r
+qchisq(c(0.9, 0.95, 0.99), df = 2)
+```
+
+```
+## [1] 4.605170 5.991465 9.210340
+```
+
+--
+
+- Cálculo do valor-p.
+
+
+```r
+1 - pchisq(X2, df = 2)
+```
+
+```
+## [1] 0.2461656
+```
+
+
+---
+
+# Exemplo no R (v2)
+
+
+
+
+
+```r
+tabela &lt;- summarytools::ctable(dados_ES$genero, 
+                               dados_ES$anos_estudo_cat, 
+                               chisq = TRUE, headings = FALSE)
+
+print(tabela, method = 'render')
+```
+
+<div class="container st-container">
+<table class="table table-bordered st-table st-table-bordered st-cross-table ">
+<thead>
+<tr>
+<th></th>
+<th colspan="12" align="center" class="st-protect-top-border">anos_estudo_cat</th>
+<th colspan="4"></th>
+</tr>
+<tr>
+<td align="center">
+<strong>genero</strong>
+</td>
+<th colspan="4" align="center">At&#0233; 8</th>
+<th colspan="4" align="center">9 a 12</th>
+<th colspan="4" align="center">Mais de 12</th>
+<th colspan="4" align="center">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<strong align="center">M</strong>
+</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">325</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">20.5%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">578</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">36.5%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">681</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">43.0%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">1584</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">100.0%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+</tr>
+<tr>
+<td>
+<strong align="center">F</strong>
+</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">443</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">22.9%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">685</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">35.3%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">810</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">41.8%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">1938</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">100.0%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+</tr>
+<tr>
+<td>
+<strong align="center">Total</strong>
+</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">768</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">21.8%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">1263</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">35.9%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">1491</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">42.3%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">3522</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">100.0%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td colspan="100"><em><strong>&nbsp;&#935;<sup>2</sup></strong> = 2.8035&nbsp;&nbsp;&nbsp;<strong>df</strong> = 2&nbsp;&nbsp;&nbsp;<strong>p</strong> = .2462</em><br/>
+                            </td>
+</tr>
+</tfoot>
+</table>
+<p>Generated by <a href='https://github.com/dcomtois/summarytools'>summarytools</a> 0.9.6 (<a href='https://www.r-project.org/'>R</a> version 3.6.3)<br/>2020-10-19</p>
+</div>
+
+---
+
+# Exemplo 2
+
+
+- Dados da Pesquisa Nacional por Amostra de Domicílios.
+
+- Informação de Vitória, Espírito Santo.
+
+--
+
+- Distribuição de renda para homens e mulheres.
+
+&lt;img src="fig/tab_renda.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+--
+
+- O que podemos dizer sobre a independência das duas variáveis?
+
+  - `\(X:\)` gênero das pessoas.
+  - `\(Y:\)` faixas de renda.
+  
+---
+
+# Exemplo 2 no R
+
+<div class="container st-container">
+<table class="table table-bordered st-table st-table-bordered st-cross-table ">
+<thead>
+<tr>
+<th></th>
+<th colspan="12" align="center" class="st-protect-top-border">renda_cat</th>
+<th colspan="4"></th>
+</tr>
+<tr>
+<td align="center">
+<strong>genero</strong>
+</td>
+<th colspan="4" align="center">At&#0233; 1200</th>
+<th colspan="4" align="center">Entre 1200 e&lt;br/&gt; 3000</th>
+<th colspan="4" align="center">Mais de 3000</th>
+<th colspan="4" align="center">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<strong align="center">M</strong>
+</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">247</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">23.5%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">379</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">36.0%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">426</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">40.5%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">1052</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">100.0%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+</tr>
+<tr>
+<td>
+<strong align="center">F</strong>
+</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">380</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">37.7%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">356</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">35.3%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">272</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">27.0%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">1008</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">100.0%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+</tr>
+<tr>
+<td>
+<strong align="center">Total</strong>
+</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">627</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">30.4%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">735</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">35.7%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">698</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">33.9%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">2060</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">100.0%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td colspan="100"><em><strong>&nbsp;&#935;<sup>2</sup></strong> = 61.9974&nbsp;&nbsp;&nbsp;<strong>df</strong> = 2&nbsp;&nbsp;&nbsp;<strong>p</strong> = .0000</em><br/>
+                            </td>
+</tr>
+</tfoot>
+</table>
+<p>Generated by <a href='https://github.com/dcomtois/summarytools'>summarytools</a> 0.9.6 (<a href='https://www.r-project.org/'>R</a> version 3.6.3)<br/>2020-10-19</p>
+</div>
+
+--
+
+- Logo, **rejeitamos** a hipótese de independência entre Gênero e Renda das pessoas em Vitória.
+
+---
+class: inverse, center, middle
+
+# Indepêndencia para dados ordinais
+
+
+---
+
+# Tendência linear alternativa à independência
+
+- Quando consideramos duas variáveis categóricas ordinais,
+
+  - `\(X:\)` anos de estudo (cat), `\(Y:\)` renda (cat).
+  
+--
+
+- É razoável pensar numa associação de tendência:
+
+  - quando passamos para níveis maiores de `\(X\)`, esperamos maior proporção de valores nas faixas maiores de `\(Y\)`.
+  
+--
+
+- Para testar uma associação de tendência, 
+
+  - é possível associar cada categoria a um número, um escore.
+  
+--
+
+  - Medir o nível de **tendência linear**.
+  
+--
+
+  - A estatística de teste vai ser sensível a tendências positivas ou negativas.
+  
+---
+
+# Definição
+
+- Considere escores para as variáveis das linhas:
+
+  - `\(u_1 \leq u_2 \leq \cdots \leq u_I\)`.
+  
+--
+
+- E similarmente para as variáveis das colunas:
+
+  - `\(v_1 \leq v_2 \leq \cdots \leq v_I\)`.
+  
+--
+
+- Os escores devem ter o mesmo ordenamento que os níveis das categorias. 
+
+- Esses escores devem ser escolhidos para representar adequadamente a distância entre as categorias:
+
+  - maiores distâncias devem representar categorias mais distantes de fato.
+  
+---
+
+# Definição (cont.)
+
+- Seja `\(\bar{u} = \sum_i u_i p_{i+}\)` a média amostral dos escores das linhas.
+
+- Seja `\(\bar{v} = \sum_j v_j p_{+j}\)` a média amostral dos escores das linhas.
+
+--
+
+- Considere o produto cruzado dos desvios das médias:
+
+`$$\sum_{i, j} (u_i - \bar{u})(v_j - \bar{v})p_{ij}.$$`
+
+--
+
+- Esta pode ser vista como a **covariância** amostral de `\(X\)` e `\(Y\)`.
+
+--
+
+- A correlação amostral `\(r\)` de `\(X\)` e `\(Y\)` é obtida fazendo
+
+`$$r = \frac{\sum_{i, j} (u_i - \bar{u})(v_i - \bar{v})p_{ij}}{\sqrt{\sum_{i} \left(u_i - \bar{u}\right)^2p_{i+}}\sqrt{\sum_j \left(v_j - \bar{v}\right)^2p_{+j}}}.$$`
+--
+
+- Que é a covariância amostral dividida pelos desvios-padrão de `\(X\)` e `\(Y\)`
+
+---
+
+# Propriedades
+
+- A correlação `\((r)\)` está entre -1 e +1.
+
+--
+
+- A hipótese de independência implica que o valor populacional `\(\rho\)` é igual a zero.
+
+--
+
+- Quanto maior for o valor da correlação em valor absoluto, mais distantes estamos da hipótese de independência. 
+
+--
+
+- Para testar, `\(H_0:\)` independência contra `\(H_a: \rho \ne 0\)`, uma estatística de teste é
+
+`$$M^2 = (n-1)r^2$$`.
+
+--
+
+- Essa estatística de teste aumenta conforme `\(r\)` aumenta em magnitude.
+
+--
+
+- Para `\(n\)` grande, `\(M^2\)` tem distribuição aproximadamente Qui-quadrado com 1 g.l.
+
+---
+
+# Exemplo
+
+- Dados da PNAD de 2017, na cidade de Vitória.
+
+- Vejamos a associação entre anos de estudos e faixa de renda.
+
+--
+
+&lt;img src="fig/tabela_ordinais.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+--
+
+- Precisamos definir scores para essas variáveis:
+
+--
+
+  - Para renda, considere `\(u_1 = 1\)`, `\(u_2 = 2,1\)`, `\(u_3 = 3,2\)`.
+
+--
+
+  - Para anos de estudo, considere `\(v_1 = 8\)`, `\(v_2 = 10,5\)`, `\(v_3 = 13\)`.
+  
+---
+
+## Cálculo da estatística de teste
+
+- Com os valores observados, temos que
+
+`$$r = 0.5176$$`
+
+--
+
+- E a estatística de teste é dada por 
+
+`$$M^2 = (2060-1)0,5176^2 = 551,7054.$$`
+
+--
+
+- Sabemos que para `\(n\)` grande, `\(M^2\)` tem distribuição Qui-quadrado 1 g.l.
+
+--
+
+- Assim, podemos calcular o valor-p
+
+
+```r
+1 - pchisq(551.7054, df = 1)
+```
+
+```
+## [1] 0
+```
+
+Ou obter os valores críticos para comparação.
+
+
+```r
+qchisq(c(0.9, 0.95, 0.99, 0.999), df = 1)
+```
+
+```
+## [1]  2.705543  3.841459  6.634897 10.827566
+```
+
+---
+
+### Teste qui-quadrado
+
+- Para comparação:
+
+<div class="container st-container">
+<table class="table table-bordered st-table st-table-bordered st-cross-table ">
+<thead>
+<tr>
+<th></th>
+<th colspan="12" align="center" class="st-protect-top-border">anos_estudo_cat</th>
+<th colspan="4"></th>
+</tr>
+<tr>
+<td align="center">
+<strong>renda_cat</strong>
+</td>
+<th colspan="4" align="center">At&#0233; 8</th>
+<th colspan="4" align="center">9 a 12</th>
+<th colspan="4" align="center">Mais de 12</th>
+<th colspan="4" align="center">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<strong align="center">At&#0233; 1200</strong>
+</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">219</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">34.9%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">271</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">43.2%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">137</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">21.9%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">627</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">100.0%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+</tr>
+<tr>
+<td>
+<strong align="center">Entre 1200 e 3000</strong>
+</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">97</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">13.2%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">301</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">41.0%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">337</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">45.9%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">735</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">100.0%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+</tr>
+<tr>
+<td>
+<strong align="center">Mais de 3000</strong>
+</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">11</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">1.6%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">101</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">14.5%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">586</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">84.0%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">698</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">100.0%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+</tr>
+<tr>
+<td>
+<strong align="center">&lt;NA&gt;</strong>
+</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">441</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">30.2%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">590</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">40.4%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">431</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">29.5%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">1462</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">100.0%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+</tr>
+<tr>
+<td>
+<strong align="center">Total</strong>
+</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">768</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">21.8%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">1263</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">35.9%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">1491</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">42.3%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">3522</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">100.0%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td colspan="100"><em><strong>&nbsp;&#935;<sup>2</sup></strong> = 598.7451&nbsp;&nbsp;&nbsp;<strong>df</strong> = 4&nbsp;&nbsp;&nbsp;<strong>p</strong> = .0000</em><br/>
+                            </td>
+</tr>
+</tfoot>
+</table>
+<p>Generated by <a href='https://github.com/dcomtois/summarytools'>summarytools</a> 0.9.6 (<a href='https://www.r-project.org/'>R</a> version 3.6.3)<br/>2020-10-19</p>
+</div>
+
+
+---
+class: middle, inverse, center
+
+# Poder extra em testes para variáveis ordinais
+
+
+---
+
+# Maior poder
+
+- Para testar independência, `\(X^2\)` considera uma hipótese alternativa mais geral possível.
+
+--
+
+- Com isso, os graus de liberdade são iguais a `\((I-1)(J-1).\)`
+
+--
+
+- Por outro lado, quando sabemos que as variáveis são ordinais, podemos associar essa associação a um único parâmetro.
+
+--
+
+- A estatística de teste `\(M^2\)` é baseada na medida de correlação linear somente.
+
+--
+
+- Por esse motivo, tem graus de liberdade igual a 1.
+
+--
+
+- Quando há realmente uma tendência linear
+
+--
+
+  - o teste ordinal usando `\(M^2\)` é superior ao teste `\(X^2\)`.
+  
+  
+---
+
+# Comparação de curvas
+
+- Vejam como as curvas da distribuição Qui-quadrado variam conforme se varia o parâmetro graus de liberdade.
+
+.pull-left[
+
+```r
+ggplot(data.frame(x = c(0, 10)), aes(x)) + 
+  theme_minimal() +
+  stat_function(fun = dchisq, 
+                args = list(df = 1), 
+                color = 'red') +
+  stat_function(fun = dchisq, 
+                args = list(df = 2), 
+                color = 'blue') + 
+  stat_function(fun = dchisq, 
+                args = list(df = 4), 
+                color = 'black')
+```
+]
+
+.pull-right[
+![](index_files/figure-html/plot-label-out-1.png)&lt;!-- --&gt;
+]
+
+---
+class: middle, center, inverse
+
+# Testes de tendência para tabelas I x 2 e 2 x J
+
+---
+
+# Tabelas 2 x J
+
+- Estamos considerando que 
+
+  - `\(X\)` é uma variável binária 
+
+--
+
+- `\(M^2\)` vai detectar as diferenças médias entre as duas linhas de escores `\(\{v_j\}\)` em Y;
+
+--
+
+- valores pequenos de valor-p sugerem que pode haver uma diferença entre esses dois grupos;
+
+--
+
+- se definidos os escores considerando os postos médios, então esse teste também pode ser conhecido como *teste de Wilcoxon* ou *teste de Mann-Whitney*;
+
+--
+
+- para amostras grandes, esse teste não-paramétrico considera uma estatística `\(z\)` que tem distribuição normal. 
+--
+O quadrado da estatística `\(z\)` é equivalente a `\(M^2\)`.
+
+  
+---
+
+# Tabelas I x 2
+
+- Estamos considerando que 
+
+  - `\(Y\)` é uma variável binária.
+  
+--
+
+- Podemos pensar que `\(Y\)` é uma variável resposta.
+
+--
+
+- O teste compara como a proporção de "sucessos" varia conforme as linhas.
+
+--
+
+- Isso pode ser relacionado a modelos logísticos com variável explicativa `\(X\)`.
+
+--
+
+- Valores-p pequenos sugerem que existe uma tendência diferente de zero conforme aumentamos os valores dos níveis de `\(X\)`.
+
+--
+
+- Esse teste também é conhecido como *teste de tendência de Cochran-Armitage*.
+
+
+---
+class: inverse, middle, center
+
+# Tabelas nomimal-ordinal
+
+---
+
+# Algumas considerações
+
+- A estatística de teste `\(M^2\)` trata ambas variáveis como ordinais.
+
+--
+
+- Quando uma das variáveis, `\(X\)` ou `\(Y\)`, é nominal mas só tem duas categorias, ainda é possível usar esse teste.
+
+--
+
+- Quando uma das variáveis é nominal, mas tem três categorias, então o uso deste teste é inapropriado.
+
+--
+
+- Uma possibilidade é obter valores médios dos escores por linha, e depois sumarizar a variação entre as linhas.
+
+--
+
+- Veremos isso em mais detalhes ao final do curso, possivelmente. 
+
+
+---
+class: middle, center, inverse
+
+# Fim!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
