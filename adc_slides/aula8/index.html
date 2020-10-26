@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Inferência exata para amostras pequenas</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2020-10-26" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle
+
+## Inferência exata para amostras pequenas
+
+*****
+
+### Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+
+
+
+
+
+---
+class: center, middle, inverse
+
+# Motivação
+
+
+---
+
+# Considerações iniciais
+
+- Os testes considerados até o momento:
+
+  - `\(X^2\)`: teste qui-quadrado.
+  - `\(M^2\)`: testes para variáveis ordinais.
+  
+--
+
+- Sempre consideravam uma distribuição qui-quadrado para obter conclusões
+
+--
+
+  - e essa conclusão dependia do fato " `\(n\)` grande ".
+  
+--
+
+- Considerando essa aproximação, vamos considerar um teste que tenta obter conclusões de maneira "exata":
+
+--
+
+  - sem utilizar aproximações assintóticas para o teste de hipóteses.
+  
+---
+class: inverse, middle, center
+
+# Teste exato de Fisher para tabelas 2x2
+
+
+---
+
+# Definição
+
+- Para tabelas 2x2, independência é equivalente a `\(\theta = 1\)`, 
+
+--
+
+  - em que `\(\theta\)` é a razão de chances.
+  
+--
+
+- Suponha que as contagens `\(\{n_{ij}\}\)` sejam obtidas a partir de 
+
+  - distribuições binomiais independentes;
+  - distribuição multinomial.
+  
+--
+
+- Uma distribuição de probabilidade sob `\(H_0\)` para amostras pequenas:
+
+  - desconsidera quaisquer parâmetros desconhecidos;
+
+--
+
+  - considera o conjunto de tabelas que poderiam ter sido observadas fixando os valores marginais.
+  
+--
+
+- Quando fixamos nesse subconjunto de tabelas, as contagens nas células têm **distribuição hipergeométrica**.
+
+
+---
+
+## Distribuição hipergeométrica
+
+- Distribuição de probabilidade discreta
+
+--
+
+- `\(N\)` tamanho da sua população
+
+  - `\(K\)` unidades de um certo tipo (sucessos): bolas pretas, pessoas doentes, etc.
+  
+--
+
+- Retira uma amostra de tamanho `\(n\)` sem reposição.
+
+--
+
+  - Lembrem que no caso binomial o experimento é sempre com reposição.
+  
+--
+
+- Gostaríamos de calcular a probabilidade de observar `\(k\)` sucessos.
+
+--
+
+`\(X = \mbox{Número de sucessos nesse sorteio de tamanho n}\)`
+
+`$$P(X = k) = \frac{{K \choose k} {N - K\choose n - k}}{N \choose n}, k = 0,,1, ... n.$$`
+--
+
+`$$X \sim Hiper(N, K, n)$$`
+
+---
+
+# Teste exato
+
+- Dados os totais marginais das linhas e colunas fixados, `\(n_{11}\)` determina a contagem das outras três células.
+
+--
+
+- Logo, a distribuição hipergeométrica determina probabilidades para outras três células em função de `\(n_{11}\)`.
+
+--
+
+- Quando `\(\theta = 1\)`, a probabilidade um valor particular `\(n_{11}\)` é dado por 
+
+`$$P(n_{11}) = \frac{{n_{1+} \choose n_{11}} {n_{2+}\choose n_{+1} - n_{11}}}{n \choose n_{+1}}$$`
+--
+
+- Para testar independência, o valor-p é a soma das probabilidades de resultados tão favoráveis à `\(H_a\)` quanto aquele observado. 
+
+--
+
+- Se `\(H_a: \theta &gt; 1\)`, dados os valores marginais totais
+
+--
+
+  - tabelas com maiores valores `\(n_{11}\)` originam maiores valores de `\(\hat{\theta}\)`, pois `\(\hat{\theta} = (n_{11}n_{22})/(n_{12}n_{21})\)`
+  
+  
+---
+class: inverse, middle, center
+
+
+# Exemplo
+
+---
+
+# Uma senhora toma chá
+
+- No livro *"The design of experiments"*, existe a descrição do seguinte experimento:
+
+--
+
+  - Uma colega em *Rothamsted Experiment Station* disse que poderia distinguir se leite ou chá foram adicionados à xícara primeiro.
+  
+--
+
+  - No total haviam 8 xícaras: 4 com leite primeiro e 4 com chá primeiro.
+  
+--
+
+  - Ela sabia dessa informação de antemão.
+  
+--
+
+  - As xícaras foram apresentadas em ordem aleatória.
+  
+--
+
+- Um possível resultado é observado a seguir: 
+
+&lt;img src="fig/tab_senhora.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Cálculo do valor-p
+
+- Considere as seguintes hipóteses:
+
+  - `\(H_0: \theta = 1\)` contra `\(H_a: \theta &gt; 1.\)`
+  
+--
+
+- Na tabela anterior, ambas marginais são fixadas.
+
+--
+
+- A disribuição nula sob `\(H_0\)` de `\(n_{11}\)` são todas distribuições hipergeométricas com valores marginais nas linhas e colunas iguais a `\((4,4)\)`.
+
+--
+
+- Os valores potenciais para `\(n_{11}\)` são `\((0, 1, 2, 3, 4)\)`.
+
+--
+
+- A tabela observada, com três palpites corretos, tem probabilidade
+
+`$$P(3) = \frac{{4 \choose 3} {4\choose 1}}{8 \choose 4} = \frac{\frac{4!}{3!1!}\frac{4!}{1!3!}}{\frac{8!}{4!4!}} = \frac{16}{70} = 0,229$$`
+
+---
+
+# Cálculo do valor-p (cont.)
+
+- Considere a hipótese alternativa:
+
+  - `\(H_a: \theta &gt; 1.\)`
+
+--
+
+- A única tabela com resultado mais extremo seria considerar quatro palpites corretos.
+
+--
+
+- Teríamos então, `\(n_{11} = n_{22} = 4\)` e `\(n_{21} = n_{12} = 0\)`, com probabilidade
+
+`$$P(4) = \frac{{4 \choose 4} {4\choose 0}}{8 \choose 4} = \frac{1}{70} = 0,014$$`
+--
+
+- Logo, o valor-p para o teste de hipóteses `\(H_0: \theta = 1\)` contra `\(H_a: \theta &gt; 1\)`, seria igual a 
+
+`$$P(3) + P(4) = 0,243$$`
+
+--
+
+- Sendo assim, não teríamos evidência para rejeitar a hipótese de independência.
+
+---
+class: inverse, middle, center
+
+# P-valores e erros do tipo I
+
+---
+
+## Considerações sobre o teste
+
+- Considerando o teste anterior, 
+
+  - `\(H_0: \theta = 1\)` contra `\(H_a: \theta &gt; 1\)`.
+  
+--
+
+- Poderíamos calcular a probabilidade de observar a probabilidade todos os valores
+para `\(n_{11}\)` e os respectivos valores-p:
+
+&lt;img src="fig/tab_probs.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+--
+
+- Em comparação com o teste qui-quadrado, se fizéssemos `\(H_a: \theta \ne 1\)`, o valor-p deveria ser calculado como 
+
+`$$P(0) + P(1) + P(3) + P(4) = 0,486$$`
+
+---
+
+## "Conservadorismo" do valor-p
+
+- Para amostras pequenas, o valor-p tem relativamente poucos possíveis valores que ele pode assumir. 
+
+--
+
+- Para o exemplo anterior, para a hipótese unilateral, ele só poderia assumir cinco valores possíveis. 
+
+--
+
+- Esse comportamento discreto afeta a taxa de erros.
+
+--
+
+- Porque o teste só pode assumir tão poucos valores, a probabilidade do erro do tipo I pode ser menor que 0,05.
+
+--
+
+- Para a hipótese unilateral, o experimento do chá só retorna valor-p menor que 0,05 quando `\(n_{11} = 4\)`.
+
+`$$P(\mbox{erro do tipo I}) = 0,014 &lt; 0,05$$`
+--
+
+- O teste é **conservador**, porque a verdadeira taxa do erro é menor do que aquela fixada.
+
+---
+
+# Uma alternativa
+
+- Para diminuir esse "conservadorismo", alguns autores sugerem usar uma alternativa:
+
+  - *mid P-value* ou *meio valor-p*.
+  
+--
+
+- Que é dividir a probabilidade do valor observado e somar com a probabilidade dos valores mais extremos.
+
+--
+
+- No exemplo da senhora tomando chá, teríamos
+
+`$$\mbox{valor-p} = \frac{P(3)}{2} + P(4) = \frac{0,229}{2} + 0,014 = 0,129.$$`
+
+--
+
+- Que é um valor menor comparado com o valor 0,243 para o valor-p calculado anteriormente.
+
+--
+
+- Porém, é necessário cuidado sempre nessa tentativa de obter um valor-p significante.
+
+---
+class: inverse, middle, center
+
+# Comparação de proporções usando a inferência bayesiana
+
+---
+
+# Considerações iniciais
+
+- Definimos o teste exato para pequenas amostras, pois não podíamos nos basear no teste qui-quadrado.
+
+--
+
+- Porém, podemos fazer inferência de forma exata considerando a inferência bayesiana.
+
+--
+
+- O único caso possível em que não seríamos capazes de utilizar a inferência bayesiana seria quando as duas margens estão fixadas.
+
+--
+
+- Para todos os outros, somos capazes de definir modelos estatísticos para os nossos dados.
+
+  - E a partir desses modelos obter conclusões sobre os parâmetros.
+  
+--
+
+- Para isso, basta definir uma distribuição a priori para os parâmetros e estudar a distribuição a posteriori.
+
+---
+
+# Exemplo
+
+- Dados obtidos em 
+
+  - Howard (1998). The 2x2 Table: A Discussion from a Bayesian Viewpoint, *Statistical Science*.
+  
+- Exemplo de Egon Pearson.
+
+&lt;img src="fig/tab_pearson.png" width="80%" style="display: block; margin: auto;" /&gt;
+--
+
+- Poderíamos considerar nesse exemplo, que duas amostras independentes foram obtidas
+
+  - Amostra 1
+  - Amostra 2
+  
+--
+
+- Gostaríamos de comparar a probabilidade de sucessos, seja `\(p_1\)` e `\(p_2\)`.
+
+---
+
+# Teste qui-quadrado
+
+- Usando a função `summarytools::ctable` obteríamos o seguinte:
+
+
+```
+## Warning in chisq.test(freq_table_min): Chi-squared approximation may be
+## incorrect
+```
+
+<div class="container st-container">
+<table class="table table-bordered st-table st-table-bordered st-cross-table ">
+<thead>
+<tr>
+<th></th>
+<th colspan="8" align="center" class="st-protect-top-border">resultado</th>
+<th colspan="4"></th>
+</tr>
+<tr>
+<td align="center">
+<strong>amostra</strong>
+</td>
+<th colspan="4" align="center">Sucessos</th>
+<th colspan="4" align="center">Fracassos</th>
+<th colspan="4" align="center">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<strong align="center">Amostra 1</strong>
+</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">3</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">16.7%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">15</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">83.3%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">18</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">100.0%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+</tr>
+<tr>
+<td>
+<strong align="center">Amostra 2</strong>
+</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">7</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">58.3%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">5</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">41.7%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">12</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">100.0%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+</tr>
+<tr>
+<td>
+<strong align="center">Total</strong>
+</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">10</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">33.3%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">20</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">66.7%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+<td align="right" style="padding:0 0 0 15px;border-right:0;text-align:right">30</td>
+<td align="left" style="padding:0 1px 0 4px;border-left:0;border-right:0;text-align:left">(</td>
+<td align="left" style="padding:0;border-left:0;border-right:0;text-align:right">100.0%</td>
+<td align="left" style="padding:0 15px 0 1px;border-left:0;text-align:right">)</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td colspan="100"><em><strong>&nbsp;&#935;<sup>2</sup></strong> = 3.9062&nbsp;&nbsp;&nbsp;<strong>df</strong> = 1&nbsp;&nbsp;&nbsp;<strong>p</strong> = .0481</em><br/>
+                            </td>
+</tr>
+</tfoot>
+</table>
+<p>Generated by <a href='https://github.com/dcomtois/summarytools'>summarytools</a> 0.9.6 (<a href='https://www.r-project.org/'>R</a> version 3.6.3)<br/>2020-10-26</p>
+</div>
+
+
+---
+
+## Usando inferência bayesiana
+
+- Primeiramente, nosso modelo estatístico. 
+--
+Seja $X = $ número de sucessos
+
+- Para amostra 1, assumimos o seguinte
+
+`$$X_1 \sim Bin(18, p_1)$$`
+
+- Para amostra 2, assumimos 
+
+`$$X_2 \sim Bin(12, p_2)$$`
+
+- Precisamos definir distribuições a priori também. A princípio, poderíamos considerar que as duas distribuições são independentes, ou seja
+
+`$$\pi(p_1, p_2) = \pi(p_1)\pi(p_2)$$`
+--
+
+- E para ambos os casos, poderíamos definir
+
+`$$p_i \sim Beta(a_i, b_i)$$`
+--
+
+- Lembrando que para `\(a = b = 1\)` temos a distribuição uniforme.
+
+
+---
+
+# Distribuição a posteriori
+
+- Para falar sobre independência, poderíamos estar interessados na quantidade
+
+`$$P(p_2 &gt; p_1|X_1, X_2)$$`
+--
+
+- Essa quantidade poderia ser obtida diretamente da distribuição de probabilidade conjunta a posteriori
+
+`$$\pi(p_1, p_2 |X_1, X_2)$$`
+--
+
+- Mas podemos considerar amostras das distribuições condicionais completas, ou seja,
+
+`$$\begin{align*} p_1 | X_1, X_2, &amp;p_2 \sim Beta(a_1+X_1, b_1+(18-X_1)) \\ p_2 | X_1, X_2, &amp;p_1 \sim Beta(a_2+X_2, b_2+(12-X_2))
+\end{align*}$$`
+
+--
+
+- Que é o amostrador de Gibbs, utilizado para obter amostras da distribuição conjunta de `\((p_1, p_2)\)`
+
+
+---
+
+# Distribuição a posteriori
+
+- O amostrador de Gibbs vai nos fornecer 
+
+`$$\left(p_1^{(1)}, p_2^{(1)}\right), \left(p_1^{(2)}, p_2^{(2)}\right), \cdots, \left(p_1^{(m)}, p_2^{(m)}\right)$$`
+--
+
+- Nós podemos também obter amostras de `\(\theta = p_2/p_1\)`, que podem ser utilizadas para calcular 
+
+`$$P(p_2 &gt; p_1|X_1, X_2) = P(\theta &gt; 1|X_1, X_2)$$`
+
+--
+
+- Basta fazer 
+
+`$$\left\{ \left(p_2^{(1)}/p_1^{(1)}\right), \cdots, \left(p_2^{(m)}/p_1^{(m)}\right)\right\} = \left\{ \left(\theta^{(1)}\right), \cdots, \left(\theta^{(m)}\right)\right\}$$`
+--
+
+- E aproximar a probabilidade por Monte Carlo
+
+$$\frac{1}{m} \sum_{i=1}^m \mathbb{I} (\theta^{(i)} &gt; 1) $$
+
+---
+
+# Como fazer no R
+
+- Primeiro, obtemos nossas amostras das distribuições a posteriori condicionais completas, utilizando a uniforme como priori
+
+
+```r
+set.seed(1)
+tamanho_mc &lt;- 2000
+post_p1 &lt;- rbeta(tamanho_mc, 3 + 1, 15 + 1)
+post_p2 &lt;- rbeta(tamanho_mc, 7 + 1, 5 + 1)
+```
+
+--
+
+- As amostras de `\(\theta\)` podem ser obtidas fazendo
+
+
+```r
+theta &lt;- post_p2/post_p1
+```
+
+--
+
+- Poderíamos obter estatísticas descritivas sobre `\(\theta\)`
+
+
+```r
+summary(theta)
+```
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##  0.6189  2.1200  3.0303  3.6359  4.2961 26.0462
+```
+
+---
+
+## Densidade a posteriori de `\(\theta\)`
+
+- Posso fazer o gráfico da densidade a posteriori de `\(\theta\)` com
+
+
+```r
+ggplot(data.frame(theta), aes(x = theta)) + theme_minimal() +
+  geom_density(alpha = 0.5, fill = 'royalblue') + 
+  geom_vline(aes(xintercept = 1), color = 'red', linetype = 2)
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-8-1.png" width="45%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Cálculo da probabilidade
+
+- E o cálculo da probabilidade de interesse pode ser feito com
+
+
+```r
+mean(theta &gt; 1)
+```
+
+```
+## [1] 0.9865
+```
+
+--
+
+- Nesse caso, estaríamos dizendo que 
+
+`$$P(\theta &gt; 1|X_1, X_2) \approx 0,9865$$`
+
+--
+
+- O exemplo utilizou a priori uniforme, ou seja, a = b = 1 para os dois casos, porém outros valores poderiam ser utilizados.
+
+--
+
+- O Teorema de Bayes garante que essas quantidades estão exatas do ponto de vista probabilístico.
+
+--
+
+- Aqui nesse exemplo, tanto outras maneiras de se obter amostras da posteriori, quanto outras distribuições a priori poderiam ser utilizadas.
+
+
+---
+class: middle, center, inverse
+
+# Fim!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
