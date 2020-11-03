@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Tabelas de tripla entrada</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2020-11-02" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle
+
+## Associação condicional e marginal em tabelas tripla-entrada
+
+*****
+
+### Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+
+
+
+
+
+---
+class: center, middle, inverse
+
+# Recapitulação
+
+
+---
+
+# Exemplo - Pena de morte
+
+&lt;img src="fig/tab_simpson.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+--
+
+&lt;br&gt;
+
+- Observamos que havia um certo "paradoxo":
+
+--
+
+  - Comparação da diferença de proporções de pena de morte nas tabelas parciais e na tabela marginal.
+
+
+
+---
+class: inverse, center, middle
+
+# Razão de chances marginais e condicionais
+
+---
+
+# Associação em tabelas de tripla entrada
+
+- Em tabelas de dupla entrada, descrevemos a associação a partir de **razão de chances.**
+
+--
+
+- Podemos fazer o mesmo quando consideramos tabelas parciais.
+
+--
+    
+  - Nesse caso, estamos interessados na associação condicional.
+  
+--
+
+- Razão de chances para tabelas parciais são chamadas de:
+
+--
+
+  - **razão de chances condicional.**
+  
+--
+
+- Para variáveis binárias, `\(X\)` e `\(Y\)`, para cada nível `\(k\)` de `\(Z\)`:
+
+  - seja `\(\theta_{XY(k)}\)` a razão de chances condicional entre `\(X\)` e `\(Y\)` 
+
+
+---
+
+# Exemplo - pena de morte
+
+- Considerando a associação condicional entre a raça do réu e a pena de morte. 
+
+--
+
+- Da tabela anterior, a razão de chances estimada para a primeira tabela parcial, quando a raça da vítima é "branca", é dada 
+
+`$$\hat{\theta}_{XY(1)} = \frac{53 \times 37}{414 \times 11} = 0,43$$`
+--
+
+- A chance amostral para réus brancos recebendo a pena de morte foi `\(43\%\)` da chance de réus negros.
+
+--
+
+- Na segunda tabela parcial, temos 
+
+`$$\hat{\theta}_{XY(2)} = \frac{0 \times 139}{16 \times 4} = 0$$`
+
+--
+
+- A pena de morte não foi dada para réus brancos quando a vítima era negra. 
+
+
+---
+
+# Exemplo (cont.)
+
+- Considerando a tabela marginal, 
+
+  - desconsiderando o efeito da raça da vítima.
+  
+--
+
+- A estimativa da razão de chances é dada por 
+
+`$$\hat{\theta}_{XY} = \frac{53 \times 176}{430 \times 15} = 1,45$$`
+--
+
+- A chance amostral da pena de morte foi `\(45\%\)` maior para réus brancos do que para réus negros
+
+--
+
+- Isso é contrário ao que foi observado considerando a razão de chances condicional.
+
+--
+
+- Essa é mais uma maneira de ilustrar o paradoxo de Simpson.
+
+---
+class: inverse, middle, center
+
+# Independência condicional versus independência marginal
+
+---
+
+# Independência condicional
+
+- Lembre que `\(\theta = 1\)` (razão de chances igual a 1) é uma forma de identificar que `\(X\)` e `\(Y\)` são independentes. 
+
+--
+
+- Se `\(X\)` e `\(Y\)` são independentes em cada tabela parcial, então dizemos que 
+
+--
+
+  - `\(X\)` e `\(Y\)` são **condicionalmente independentes** dado `\(Z\)`
+  
+--
+
+- Independência condicional de `\(X\)` e `\(Y\)` dado `\(Z\)` não implica em independência marginal entre `\(X\)` e `\(Y\)`.
+
+--
+
+  - `\(\theta_{XY(k)} = 1, \forall k \nRightarrow \theta_{XY} = 1\)`
+  
+--
+
+- Mesmo quando a razão de chances é igual a 1 para todo nível de `\(Z\)`, esse valor pode ser diferente para a razão de chances marginal.
+
+--
+
+- Vejamos um exemplo a seguir com essa situação.
+
+---
+
+# Exemplo
+
+&lt;img src="fig/tab_theta.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+- Sejam as variáveis 
+
+  - `\(Y =\)` resposta (sucesso, fracasso);
+  - `\(X =\)` tratamento (A, B);
+  - `\(Z =\)` clínica (1, 2).
+  
+---
+
+# Exemplo (cont.)
+
+- A razão de chances condicional entre `\(X\)` e `\(Y\)` para cada nível de `\(Z\)` é 
+
+`$$\theta_{XY(1)} = \frac{18 \times 8}{12 \times 12} = 1,0.$$`
+`$$\theta_{XY(2)} = \frac{2 \times 32}{8 \times 8} = 1,0.$$`
+--
+
+- Dado clínica, resposta e tratamento são condicionalmente independentes.
+
+--
+
+- Quando consideramos a tabela marginal, obtemos a razão de chances
+
+`$$\theta_{XY} = \frac{20 \times 40}{20 \times 20} = 2,0.$$`
+--
+
+- Por que a chance de sucesso do tratamento A é duas vezes a chance do tratamento B, quando desconsideramos a clínica?
+
+
+---
+
+# Exemplo (cont.)
+
+- Podemos olhar as outras razão de chances condicionais:
+
+  - Entre `\(XZ\)` e `\(YZ\)`.
+  
+--
+
+- A razão de chances entre `\(Z\)` e tanto `\(X\)` quanto `\(Y\)`, quando fixamos o nível da outra variável, é igual a `\(6\)`.
+
+--
+
+- Por exemplo, 
+
+`$$\theta_{XZ(1)} = \frac{18 \times 8}{12 \times 2} = 6.$$`
+--
+
+- A chance condicional de receber o tratamento A é 6 vezes maior na clínica 1 do que na clínica 2. 
+
+--
+
+- A chance condicional de sucesso é 6 vezes maior na clínica 1 do que na clínica 2.
+
+--
+
+- Clínica 1 tende a usar mais o tratamento A e também tende a ter mais sucesso. 
+
+
+---
+class: inverse, middle, center
+
+# Associação homogênea
+
+
+---
+
+# Definição 
+
+- Seja `\(K\)` o número de categorias de `\(Z\)`. 
+
+--
+
+- Quando `\(X\)` e `\(Y\)` são binárias, existe **associação XY homogênea** quando
+
+`$$\theta_{XY(1)} = \theta_{XY(2)} = \cdots = \theta_{XY(K)}$$`
+--
+
+- Independência condicional de `\(X\)` e `\(Y\)` é um caso especial quando cada razão de chances condicional é igual a 1.
+
+--
+
+- Numa tabela `\(I \times J \times K\)`, associação XY homogênea significa que 
+
+  - qualquer razão de chances condicional usando dois níveis de `\(X\)` e dois níveis `\(Y\)` é a mesma para cada nível de `\(Z\)`.
+  
+--
+
+- Quando existe associação XY homogênea, também há associação XZ homogênea e associação YZ homogênea. 
+
+--
+
+- Associação homogênea é uma propriedade de simetria:
+
+  - quando ocorre, dizemos que não há interação entre as duas variáveis nos efeitos da terceira.
+  
+  
+---
+
+# Ilustração
+
+&lt;img src="fig/nao_interacao.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# Ilustração
+
+&lt;img src="fig/sim_interacao.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# Exemplo no R
+
+Utilizando dados da covid-19 no Espírito Santo
+
+
+```r
+dados &lt;- read.csv("https://bi.static.es.gov.br/covid19/MICRODADOS.csv", 
+                  sep = ";", 
+                  fileEncoding = "ISO-8859-1")
+```
+
+- Dados abertos para análise dos casos.
+
+--
+
+- Precisamos selecionar os casos confirmados.
+
+
+```r
+dados &lt;- dados %&gt;%
+  janitor::clean_names() %&gt;%
+  filter(classificacao == 'Confirmados')
+```
+
+---
+
+Fazendo algumas alterações na base de dados
+
+
+```r
+dados_sel &lt;- dados %&gt;%
+  mutate(morte_covid = ifelse(evolucao == "Óbito pelo COVID-19",
+                              1, 0)) %&gt;% 
+  mutate(genero = forcats::fct_recode(sexo,
+                      Masculino = "M",
+                      Feminino = "F",
+                      Ignorado = "I")) %&gt;% 
+  filter(genero %in% c("Masculino", "Feminino")) %&gt;% 
+  mutate(grupo_etario = forcats::fct_recode(faixa_etaria,
+                                            Jovens = "0 a 4 anos",
+                                            Jovens = "05 a 9 anos",
+                                            Jovens = "10 a 19 anos",
+                                            Jovens = "20 a 29 anos",
+                                            Adultos = "30 a 39 anos",
+                                            Adultos = "40 a 49 anos",
+                                            Adultos = "50 a 59 anos",
+                                            Idosos = "60 a 69 anos",
+                                            Idosos = "70 a 79 anos",
+                                            Idosos = "80 a 89 anos",
+                                            Idosos = "90 anos ou mais")) %&gt;% 
+  mutate(grupo_etario = forcats::fct_drop(grupo_etario), 
+         genero = forcats::fct_drop(genero))
+```
+
+
+---
+
+# Código para fazer gráfico
+
+
+```r
+dados_sel %&gt;% 
+  group_by(genero, grupo_etario) %&gt;% 
+  summarise(media_morte = 100 * mean(morte_covid)) %&gt;% 
+  ggplot() +
+  theme_minimal() +
+  aes(x = genero, y = media_morte, color = grupo_etario, 
+      group = grupo_etario) +
+  geom_line() + 
+  geom_point() + 
+  labs(y = "Letalidade (%)", x = "Gênero") + 
+  scale_color_viridis_d(name = "Grupo etário")
+```
+
+---
+
+# Resultado
+
+&lt;img src="index_files/figure-html/unnamed-chunk-8-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Comentários finais
+
+- Fazer inferência sobre associações em tabelas de múltipla entrada é mais simples considerando modelos.
+
+--
+
+  - Principamente quando falarmos de modelos logísticos.
+  
+--
+
+- Nesse caso, podemos falar:
+
+  - efeitos principais;
+  - efeitos de interação.
+  
+--
+
+- E podemos ter naturalmente medidas de incerteza associadas a essas quantidades:
+
+--
+
+  - intervalos de confiança;
+  - intervalos de credibilidade.
+  
+
+
+
+---
+
+class: middle, center, inverse
+
+# Fim!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
