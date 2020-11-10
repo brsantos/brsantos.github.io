@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Modelo logístico</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2020-11-09" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle
+
+## Modelo logístico:
+### Considerações iniciais
+
+*****
+
+### Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+
+
+
+
+
+---
+class: center, middle, inverse
+
+# Esclarecimento
+
+
+---
+
+# Ementa
+
+Temos o seguinte item na nossa ementa:
+
+- 5) ASSOCIAÇÃO EM TABELAS S x R
+  - 5.1. Teste de independência
+  - 5.2. Teste de homogeneidade
+  - 5.3. Teste de simetria
+  - 5.4. Teste de homogeneidade marginal
+  
+  
+--
+
+- Alguns desses itens já foram tratados anteriormente.
+
+--
+
+- E alguns desses itens iremos tratar dentro do modelo logístico.
+  
+
+---
+class: inverse, middle, center
+
+# Modelo logístico
+
+---
+
+# Recapitulação 
+
+- `\(Y\)`: variável resposta binária
+
+--
+
+- `\(X\)`: variável preditora quantitativa
+
+--
+
+- Podemos chamar a probabilidade condicional de `\(Y|X = x\)` como 
+
+`$$P(Y = 1|X = x) = \pi(x)$$`
+--
+
+- O modelo logístico propõe:
+`$$\log \left( \frac{\pi(x)}{1 -\pi(x)} \right) = \alpha + \beta x$$`
+--
+
+- Dessa relação, obteríamos então
+
+`$$\pi(x) = \frac{\exp (\alpha + \beta x)}{1 + \exp (\alpha + \beta x)}$$`
+
+---
+class: inverse, middle, center
+
+# Interpretação do modelo logístico
+
+---
+
+# Curva de probabilidade
+
+- A função de probabilidade é não-linear como função de `\(x\)`.
+
+`$$\pi(x) = \frac{\exp (\alpha + \beta x)}{1 + \exp (\alpha + \beta x)}$$`
+
+--
+
+&lt;img src="fig/funcao_p.png" width="45%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Efeito positivo ou negativo
+
+&lt;img src="fig/funcao_p_2.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Variando valores de `\(\beta\)`
+
+&lt;img src="fig/varia_beta.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Variando valores de `\(\alpha\)`
+
+&lt;img src="fig/varia_alpha.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Propriedade
+
+- Se perguntarmos, para qual valor de x, obtemos
+
+`$$\pi(x) = 0,50$$`
+--
+
+- Isso é equivalente a fazer
+
+`$$\frac{\exp (\alpha + \beta x)}{1 + \exp (\alpha + \beta x)} = 0,5$$`
+--
+
+- E a resposta é dada por
+
+`$$x = - \frac{\alpha}{\beta}$$`
+--
+
+- Esse valor é também chamado de **nível efetivo mediano**.
+
+
+---
+
+# Exemplo
+
+- Dados da Covid-19 no Espírito Santo.
+
+--
+
+- Explicar a letalidade da doença em função da idade.
+
+--
+
+- Sabemos que de acordo com os dados oficiais:
+
+--
+
+  - Cerca de 2,6% das pessoas confirmadas com a doença vêm a falecer.
+  
+--
+
+- Dados referentes ao Estado do Espírito Santo.
+
+--
+
+- Pergunta de interesse: 
+
+--
+
+  - Essa proporção varia com a idade?
+  
+---
+
+## Análise descritiva
+
+- Podemos verificar a proporção de mortes para cada idade observada.
+
+&lt;img src="fig/mortes_idade.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Análise descritiva
+
+- Olhando somente uma parte dos dados.
+
+&lt;img src="fig/mortes_idade_zoom.png" width="85%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# Ajuste do modelo
+
+Considere os seguintes dados: 
+
+
+```r
+dados &lt;- read.csv("https://bi.static.es.gov.br/covid19/MICRODADOS.csv", 
+                  sep = ";", 
+                  fileEncoding = "ISO-8859-1")
+
+dados_sel &lt;- dados %&gt;%
+  janitor::clean_names() %&gt;%
+  filter(classificacao == 'Confirmados') %&gt;%
+  mutate(morte_covid = ifelse(evolucao == "Óbito pelo COVID-19",
+                              1, 0)) %&gt;% 
+  mutate(idade = as.numeric(stringr::str_split_fixed(
+    idade_na_data_notificacao, " ", n = 2)[, 1]))
+```
+
+--
+
+O modelo pode ser ajustado fazendo
+
+
+```r
+modelo &lt;- glm(morte_covid ~ idade, data = dados_sel, 
+              family = binomial)
+```
+
+---
+
+## Estimativas pontuais para `\(\alpha\)` e `\(\beta\)`
+
+- Para obter as estimativas do modelo, podemos fazer
+
+
+```r
+coef(modelo)
+```
+
+--
+
+- O que nos dá:
+
+  - `\(\hat{\alpha} = -8,9074\)`
+  
+  - `\(\hat{\beta} = 0,09478602\)`
+  
+--
+
+- Podemos obter os valores estimados para a curva
+
+  `$$\widehat{\pi(x)}$$`
+
+---
+
+# Código no R
+
+Função que calcula o valor da probabilidade:
+
+```r
+funcao_exp &lt;- function(x, alpha, beta){
+  exp(alpha + beta * x)/(1 + exp(alpha + beta * x))
+}
+```
+
+Gerando uma sequência de idades e calculando o valor estimado para cada uma das idades:
+
+
+```r
+seq_idades &lt;- 0:100
+prob_estimadas &lt;- sapply(seq_idades, f_exp, 
+                         alpha = coef(modelo)[1], 
+                         beta = coef(modelo)[2])
+```
+
+---
+
+## Obtendo valores de interesse
+
+- Obtendo proporção de mortes por idade.
+
+
+```r
+tabela_prop_morte &lt;- dados_sel %&gt;% 
+  group_by(idade) %&gt;% 
+  summarise(mortes = sum(morte_covid), 
+            total = n()) %&gt;% 
+  filter(idade &gt; 25, idade &lt; 100) %&gt;% 
+  mutate(prop_morte = mortes/total) %&gt;% 
+  select(idade, prop_morte)
+```
+
+--
+
+- Fazendo o gráfico de interesse:
+
+
+```r
+ggplot(tabela_prop_morte) + 
+  geom_bar(aes(x = idade, y = prop_morte), 
+           stat = 'identity', fill = 'darkviolet', width = 1) +
+  theme_minimal() + 
+  geom_line(data = data.frame(x = seq_idades, 
+                              y = prob_estimadas), 
+            aes(x, y))
+```
+
+---
+
+# Resultado obtido
+
+&lt;img src="fig/ajuste_modelo.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# Alterando modelo 
+
+Adicionando efeito `\(\mbox{idade}^2\)`.
+
+
+```r
+modelo2 &lt;- glm(morte_covid ~ idade + idade2, 
+               data = mutate(dados_sel, idade2 = idade^2), 
+              family = binomial)
+
+f_exp2 &lt;- function(x, alpha, beta1, beta2){
+  exp(alpha + beta1 * x + beta2 * x^2) / 
+    (1 + exp(alpha + beta1 * x + beta2 * x^2))
+}
+```
+
+--
+
+- Podemos comparar os resultados
+
+
+---
+
+# Novo resultado
+
+&lt;img src="fig/ajuste_modelo_2.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Considerando polinômio até `\(x^5\)`
+
+&lt;img src="fig/ajuste_modelo_pol.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+class: inverse, middle, center
+
+# Interpretação da razão de chances
+
+---
+
+# Razão de chances
+
+- O nosso modelo define
+
+`$$\log \left( \frac{\pi(x)}{1 -\pi(x)} \right) = \alpha + \beta x$$`
+--
+
+- Se utilizarmos a função exponencial em ambos lados da igualdade, temos
+
+`$$\frac{\pi(x)}{1 -\pi(x)} = \exp(\alpha + \beta x) = e^\alpha (e^\beta)^x$$`
+
+--
+
+- Se fizermos a razão entre essa chance e quando adicionamos uma unidade em `\(x\)`, temos
+
+`$$\frac{\pi(x + 1)/[1 -\pi(x + 1)]}{\pi(x)/[1 -\pi(x)]} = \frac{e^\alpha (e^\beta)^{x+1}}{e^\alpha (e^\beta)^{x}} = e^\beta$$`
+--
+
+- `\(e^\beta\)` nos mostra o quanto variamos a chance ao aumentarmos uma unidade em `\(x\)`.
+
+
+---
+
+# Retornando ao exemplo 
+
+- Se considerarmos o modelo estimado anteriormente:
+
+--
+
+  - `\(\hat{\beta} = 0,09478602\)`
+  
+--
+
+- Se fizermos `\(e^{\hat{\beta}}\)`, temos
+
+--
+
+  - `\(e^{0,09478602} = 1,099424\)`.
+  
+--
+
+- Com isso, podemos afirmar que a cada ano de diferença, a chance de vir a falecer pela Covid-19 aumenta cerca de 10%.
+
+--
+
+- Podemos confirmar fazendo algumas comparações:
+
+--
+
+- Considerando a idade média `\(x = 42\)` anos, temos que 
+
+--
+
+  - `\(\widehat{\pi(42)} = 0,007200 \Rightarrow \widehat{\pi(42)} / (1 - \widehat{\pi(42)}) = 0.007253\)` 
+  
+--
+
+  - `\(\widehat{\pi(43)} = 0,007910 \Rightarrow \widehat{\pi(43)} / (1 - \widehat{\pi(43)}) = 0,007974\)`
+  
+
+
+---
+
+class: middle, center, inverse
+
+# Fim!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
