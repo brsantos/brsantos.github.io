@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Modelo logístico - Inferência</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2020-11-13" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle
+
+## Modelo logístico: Inferência
+
+*****
+
+### Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+
+
+
+
+
+---
+class: center, middle, inverse
+
+# Modelo logístico
+
+
+---
+
+# Definição
+
+- `\(Y\)`: variável resposta binária
+- `\(X\)`: variável preditora quantitativa
+
+`$$P(Y = 1|X = x) = \pi(x)$$`
+
+
+- O modelo logístico propõe:
+`$$\log \left( \frac{\pi(x)}{1 -\pi(x)} \right) = \alpha + \beta x$$`
+
+- Dessa relação, obteríamos então
+
+`$$\pi(x) = \frac{\exp (\alpha + \beta x)}{1 + \exp (\alpha + \beta x)}$$`
+
+---
+
+# Caso com mais variáveis
+
+- Poderíamos considerar que temos interesse em 
+
+  - `\(X_1, X_2, \ldots, X_p\)`: variáveis preditoras.
+  
+--
+
+- Lembrem que no caso da modelo de regressão normal linear, tínhamos
+
+`$$E(Y|X) = X\beta,$$`
+em que `\(X\)` era uma matrix de planejamento com as variáveis explicativas.
+
+--
+
+- O estimador de MQO poderia ser definido como
+
+`$$\hat{\beta} = (X^{'}X)^{-1}X^{'}Y$$`
+--
+
+- Para o modelo logístico, podemos escrever também
+
+`$$\log \left( \frac{\pi(x)}{1 -\pi(x)} \right) = X\beta$$`
+---
+
+# Matriz de planejamento
+
+- Lembrem que podemos escrever a matrix como
+
+`$$X = \begin{bmatrix}
+1 &amp; X_{11} &amp; X_{12} &amp; \cdots &amp; X_{1p} \\ 
+1 &amp; X_{21} &amp; X_{22} &amp; \cdots &amp; X_{2p} \\
+\vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+1 &amp; X_{n1} &amp; X_{n2} &amp; \cdots &amp; X_{np} \\
+\end{bmatrix}$$`
+
+--
+
+- `\(\beta\)` nesse caso é um vetor de parâmetros com dimensão `\(p+1\)`.
+
+--
+
+- E eu posso escrever a probabilidade de cada observação como
+
+`$$\pi(x_i) = \frac{\exp (x_i^t \beta)}{1 + \exp (x_i^t\beta)},$$`
+em que `\(x_i\)` é `\(i\)`-ésima linha da matrix `\(X\)`, `\(1=1,\ldots,n\)`.
+
+---
+class: inverse, middle, center
+
+# Inferência
+
+---
+
+# Verossimilhança
+
+- Considerando uma amostra de `\(n\)` observações independentes, podemos escrever a verossimilhança como
+
+--
+`$$L(\beta) = \prod_{i=1}^n P(Y_i = y_i|x_i)$$`
+--
+
+- Podemos escrever `\(p(x_i) = P(Y_i = 1|x_i)\)`, logo `\(P(Y_i = 0|x_i) = 1 - p(x_i)\)`.
+
+--
+
+- A verossimilhança pode ser simplificada para 
+
+`$$L(\beta) = \prod_{i=1}^n p(x_i)^{y_i} \left[1-p(x_i)\right]^{1-y_i}$$`
+--
+
+- Podemos utilizar o logaritmo de `\(L(\beta)\)`:
+
+`$$l(\beta) = \log L(\beta) = \sum_{i=1}^n   y_i \log(p(x_i)) + (1-y_i)\log(1-p(x_i))$$`
+
+---
+class: inverse, center, middle
+
+# Estimação (EMV)
+
+---
+
+## Exemplo com valores conhecidos
+
+- Considere o caso em que:
+
+  - `\(\alpha = -1\)`;
+  - `\(\beta = 3\)`;
+  
+--
+
+- Podemos gerar `\(X\)` como uma variável binária.
+
+--
+
+- Em seguida, podemos gerar nossa variável resposta a partir da relação
+
+`$$Y|X = x \sim Ber\left(\pi(x)\right),$$`
+em que 
+`$$\pi(x) = \frac{\exp(-1 + 3 \cdot x)}{1 + \exp(-1 + 3 \cdot x)}$$`
+
+---
+
+# Exemplo no R
+
+- Gerando nossos dados:
+
+
+```r
+set.seed(42)
+alpha &lt;- -1
+beta &lt;- 3
+n &lt;- 300
+x &lt;- sample(0:1, n, replace = TRUE)
+prob &lt;- exp(alpha + beta * x)/(1 + exp(alpha + beta * x))
+y &lt;- rbinom(n, 1, prob)
+```
+
+--
+
+- O logaritmo da função de verossimilhança:
+
+
+```r
+log_funcao_verossimilhanca &lt;- function(beta, y, x){
+  preditor_linear &lt;- beta[1] + beta[2] * x
+  calc_prob &lt;- exp(preditor_linear)/(1 + exp(preditor_linear))
+  dbinom(y, size = 1, 
+         prob = calc_prob, 
+         log = TRUE) %&gt;% 
+    sum()
+}
+```
+
+---
+
+# Exemplo no R (cont.)
+
+- Gerando uma sequência de valores `\(\alpha\)` e `\(\beta\)`:
+
+
+```r
+seq_alpha &lt;- seq(-5, 5, length.out = 151)
+seq_beta &lt;- seq(-1, 7, length.out = 151)
+
+comb_parametros &lt;- expand.grid(seq_alpha, seq_beta)
+```
+
+- Aplicando a função para todas as minhas combinações dos parâmetros:
+
+
+```r
+valores_verossimilhanca &lt;- apply(comb_parametros, 1, 
+                                 log_funcao_verossimilhanca, 
+                                 y = y, x = x)
+
+dados_verossimilhanca &lt;- cbind.data.frame(comb_parametros, 
+                                          valores_verossimilhanca)
+```
+
+---
+# Código para o gráfico
+
+
+```r
+ggplot(dados_verossimilhanca) + 
+  aes(x = Var1, y = Var2, fill = valores_verossimilhanca) + 
+  geom_tile() + 
+  scale_fill_viridis_c(name = "Valor log-verossimilhanca") + 
+  theme_minimal() + 
+  labs(x = expression(alpha), 
+       y = expression(beta)) + 
+  geom_point(aes(x = -1, y = 3), 
+             size = 1, 
+             colour = 'darkviolet') +
+  theme(legend.position = 'bottom')
+```
+
+---
+
+# Gráfico com resultado
+
+&lt;img src="fig/verossimilhanca300.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# Gráfico com `\(n = 2000\)`
+
+&lt;img src="fig/verossimilhanca2000.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# Gráfico comparação
+
+&lt;img src="fig/verossimilhanca_comp.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Obtenção das estimativas
+
+
+```r
+glm(y ~ x, family = binomial)
+```
+
+```
+## 
+## Call:  glm(formula = y ~ x, family = binomial)
+## 
+## Coefficients:
+## (Intercept)            x  
+##      -1.253        3.008  
+## 
+## Degrees of Freedom: 299 Total (i.e. Null);  298 Residual
+## Null Deviance:	    412.9 
+## Residual Deviance: 283 	AIC: 287
+```
+
+
+```r
+modelo &lt;- glm(y ~ x, family = binomial)
+modelo$converged
+```
+
+```
+## [1] TRUE
+```
+
+---
+
+class: inverse, middle, center
+
+# Incerteza sobre as estimativas
+
+---
+
+# Intervalo de confiança
+
+- Podemos obter intervalos de confiança para `\(\beta\)` considerando uma aproximação da distribuição normal.
+
+--
+
+- Nesse caso, podemos fazer
+
+`$$\hat{\beta} \,\, \pm z_{1 - \alpha/2} \mbox{EP}(\hat{\beta})$$`
+- `\(\gamma = 1 - \alpha\)` é o coeficiente de confiança.
+
+- `\(z_{1 - \alpha/2}\)` é o quantil de ordem `\(1 - \alpha/2\)` da `\(N(0,1)\)`.
+
+- `\(\mbox{EP}(\hat{\beta})\)` é o erro padrão do estimador. Pode ser obtido como
+
+`$$\mbox{EP}(\hat{\beta}) = \sqrt{\mbox{Var}(\hat{\beta})}$$`
+
+---
+
+# Exemplo no R
+
+- Para obter as estimativas do erro padrão, podemos fazer
+
+
+```r
+modelo &lt;- glm(y ~ x, family = binomial)
+resumo &lt;- summary(modelo)
+coef(resumo)
+```
+
+```
+##              Estimate Std. Error   z value     Pr(&gt;|z|)
+## (Intercept) -1.252763  0.2004458 -6.249884 4.107586e-10
+## x            3.007618  0.3019529  9.960552 2.268002e-23
+```
+
+--
+
+- Nesse caso, podemos fazer intervalos de confiança para cada parâmetro. Primeiro para `\(\alpha:\)`
+
+`$$\begin{align*} -1.2528 \,\, \pm \,\, &amp; 1.96 \cdot 0.2004 \\
+[ -1.6456 \,\, &amp;;\,\, -0.8600]  \end{align*}$$`
+
+--
+
+- Em seguida, para `\(\beta\)`
+
+`$$\begin{align*} 3.0076 \,\, \pm \,\, &amp; 1.96 \cdot 0.3020 \\
+[ 2.4157 \,\, &amp;;\,\, 3.5996]  \end{align*}$$`
+
+
+---
+
+# Sobre o tamanho de `\(n\)`
+
+- Lembrem da diferença para o logaritmo da função de verossimilhança quando variamos o tamanho da amostra.
+
+--
+
+- O erro padrão está inversamente associado ao tamanho da amostra.
+
+--
+
+- Podemos comparar os resultados obtidos no nosso exemplo considerando os dois tamanhos de amostra diferentes.
+
+--
+
+
+
+
+```r
+coef(resumo_n300)
+```
+
+```
+##              Estimate Std. Error   z value     Pr(&gt;|z|)
+## (Intercept) -1.252763  0.2004458 -6.249884 4.107586e-10
+## x            3.007618  0.3019529  9.960552 2.268002e-23
+```
+
+
+
+
+```r
+coef(resumo_n2000)
+```
+
+```
+##               Estimate Std. Error   z value      Pr(&gt;|z|)
+## (Intercept) -0.8902797 0.06903141 -12.89673  4.695834e-38
+## x            2.8350277 0.11856701  23.91076 2.366853e-126
+```
+
+---
+
+## Intervalo de confiança para a razão de chances
+
+- Lembrem que `\(e^\beta\)` representa a razão de chances quando se aumenta 1 unidade de `\(x\)`
+
+--
+
+- Então, o intervalo de confiança seria construído como 
+
+`$$\exp\{\hat{\beta} \,\, \pm z_{\alpha/2} \mbox{EP}(\hat{\beta})\}$$`
+
+--
+
+- No exemplo anterior, teríamos
+
+`$$\left[ e^{2.4157} \,\, ; \,\, e^{3.5996} \right] = \left[ 11.1976 \, ; 36.5836 \right]$$`
+--
+
+- Aqui, poderíamos estar interessados em verificar se esse intervalo contém o valor 1.
+
+---
+
+## Aplicação com dados da covid-19
+
+- Considere novamente o exemplo em que gostaríamos de verificar o efeito de idade na probabilidade de morte.
+
+--
+
+- Tínhamos obtido os seguintes valores
+
+
+
+
+```r
+modelo &lt;- glm(morte_covid ~ idade, data = dados_sel, 
+              family = binomial)
+coef(summary(modelo))
+```
+
+```
+##                Estimate  Std. Error    z value Pr(&gt;|z|)
+## (Intercept) -8.96586886 0.074786373 -119.88640        0
+## idade        0.09545333 0.001089928   87.57762        0
+```
+
+---
+
+# IC para `\(\alpha\)` e `\(\beta\)`
+
+- Podemos utilizar as funções anteriores para calcular os IC's para `\(\beta\)`.
+
+--
+
+- Para `\(\alpha\)` e `\(\gamma = 0,95\%\)`, teríamos
+
+`$$-8.9658 \pm 1.96 \cdot 0.0748 = [-8.8192 \, ; -9.1124]$$`
+--
+
+- Para `\(\beta\)` e `\(\gamma = 0,95\%\)`, teríamos
+
+`$$0.0955 \pm 1.96 \cdot 0.0011 = [0.093344 \, ; 0.097656]$$`
+--
+
+- Em outras situações com mais variáveis, é interessante considerar a função `sjPlot::plot_model`.
+
+  - Inclusive para fazer gráficos dos valores preditos.
+
+
+---
+
+# Teste de hipóteses
+
+- Para o modelo de regressão logística, estamos interessados em:
+
+  - `\(H_0: \beta = 0\)`.
+  
+--
+
+- Podemos considerar a estatística de teste
+
+`$$z = \frac{\hat{\beta}}{\mbox{EP}(\hat{\beta})}.$$`
+--
+
+- Para grandes amostras, temos que `\(z \sim N(0,1).\)`
+
+--
+
+- Para obter os valores-p para teste bilateral, 
+
+`$$H_0: \beta = 0 \mbox{ contra } H_1: \beta \ne 0,$$`
+podemos calcular 
+`$$P(Z &gt; |z|), \mbox{ em que } Z \sim N(0,1)$$`
+
+---
+
+# Exemplo com dados fixados
+
+- Lembrem que havíamos obtido:
+
+
+```r
+coef(resumo_n300)
+```
+
+```
+##              Estimate Std. Error   z value     Pr(&gt;|z|)
+## (Intercept) -1.252763  0.2004458 -6.249884 4.107586e-10
+## x            3.007618  0.3019529  9.960552 2.268002e-23
+```
+
+--
+
+- Logo, podemos calcular 
+
+`$$z = \frac{-1.25276}{0.2004458} = -6.249884$$`
+--
+
+- E podemos obter o valor-p fazendo
+
+
+```r
+2 * (1 - pnorm(abs(-1.252763/0.2004458)))
+```
+
+```
+## [1] 4.107577e-10
+```
+
+---
+
+class: middle, center, inverse
+
+# Fim!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
