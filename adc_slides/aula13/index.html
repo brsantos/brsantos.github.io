@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Modelo logístico - Inferência</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2020-11-17" />
+    
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle
+
+## Modelo logístico: Inferência
+
+*****
+
+### Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+
+
+
+
+
+---
+class: center, middle, inverse
+
+# Modelo logístico
+
+---
+
+# Definição
+
+- `\(Y\)`: variável resposta binária
+- `\(X\)`: matriz de planejamento
+
+`$$P(Y = 1|X = x) = \pi(x)$$`
+
+- Para o modelo logístico, consideramos a seguinte relação
+
+`$$\log \left( \frac{\pi(x)}{1 -\pi(x)} \right) = X\beta$$`
+--
+
+- Na aula anterior, descrevemos a função de verossimilhança como
+
+`$$L(\beta) = \prod_{i=1}^n p(x_i)^{y_i} \left[1-p(x_i)\right]^{1-y_i}$$`
+
+em que 
+
+`$$\pi(x_i) = \frac{\exp (x_i^t \beta)}{1 + \exp (x_i^t\beta)},$$`
+
+---
+class: inverse, middle, center
+
+# Inferência bayesiana
+
+---
+
+# Definição
+
+- O nosso vetor de parâmetros desconhecido para o qual queremos "fazer inferência" é
+
+`$$\beta = (\beta_0, \beta_1,\ldots,\beta_p)$$`
+--
+
+- Nesse caso, precisamos definir uma distribuição a priori para esses parâmetros
+
+`$$\pi(\beta)$$`
+--
+
+- Dessa forma, podemos calcular a nossa distribuição a posteriori com 
+
+`$$\pi(\beta|Y) \propto L(\beta) \pi(\beta)$$`
+--
+
+- E podemos definir, por exemplo, como estimador de cada parâmetro do vetor a média a posteriori
+
+`$$\hat{\beta_i} = E(\beta_i|Y), \quad i=0,1,\ldots,p.$$`
+
+---
+
+# Elicitação da priori
+
+- Quando considerávamos o modelo sem variáveis preditoras, utilizamos a distribuição Dirichlet como distribuição a priori.
+
+--
+
+- Agora não temos mais a conjugação, porque a probabilidade é modelada como uma função não-linear das variáveis preditoras.
+
+`$$\pi(x_i) = \frac{\exp (x_i^t \beta)}{1 + \exp (x_i^t\beta)},$$`
+--
+
+- Nesse caso, podemos definir o nosso conhecimento a priori sobre `\(\beta\)` com outras distribuições.
+
+--
+
+- Por exemplo, podemos considerar distribuições simétricas como Normal ou t-Student,
+
+  - considerando diferentes parâmetros para explicitar a variância.
+
+
+---
+
+## Exemplo com valores conhecidos
+
+- Considere o caso em que:
+
+  - `\(\alpha = -1\)`;
+  - `\(\beta = 3\)`;
+  
+- Podemos gerar `\(X\)` como uma variável binária.
+
+- Em seguida, podemos gerar nossa variável resposta a partir da relação
+
+`$$Y|X = x \sim Ber\left(\pi(x)\right),$$`
+em que 
+`$$\pi(x) = \frac{\exp(-1 + 3 \cdot x)}{1 + \exp(-1 + 3 \cdot x)}$$`
+
+--
+
+- O mesmo exemplo foi considerado no caso clássico.
+
+---
+
+# Distribuição a priori
+
+- Vamos considerar para cada parâmetro a distribuição normal padrão, com variância `\(\sigma^2 = 2.5^2\)`
+
+
+```r
+curve(dnorm(x, sd = 2.5), -7.5, 7.5, ylab = "Densidade a priori", 
+      xlab = expression(beta))
+```
+
+&lt;img src="index_files/figure-html/figura_norm-1.png" width="45%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Obtendo as estimativas
+
+
+
+- Considerando o pacote `rstanarm` e a função `stan_glm`
+
+
+```r
+modelo &lt;- stan_glm(y ~ x, family = binomial, 
+                   prior = normal(0, 2.5), refresh = 0)
+modelo
+```
+
+```
+## stan_glm
+##  family:       binomial [logit]
+##  formula:      y ~ x
+##  observations: 300
+##  predictors:   2
+## ------
+##             Median MAD_SD
+## (Intercept) -1.2    0.2  
+## x            3.0    0.3  
+## 
+## ------
+## * For help interpreting the printed output see ?print.stanreg
+## * For info on the priors used see ?prior_summary.stanreg
+```
+
+---
+
+## Gráficos da dist. a posteriori
+
+
+```r
+plot(modelo, 'areas')
+```
+
+&lt;img src="index_files/figure-html/plot-1.png" width="45%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Intervalos de credibilidade
+
+- Podemos obter os intervalos de credibilidade com
+
+
+```r
+posterior_interval(modelo, prob = 0.95)
+```
+
+```
+##                  2.5%      97.5%
+## (Intercept) -1.643042 -0.8657451
+## x            2.417134  3.5782303
+```
+
+--
+
+- Lembre que havíamos obtido na aula anterior os intervalos de confiança.
+
+  - Para `\(\alpha\)`:
+`$$[ -1.6456 \,\, ;\,\, -0.8600]$$`
+  - Para `\(\beta\)`:
+
+`$$[ 2.4157 \,\, ;\,\, 3.5996]$$`
+
+---
+
+### Considerando os dados da Covid-19
+
+- Refazendo o exemplo em que escrevemos a probabilidade de morte na Covid-19 como função da idade.
+
+
+
+- Alterando somente a variável idade para considerar a diferença para a média:
+
+
+```r
+dados_sel &lt;- dados_sel %&gt;%
+  mutate(idade_dif_media = idade - mean(idade))
+```
+
+
+```r
+modelo_covid &lt;- stan_glm(morte_covid ~ idade_dif_media, data = dados_sel, 
+              family = binomial, prior = student_t(df = 7), 
+              refresh = 0)
+posterior_interval(modelo_covid, prob = 0.95)
+```
+
+```
+##                        2.5%       97.5%
+## (Intercept)     -5.07796399 -4.95071316
+## idade_dif_media  0.09341158  0.09761471
+```
+
+---
+
+## Gráfico da distribuição a posteriori
+
+
+```r
+plot(modelo_covid, 'areas', pars = 'idade_dif_media')
+```
+
+&lt;img src="index_files/figure-html/plot_covid-1.png" width="45%" style="display: block; margin: auto;" /&gt;
+
+
+---
+class: inverse, middle, center
+
+# Variáveis explicativas categóricas 
+
+---
+
+## Duas variáveis explicativas binárias
+
+- Considere que temos:
+
+  - `\(X\)` variável explicativa binária;
+  - `\(Z\)` variável explicativa binária;
+  
+--
+
+- O modelo logístico seria escrito como
+
+`$$\log \left( \frac{\pi(x)}{1 -\pi(x)} \right) = a + b_1 x + b_2 z$$`
+--
+
+- As variáveis `\(X\)` e `\(Z\)` são chamadas usualmente de variáveis indicadoras ou variáveis *dummy*.
+
+
+---
+
+# Possibilidades
+
+- As possibilidades de modelos relações lineares são
+
+&lt;img src="fig/tab_modelo.png" width="40%" style="display: block; margin: auto;" /&gt;
+
+--
+
+- Pergunta: qual é a interpretação de 
+
+`$$\frac{\exp(a)}{1 + \exp(a)} \quad?$$`
+--
+
+- E o que podemos falar sobre `\(b_1\)` e `\(b_2\)`?
+
+---
+
+# Independência condicional
+
+- Se fizermos a razão de chances, quando consideramos `\(X = 1\)` e `\(X = 0\)`, mantendo o nível de `\(Z\)` constante, temos
+
+`$$\begin{align*} &amp;\frac{P(Y = 1|X = 1, Z = z)/P(Y = 0|X = 1, Z = z)}{P(Y = 1|X = 0, Z = z)/P(Y = 0|X = 0, Z = z)} = \\ 
+&amp;= \frac{\exp(a + b_1 + b_2 z)}{\exp(a + b_2 z)} = e^{b_1} \frac{\exp(a + b_2 z)}{\exp(a + b_2 z)} \\ 
+&amp;= \exp(b_1)\end{align*}$$`
+
+--
+
+- Que é a razão de chances de `\(X\)` e `\(Y\)` condicional em `\(Z\)`.
+
+--
+
+- Quando `\(b_1 = 0\)`, podemos dizer que `\(X\)` e `\(Y\)` são condicionalmente independentes dado `\(Z\)`.
+
+--
+
+- Uma discussão análoga pode ser feito com relação a `\(Z\)`.
+
+---
+
+# Exemplo - Covid-19
+
+- Considere que  
+
+  - `\(Y:\)` morte pela covid-19 no ES.
+  - `\(X:\)` idosos (Sim, Não)
+  - `\(Z:\)` gênero (Masculino, Feminino)
+
+&lt;img src="fig/tab_covid.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+--
+
+- Considere que `\(X = 1\)`, para "Sim".
+
+- E `\(Z = 1\)` para gênero "Feminino".
+
+---
+
+# Gráfico descritivo
+
+&lt;img src="fig/ajuste_amostral.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Ajuste do modelo
+
+- Código no R, considerando `idosos` e `feminino` como variáveis *dummy*.
+
+
+```r
+modelo &lt;- glm(morte_covid ~ idosos + feminino, 
+              data = dados_sel, family = binomial)
+```
+
+--
+
+- A tabela com o resumo do ajuste seria 
+
+&lt;img src="fig/tab_estimativas.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+--
+
+- Pergunta: o que representa?
+
+`$$\frac{\exp(-4,8154)}{1 + \exp(-4,8154)} = 0,00804$$`
+
+---
+
+# Modelo ajustado
+
+&lt;img src="fig/modelo_ajustado.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+### Representação de fatores tipo ANOVA
+
+- Quando consideramos uma variável explicativa binária, só precisamos de uma variável indicadora.
+
+--
+
+- Quando consideramos que 
+
+  - `\(X\)` tem `\(I\)` categorias.
+  - `\(Z\)` tem `\(J\)` categorias.
+  
+--
+
+- Então, devemos considerar `\(I-1\)` variáveis indicadoras para `\(X\)` 
+
+--
+
+- E `\(J-1\)` variáveis indicadoras para `\(Z\)`.
+
+--
+
+- E podemos considerar a seguinte representação para o modelo:
+
+`$$\log \left( \frac{\pi(x)}{1 -\pi(x)} \right) = \alpha + \beta_i^X + \beta_k^Z$$`
+- em que `\(\{\beta_i^X\}\)` representa os parâmetros associados a `\(X\)` e `\(\{\beta_k^Z\}\)` os parâmetros associados a `\(Z\)`.
+
+
+---
+
+### Representação de fatores (cont.)
+
+- Considere o termo `\(\{\beta_i^X\}\)`, o qual poderíamos reescrever como
+
+`$$\beta_1^X x_1 + \beta_2^X x_2 + \cdots + \beta_{I-1}^X x_{I-1},$$`
+em que `\(\{x_1, \ldots, x_{I-1}\}\)` são as variáveis indicadoras para as primeiras `\(I-1\)` categorias de `\(X\)`.
+
+--
+
+- A categoria `\(I\)` não precisa de uma variável indicadora, pois está definida quando
+
+`$$x_1 = \cdots = x_{I-1} = 0.$$`
+--
+
+- Considere o exemplo em que `\(X = \{ \mbox{Jovens}, \mbox{Adultos}, \mbox{Idosos}\}\)` e considere "Jovens" como referência. 
+--
+Então,
+
+  - `\(\{x_1 = 0, x_2 = 0\} = \{X = \mbox{Jovens}\}\)`
+  - `\(\{x_1 = 1, x_2 = 0\} = \{X = \mbox{Adultos}\}\)`
+  - `\(\{x_1 = 0, x_2 = 1\} = \{X = \mbox{Idosos}\}\)`
+  
+---
+
+# Exemplo no R
+
+- Considere novamente o caso que temos a seguinte variável 
+
+
+
+
+```r
+levels(dados_sel$grupo_etario)
+```
+
+```
+## [1] "Jovens"  "Adultos" "Idosos"
+```
+
+--
+
+Então, eu posso ajustar o modelo fazendo 
+
+
+```r
+modelo &lt;- glm(morte_covid ~ grupo_etario, data = dados_sel, 
+              family = binomial)
+summary(modelo) %&gt;% coef()
+```
+
+```
+##                      Estimate Std. Error   z value      Pr(&gt;|z|)
+## (Intercept)         -6.626694  0.1349276 -49.11297  0.000000e+00
+## grupo_etarioAdultos  1.879351  0.1390640  13.51429  1.287922e-41
+## grupo_etarioIdosos   4.635771  0.1362891  34.01426 1.371367e-253
+```
+
+---
+class: inverse, middle, center
+
+# Teste de Cochran‐Mantel-Haenszel
+
+---
+
+## Tabelas de contingência 2x2xK
+
+- Em alguns exemplos com duas variáveis categóricas preditoras:
+
+  - `\(X\)` identifica dois grupos que temos interesse em comparar;
+  - `\(Z\)` é uma variável de controle.
+  
+--
+
+- `\(X\)` pode se referir a dois tratamentos e `\(Z\)` pode ser os diferentes locais onde se está coletando o material.
+
+--
+
+- Com `\(K\)` categorias para `\(Z\)`, podemos escrever o modelo logístico com 
+
+`$$\log \left( \frac{\pi(x)}{1 -\pi(x)} \right) = \alpha + \beta x + \beta_k^Z$$`
+
+--
+
+- `\(x\)` é uma variável indicadora para `\(X\)`.
+
+--
+
+- `\(\exp(\beta)\)` é a razão de chances comum para todas as K tabelas parciais para as categorias de `\(Z\)`.
+
+--
+
+- Quanto `\(\beta = 0\)`, para todas tabelas a razão de chances é igual a 1.
+
+---
+
+### Teste de Cochran–Mantel–Haenszel
+
+- É uma alternativa ao teste de independência condicional em tabelas de contingência 2 x 2 x K.
+
+--
+
+- O teste condiciona no total das linhas e das colunas em cada tabela parcial. 
+
+  - Então, como no teste de Fisher, o valor da primeira célula determina todos os outros valores.
+  
+--
+
+- Considerando o modelo binomial para cada linha em cada tabela parcial, o condicionamento resulta na distribuição hipergeométrica
+
+  - para `\(n_{11k}\)`, que é o valor na linha 1 e coluna 1 da tabela parcial `\(k\)`.
+
+--
+
+- Na tabela parcial `\(k\)`, 
+
+  - o total das linhas são `\(\{n_{1+k}, n_{2+k}\}\)`;
+  - o total das colunas são `\(\{n_{+1k}, n_{+2k}\}\)`.
+
+---
+
+# Definição do teste
+
+- Dados os totais, sob `\(H_0\)`, temos que 
+
+`$$\mu_{11k} = E(n_{11k}) = n_{1+k}n_{+1k}/n_{++k}$$`
+`$$\mbox{Var}(n_{11k}) = n_{1+k}n_{2+k}n_{+1k}n_{+2k}/n^2_{++k}(n_{++k}-1)$$`
+--
+
+- A estatística de teste resume a informação das `\(K\)` tabelas parciais fazendo
+
+`$$CMH = \frac{\left[\sum_k (n_{11k} - \mu_{11k})\right]^2}{\sum_k \mbox{Var}(n_{11k})}$$`
+--
+
+- Para grandes amostras, essa estatística tem distribuição qui-quadrado com 1 grau de liberdade.
+
+--
+
+- A aproximação melhora conforme aumentamos o tamanho da amostra, independente se o número de categorias `\(K\)` é grande ou pequeno.
+
+
+---
+
+# Intuição do teste
+
+- Quando a verdadeira razão de chances excede 1,0, é razoável esperar que em cada tabela parcial k,
+
+`$$n_{11k} - \mu_{11k} &gt; 0$$`
+--
+
+- Então, espera-se que a soma dessas diferenças seja relativamente grande.
+
+--
+
+- Algo similar pode ser dito quando a razão de chances é menor que 1,0.
+
+--
+
+- A estatística de teste `\(CMH\)` apresenta valores grandes quando `\((n_{11k} - \mu_{11k})\)` é consistentemente positivo ou negativo.
+
+--
+
+- O teste vai funcionar melhor quando a associação `\(XY\)` é similar em cada tabela parcial.
+
+--
+
+- O teste foi proposto em 1959, antes da regressão logística se tornar popular. 
+
+
+
+---
+
+class: middle, center, inverse
+
+# Fim!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
