@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Modelo logístico - Seleção de modelos</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2020-11-24" />
+    
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle
+
+## Modelo logístico - Seleção de modelos
+
+*****
+
+### Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+
+
+
+
+
+---
+class: center, middle, inverse
+
+# Modelo logístico
+
+---
+
+# Definição
+
+- `\(Y\)`: variável resposta binária
+- `\(X\)`: matriz de planejamento
+
+`$$P(Y = 1|X = x) = \pi(x)$$`
+
+- Para o modelo logístico, consideramos a seguinte relação
+
+`$$\log \left( \frac{\pi(x)}{1 -\pi(x)} \right) = X\beta$$`
+--
+
+- Estamos interessados em discutir considerar modelos com muitas variáveis:
+
+  - Como interpretar os parâmetros?
+  - Testar interações entre o modelo?
+  - Melhores maneiras de selecionar os modelos.
+  
+  
+---
+class: inverse, middle, center
+
+# Interpretação do modelo com vários preditores
+
+---
+
+# Exemplo 
+
+- Vamos considerar os dados da Pesquisa do Orçamento Familiar de 2008-2009 do IBGE.
+
+--
+
+- Filtrando os dados do Espírito Santo.
+
+--
+
+- Tendo em vista a variável resposta:
+
+  - `\(Y:\)` posse de cartão de crédito.
+  
+--
+
+- E as seguintes variáveis explicativas: 
+
+  - gênero (feminino, masculino);
+  - raça/cor (negro, não-negro);
+  - anos de educação;
+  - renda;
+  - idade.
+  
+---
+
+# Análise descritiva - Gênero
+
+&lt;img src="fig/cartao_genero.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# Análise descritiva - Raça
+
+&lt;img src="fig/cartao_raca.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# Análise descritiva - Idade
+
+&lt;img src="fig/cartao_idade.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+## Análise descritiva - Educação
+
+&lt;img src="fig/cartao_educacao.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Análise descritiva - Renda
+
+&lt;img src="fig/cartao_renda.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Primeira tentativa
+
+- Vamos ajustar um modelo somente com 
+
+  - Gênero
+  - Raça/Cor
+  
+--
+
+- Considerando homens e não negros como categorias de referência, obtemos o seguinte ajuste.
+
+&lt;img src="fig/tab_estimativas1.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+--
+
+- A variável mulheres tem um efeito negativo.
+
+- Assim, como a variável ser negro.
+
+---
+
+# Interpretação
+
+- Ajustamos o seguinte modelo
+  
+  - `\(X_1\)` (1 = mulher, 0 = homem);
+  - `\(X_2\)` (1 = negro, 0 = não-negro);
+
+`$$\log \left( \frac{\pi}{1 -\pi} \right) = \alpha + \beta_1 X_1 + \beta_2 X_2$$`
+--
+
+- A interpretação de `\(\hat{\alpha} = -0,38173\)` é 
+`$$\pi(Y|X_1 = 0, X_2 = 0) = \frac{\exp(\hat{\alpha})}{1 + \exp(\hat{\alpha})} = 0,405709$$`
+--
+
+- A interpretação de `\(\hat{\beta_1} = -0,23368\)` é 
+--
+`$$\frac{\mbox{chance}(X_1 = 1, X_2 = x_2)}{\mbox{chance}(X_1 = 0, X_2 = x_2)} = \exp(\hat{\beta_1}) = 0,79161$$`
+
+---
+
+# Segunda tentativa
+
+- Vamos ajustar um modelo somente com 
+
+  - Gênero `\((X_1)\)`
+  - Raça/Cor `\((X_2)\)`
+  - idade `\((X_3)\)`
+  
+--
+
+- Para a variável idade, podemos considerar uma transformação:
+
+  - diferença para a renda média, `\(X_{3i} - \bar{X}_3\)`.
+  
+--
+
+- Isso facilita a interpretação dos parâmetros do modelo.
+
+--
+
+&lt;img src="fig/tab_estimativas2.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Terceira tentativa
+
+- Vamos ajustar um modelo com 
+
+  - Gênero `\((X_1)\)`
+  - Raça/Cor `\((X_2)\)`
+  - Dif. idade média `\((X_3)\)`
+  - Dif. renda média `\((X_4)\)`
+  
+--
+
+&lt;img src="fig/tab_estimativas3.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+--
+
+- O valor-p para a variável indicadora de mulheres é grande.
+
+---
+
+## Interpretação quando `\(\beta = 0\)`
+
+- No modelo anterior, observamos que o teste de hipótese 
+
+  - `\(H_0: \beta_1 = 0\)` contra `\(H_1: \beta_1 \ne 0\)`,
+  
+  - apresenta valor-p igual a 0,66.
+  
+--
+
+- Não podemos rejeitar que não existe "efeito" das mulheres para explicar a probabilidade de ter cartão de crédito.
+
+--
+
+`$$\frac{\mbox{chance}(X_1 = 1, X_2 = x_2, X_3 = x_3, X_4 = x_4)}{\mbox{chance}(X_1 = 0, X_2 = x_2, X_3 = x_3, X_4 = x_4)} = \exp(\hat{\beta_1}) = \exp(0) = 1$$`
+
+--
+
+- Note que essa é uma razão de chances condicional nas variáveis `\(X_2\)`, `\(X_3\)` e `\(X_4\)`.
+
+--
+
+- Diríamos então que a variável "gênero" é independente da variável "ter cartão de crédito", condicionalmente a observação de raça/cor, idade e renda.
+
+---
+
+# Quarta tentativa
+
+- Observe o modelo agora com
+
+  - Gênero `\((X_1)\)`
+  - Raça/Cor `\((X_2)\)`
+  - Dif. idade média `\((X_3)\)`
+  - Dif. renda média `\((X_4)\)`
+  - Dif. anos de estudo médio `\((X_5)\)`
+  
+--
+
+- Veja o que obtemos de resultado das estimativas do modelo:
+
+&lt;img src="fig/tab_estimativas4.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Relação entre educação e idade
+
+&lt;img src="fig/dist_idade_educacao.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Mais interpretações
+
+- Quando adicionamos a variável anos de educação
+
+  - A variável indicadora para mulheres continuou não sendo significativa.
+--
+
+  - A variável indicadora para negros deixou de ser significativa.
+--
+
+  - Assim como a variável idade.
+  
+--
+
+- Podemos considerar que a variável Raça/Cor é independente da variável resposta, quando condicionamos
+  
+  - anos de educação,
+  - renda, 
+  - idade, 
+  - gênero.
+  
+--
+
+- A mesma conclusão pode ser dita para gênero e idade.
+
+
+---
+class: inverse, middle, center
+
+# Interação
+
+
+---
+
+# Interação entre termos
+
+- De forma simples, podemos pensar em definir efeitos que mudam conforme mudamos os níveis de outras variáveis.
+
+--
+
+- No exemplo anterior, estimamos um efeito para mulheres.
+
+--
+
+- E também um efeito para pessoas negras. 
+
+--
+
+- E se houvesse um efeito diferente para pessoas negras entre homens do que entre mulheres?
+
+--
+
+- Podemos estimar esse efeito com a interação! 
+
+--
+
+- E não somente entre variáveis categóricas, mas também entre variáveis categóricas e quantitativas.
+
+---
+
+# Análise descritiva
+
+&lt;img src="fig/cartao_genero_raca.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Análise descritiva
+
+&lt;img src="fig/cartao_idade_raca.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Modelo com interação
+
+- Ajustando o modelo com interação entre as variáveis.
+
+--
+
+- Primeiramente, somente com interação entre gênero e raça/cor.
+
+--
+
+- Obtemos as seguintes estimativas.
+
+--
+
+&lt;img src="fig/tab_estimativas4.5.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+--
+
+- O que nos mostra que essa interação não é significativa.
+
+---
+
+# Modelo com interação v2
+
+- Considerando a interação entre negro e idade agora.
+
+--
+
+- Obtemos as seguintes estimativas.
+
+--
+
+&lt;img src="fig/tab_estimativas5.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+- O que nos diria então que existe uma interação significativa entre idade e a pessoa ser negra.
+
+---
+
+## Como observar essa interação?
+
+- Observando a equação do modelo, temos
+`$$\log \left( \frac{\pi}{1 -\pi} \right) = \alpha + \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_3 + \beta_4 X_4 + \beta_5 X_5 + \beta_6 (X_2 \cdot X_3)$$`
+--
+
+- Quando `\(X_2 = 0\)` (pessoa não-negra), o efeito de idade `\((X_3)\)` é medido apenas por `\(\beta_3\)`.
+
+--
+
+- Quando `\(X_2 = 1\)` (pessoa negra), o efeito de idade `\((X_3)\)` é medido por `\(\beta_3 + \beta_6\)`
+
+--
+
+- Esse tipo de resultado é mais fácil de ser visualizado de forma gráfica.
+
+--
+
+- Podemos fazer o gráfico das probabilidades de ter um cartão de crédito como função da idade 
+
+  - Podemos calcular a probabilidade de duas pessoas (uma pessoa negra e outra não negra) como função da idade.
+
+---
+
+# Código no R
+
+- Considere que o modelo foi estimado no seguinte objeto:
+
+
+```r
+modelo5 &lt;- glm(cartao_credito ~ mulheres + negro + 
+                 idade_media + renda_media + educacao_media + 
+                 idade_media * negro, 
+               data = base_es, family = binomial)
+```
+
+Podemos criar uma sequencia de idades
+
+
+```r
+seq_idades &lt;- 20:80
+seq_idades_pred &lt;- seq_idades - mean(base_es$idade)
+```
+
+--
+
+- Note como temos o valor da idade.
+
+--
+
+- Porém para o cálculo da probabilidades precisamos centralizar o valor das idades.
+
+---
+
+# Predição da probabilidades
+
+- Primeiro para uma pessoa negra:
+
+
+```r
+pred_negro &lt;- predict(modelo5, 
+                      data.frame(mulheres = 1, 
+                                  negro = 1, 
+                                  idade_media = seq_idades_pred,
+                                  renda_media = 0, 
+                                  educacao_media = 0),  
+                      type = 'response')
+```
+
+- Em seguida, para uma pessoa não negra
+
+
+```r
+pred_nao_negro &lt;- predict(modelo5, 
+                      data.frame(mulheres = 1, 
+                                  negro = 0, 
+                                  idade_media = seq_idades_pred,
+                                  renda_media = 0, 
+                                  educacao_media = 0),  
+                      type = 'response')
+```
+
+---
+
+# Fazendo o gráfico
+
+&lt;img src="fig/interacao_modelo.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Fazendo o gráfico
+
+&lt;img src="fig/interacao_modelo_2.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: inverse, middle, center
+
+# Seleção de variáveis e modelos
+
+---
+
+# AIC
+
+- Todo modelo é uma simplificação da realidade. 
+
+--
+
+- *All models are wrong, but some are useful.*
+
+--
+
+- Você pode fazer testes de hipótese para verificar se algum dos parâmetros são iguais ou diferentes de zero.
+
+--
+
+- Mas é importante considerar uma medida mais geral para qualificar o ajuste do modelo.
+
+--
+
+- Uma das mais utilizadas é o "Critério de informação de Akaike".
+
+--
+
+- O modelo mais adequado será aquele que minimiza 
+
+`$$\mbox{AIC} = -2(\log \mbox{verossimilhança} - \mbox{número de parâmetros no modelo})$$`
+--
+
+- Note como estamos penalizando se o modelo tem muitos parâmetros.
+
+
+---
+
+# Exemplo - POF
+
+- Considerando os dados anteriores, obtemos o seguinte sobre os modelos:
+
+&lt;img src="fig/tab_aic.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+- Esse valor do AIC é obtido a partir do próprio ajuste.
+
+--
+
+- Ou podemos utilizar a função 
+
+
+```r
+?AIC
+```
+
+---
+
+# Método stepwise
+
+- Esse método é bastante utilizado para retirar ou colocar variáveis no modelo. 
+
+--
+
+- Pode ser feito de duas maneiras:
+
+  - *backward*,
+  - *forward*.
+  
+--
+
+- Consiste em verificar sistematicamente se uma variável deve ser adicionada ou retirada do modelo, comparando os valores do AIC.
+
+--
+
+- No R, pode ser feito com a função 
+
+
+```r
+?step
+```
+
+---
+
+# Tabelas de classificação
+
+- Se considerarmos os valores estimados para cada observação,
+
+`$$\hat{\pi} = \frac{\exp\left[\alpha + \hat{\beta}_1 X_1 + \hat{\beta}_2 X_2 + \hat{\beta}_3 X_3 + \hat{\beta}_4 X_4 + \hat{\beta}_5 X_5 + \hat{\beta}_6 (X_2 \cdot X_3)\right]}{1 + \exp\left[\alpha + \hat{\beta}_1 X_1 + \hat{\beta}_2 X_2 + \hat{\beta}_3 X_3 + \hat{\beta}_4 X_4 + \hat{\beta}_5 X_5 + \hat{\beta}_6 (X_2 \cdot X_3)\right]}$$`
+--
+
+- Poderíamos considerar um limiar e classificar uma pessoa como `\(Y = 1\)`, se
+
+`$$\hat{\pi} &gt; \pi_0$$`
+--
+
+- Por exemplo, poderíamos considerar `\(\pi_0 = 0,5\)`.
+
+--
+
+&lt;img src="fig/tabela_predicao.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Variando `\(\pi_0\)`
+
+- Se consideramos `\(\pi_0 = 0,25\)`, temos o seguinte
+
+&lt;img src="fig/tabela_predicao_25.png" width="50%" style="display: block; margin: auto;" /&gt;
+--
+
+- Compare novamente com `\(\pi_0 = 0,5\)`
+&lt;img src="fig/tabela_predicao.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+## Especifidade e Sensibilidade
+
+- Considerando a tabela anterior, poderíamos considerar os dois tipos de acertos:
+
+  - A previsão é igual a 0 `\((\hat{Y} = 0)\)`, quando `\(Y = 0\)`.
+  - A previsão é igual a 1 `\((\hat{Y} = 1)\)`, quando `\(Y = 1\)`.
+  
+--
+
+- Se considerarmos as respectivas probabilidades:
+
+  - `\(P(\hat{Y} = 0 |Y = 0)\)`.
+  - `\(P(\hat{Y} = 1 |Y = 1)\)`.
+
+--
+
+- Isso remete a ideia de especificidade e sensibilidade para testes diagnósticos.
+
+--
+
+- Para cada valor de `\(\pi_0\)`, obtemos um valor específico para essas quantidades
+
+---
+
+# Curva ROC
+
+- Considere que podemos variar `\(\pi_0\)` entre 0 e 1.
+
+--
+
+- Para cada valor podemos calcular a sensibilidade.
+
+  - `\(P(\hat{Y} = 1|Y = 1):\)` taxa de verdadeiros positivos.
+  
+--
+
+- E também o complementar da especificidade:
+
+  - `\(P(\hat{Y} = 1|Y = 0):\)` taxa de falsos positivos.
+  
+--
+
+- A curva ROC vai ser o gráfico que no eixo x tem 1 - Especificidade.
+
+- E no eixo y mostra a Sensibilidade. 
+
+--
+
+- A área embaixo da curva ROC também é utilizada para comparar modelos.
+
+--
+
+- Quanto maior essa área, melhor o poder preditivo do modelo.
+
+---
+
+# Curva ROC - exemplo
+
+&lt;img src="fig/roc_modelo_5.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# Curva ROC - exemplo
+
+&lt;img src="fig/roc_modelos.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+class: middle, center, inverse
+
+# Fim!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
