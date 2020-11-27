@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Modelos log-lineares para tabelas de contingência</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2020-11-26" />
+    
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle
+
+## Modelos log-lineares para tabelas de contingência
+
+*****
+
+### Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+
+
+
+
+
+---
+class: center, middle, inverse
+
+# Introdução
+
+---
+
+# Definição
+
+- Até o momento, consideramos as probabilidades de cada célula das tabelas de contingência.
+
+--
+
+  - Então, podemos modelar essas probabilidades com as distribuições binomial ou multinomial.
+  
+--
+
+- Note, porém, que observamos contagens em cada célula. 
+
+--
+
+- Podemos modelar então essas contagens.
+
+--
+
+  - A ideia é tentar verificar se os valores das contagens dependem dos níveis das variáveis categóricas para a célula. 
+
+--
+
+- Pensando em contagem, é natural utilizar que as contagens seguem distribuição Poisson. 
+
+
+---
+
+# Suposições
+
+- Considerando uma tabela de contingência `\(I \times J\)` que classifica de forma cruzada `\(n\)` observações.
+
+--
+
+- Quando temos independência entre `\(X\)` e `\(Y\)`, a probabilidade conjunta `\(\{\pi_{ij}\}\)` é determinada pelo total das colunas e das linhas,
+
+`$$\pi_{ij} = \pi_{i+}\pi_{+j}, \quad i=1,\ldots,I,\, j=1,\ldots,J.$$`
+--
+
+- Na abordagem até então, consideramos que `\(\pi_{ij}\)` eram parâmetros da distribuição multinomial. 
+
+--
+
+- Modelos log-lineares usam as frequências esperadas `\(\{\mu_{ij} = n\pi_{ij}\}\)` ao invés de `\(\{\pi_{ij}\}\)`.
+
+--
+
+- Então, considera-se que essas contagens podem ser modeladas com uma distribuição Poisson com valor esperado igual a `\(\mu_{ij}\)`.
+
+--
+
+- Sob independência,
+`$$\mu_{ij} = n\pi_{i+}\pi_{+j}$$`
+
+---
+class: inverse, middle, center
+
+# Modelo log-linear de independência para uma tabela de dupla entrada
+
+---
+
+# Modelo
+
+- Denotando a variável na linha por `\(X\)`.
+
+- E a variável da coluna por `\(Y\)`.
+
+--
+
+- A condição de independência é multiplicativa, isto é,
+
+`$$\mu_{ij} = n\pi_{i+}\pi_{+j}$$`
+--
+
+- Aplicando a função logaritmo nos dois lados da equação gera uma relação aditiva. 
+
+--
+
+- `\(\log \mu_{ij}\)` depende então de:
+
+  - um termo geral baseado no tamanho amostral;
+  - um termo baseado na probabilidade da linha `\(i\)`;
+  - um termo baseado na probabilidade da coluna `\(j\)`;
+  
+--
+
+- O modelo log-linear de independência é dado então por 
+
+`$$\log \mu_{ij} = \lambda + \lambda^X_i + \lambda^Y_j$$`
+
+---
+
+# Comentários
+
+- No modelo anterior:
+
+`$$\log \mu_{ij} = \lambda + \lambda^X_i + \lambda^Y_j.$$`
+--
+
+- `\(\lambda^X_i\)` é o efeito da linha.
+
+- `\(\lambda^Y_j\)` é o efeito da coluna.
+
+--
+
+- Quanto maior o valor de `\(\lambda^X_i\)` maior será o valor esperado da frequência na linha `\(i\)`.
+
+--
+
+- De forma similar, podemos dizer o mesmo sobre `\(\lambda^Y_j\)` e a coluna `\(j\)`.
+
+--
+
+- A hipótese nula de independência é equivalente à hipótese de que esse modelo log-linear se ajusta aos dados.
+
+--
+
+- Os valores ajustados que satisfazem esse modelo são 
+
+`$$\mu_{ij} = n_{i+}n_{+j}/n$$`
+
+---
+
+# Interpretação dos parâmetros
+
+- O modelo log-linear para tabelas de contingência não distingue entre variável resposta e variável explicativa.
+
+--
+
+- Você pode pensar que o modelo trata as duas variáveis como resposta.
+
+--
+
+- Ou também que as duas variáveis são importantes para explicar a diferença nos valores das contagens.
+
+--
+
+- O modelo log-linear é um caso particular de um modelo linear generalizado.
+
+--
+
+- Nesse caso, consideramos as contagens como observações independentes da distribuição Poisson.
+
+--
+
+- O modelo considera como observações as contagens das células ao invés das classificações individuais das pessoas.
+
+---
+
+## Interpretação dos parâmetros
+
+- A interpretação fica um pouco mais simples quando pensamos uma variável como função da outra. 
+
+--
+
+- Considere o modelo de independência anterior, para uma tabela `\(I \times 2\)`.
+
+--
+
+- Na linha `\(i\)`, temos a seguinte
+
+`$$\begin{align} \log \left( \frac{P(Y=1)}{1-P(Y=1)} \right) &amp;= \log\left(\frac{\mu_{i1}}{\mu_{i2}}\right) \\
+&amp;= \log(\mu_{i1}) - \log(\mu_{i2}) \\
+&amp;= (\lambda + \lambda^X_i + \lambda^Y_1) - (\lambda + \lambda^X_i + \lambda^Y_2) \\
+&amp;= \lambda^Y_1 - \lambda^Y_2
+\end{align}$$`
+
+--
+
+- O logito não depende de `\(i\)`. 
+--
+O logito não depende do nível de `\(X\)`.
+
+--
+
+- Seria como ajustar o modelo logístico com a equação
+`$$\log \left( \frac{P(Y=1)}{1-P(Y=1)} \right) = \alpha$$`
+---
+
+# Parametrização do modelo
+
+- Para o modelo log-linear de independência, um termo de `\(\{\lambda_i^X\}\)` é redundante e um termo de `\(\{\lambda_j^Y\}\)` também.
+
+--
+
+- É o mesmo que acontece na ANOVA e com modelos de regressão com preditores que são fatores.
+
+--
+
+- Também é possível utilizar uma parametrização em que a soma dos parâmetros é igual a zero. 
+
+--
+
+- Nesse caso mudaria a interpretação de cada parâmetro. 
+
+--
+
+- Essa escolha é arbitrária e depende de quem ajusta o modelo. 
+
+--
+
+- O que é importante é ter parâmetros que determinam que existe uma diferença entre os diferentes níveis de um certo fator.
+
+
+---
+
+# Exemplo
+
+- Considerando os dados da POF no Estado do Espírito Santo.
+
+- Vejamos a relação entre as  variáveis Raça/Cor (negro e não negro) e se a pessoa tem ou não cartão de crédito.
+
+--
+
+&lt;img src="fig/tab_loglinear.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+--
+
+- Agora não vamos falar em probabilidades de cada categoria, mas considerar as contagens como valores de interesse.
+
+
+
+---
+
+# Exemplo no R
+
+- Considere que temos a tabela
+
+
+```r
+tabela_pof
+```
+
+```
+## # A tibble: 4 x 3
+##   negro cartao_credito total
+##   &lt;dbl&gt;          &lt;int&gt; &lt;int&gt;
+## 1     0              0   816
+## 2     0              1   518
+## 3     1              0  1178
+## 4     1              1   486
+```
+
+--
+
+- E podemos ajustar o modelo Poisson da seguinte forma
+
+
+```r
+modelo &lt;- glm(total ~ cartao_credito + negro, data = tabela_pof,
+    family = poisson)
+```
+
+---
+
+# Exemplo no R (cont.)
+
+- As seguintes estimativas foram obtidas com o modelo anterior:
+
+&lt;img src="fig/tab_estimativas.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+--
+
+- Podemos calcular a chance estimada pelo modelo de uma pessoa ter cartão de crédito
+
+`$$\exp(-0,6861507) = 0,5035$$`
+--
+
+- Esse número poderia ser obtido de forma direta da tabela fazendo
+
+`$$\frac{518+486}{816+1178} = 0,5035$$`
+
+---
+
+## Modelo saturado para tabelas de dupla entrada
+
+- Quando consideramos que a suposição de independência não é válida, devemos considerar o seguinte modelo log-linear
+
+`$$\log \mu_{ij} = \lambda + \lambda^X_i + \lambda^Y_j + \lambda_{ij}^{XY}.$$`
+- Os parâmetros `\(\{\lambda_{ij}^{XY}\}\)` refletem os desvios da hipótese de independência. 
+--
+Representam a interação entre `\(X\)` e `\(Y\)`.
+
+--
+
+- O modelo de independência é um caso especial quando todos `$$\{\lambda_{ij}^{XY}\} = 0.$$`
+
+--
+
+- A quantidade de parâmetros depende do número de níveis de cada fator, `\(X\)` e `\(Y\)`.
+
+
+---
+
+## Relação entre o modelo logístico e o modelo log-linear
+
+- Podemos mostrar que existe uma relação direta entre 
+
+  - o logaritmo da razão de chances
+  - os parâmetros `\(\{\lambda_{ij}^{XY}\}\)`.
+  
+--
+
+- Considerando uma tabela `\(2 \times 2\)`, com razão de chances `\(\theta\)`:
+
+`$$\begin{align*} \log \theta &amp;= \log \left(\frac{\mu_{11}\mu_{22}}{\mu_{12}\mu_{21}} \right) = \log \mu_{11} + \log \mu_{22} - \log \mu_{12} - \log \mu_{21}\\ &amp;= (\lambda + \lambda^X_1 + \lambda^Y_1 + \lambda_{11}^{XY}) + (\lambda + \lambda^X_2 + \lambda^Y_2 + \lambda_{22}^{XY}) \\
+&amp;\quad -(\lambda + \lambda^X_1 + \lambda^Y_2 + \lambda_{12}^{XY}) - (\lambda + \lambda^X_2 + \lambda^Y_1 + \lambda_{21}^{XY}) \\
+&amp;= \lambda_{11}^{XY} + \lambda_{22}^{XY} - \lambda_{12}^{XY} - \lambda_{21}^{XY}\end{align*}$$`
+--
+
+- Logo, `\(\{\lambda_{ij}^{XY}\}\)` determinam o logaritmo da razão de chances.
+
+---
+# Exemplo no R
+
+- Considerando novamente os dados da POF.
+
+&lt;img src="fig/tab_loglinear.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+--
+
+- Agora vamos estimar se o parâmetro da taxa referente à interação, `\(\{\lambda_{ij}^{XY}\},\)` é diferente de zero.
+
+
+---
+
+# Exemplo no R (cont.)
+
+- Ajustamos o modelo da seguinte forma agora:
+
+
+```r
+modelo &lt;- glm(total ~ cartao_credito + negro + 
+                cartao_credito * negro, 
+              data = tabela_pof,
+              family = poisson)
+```
+
+--
+
+- Para o qual obtemos as seguintes estimativas:
+
+&lt;img src="fig/tab_estimativas2.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+--
+
+- Onde observamos evidência de que a hipótese de independência entre `\(X\)` e `\(Y\)` parece não ser razoável. 
+
+---
+
+# Interpretações do modelo
+
+- Obtemos a estimativa de 
+
+`$$\lambda_{ij}^{XY} = -0,4309$$`
+--
+
+- Podemos dizer então que a razão de chances em ter um cartão de crédito entre pessoas negros e não negras é 
+
+`$$\exp(-0,4309) = 0,6499$$`
+--
+
+- Podemos interpretar da mesma forma que fazíamos no modelo logístico:
+
+  - a chance de uma pessoa negra é cerca de 35% menor do que uma pessoa não negra em ter um cartão de crédito. 
+  
+--
+
+- Poderíamos ter obtido interpretações similares se tivéssemos ajustado o modelo logístico de "ter um cartão de crédito" como função da raça/cor.
+
+---
+class: inverse, center, middle
+
+# Modelos log-lineares para tabelas de tripla entrada
+
+---
+
+# Tabelas de tripla entrada
+
+- Agora, considere o caso em que temos `\(X\)`, `\(Y\)` e `\(Z\)`, variáveis categóricas.
+
+--
+
+- Podemos utilizar os modelos log-lineares para representar diversos padrões de independência e associação.
+
+--
+
+- Considerando os valores das frequências esperadas `\(\{\mu_{ijk}\}\)`, considere o modelo log-linear
+
+`$$\log (\mu_{ijk}) = \lambda + \lambda^X_i + \lambda^Y_j + \lambda^Z_k + \lambda_{ik}^{XZ} + \lambda_{jk}^{YZ}$$`
+--
+
+- Permite associação entre `\(X\)` e `\(Z\)` controlando por `\(Y\)`.
+
+- Permite associação entre `\(Y\)` e `\(Z\)` controlando por `\(X\)`.
+
+- Não contém um parâmetro para a associação entre `\(X\)` e `\(Y\)`.
+
+- Este modelo especifica uma independência condicional entre `\(X\)` e `\(Y\)`, quando condicionamos em `\(Z\)`.
+
+---
+
+# Outra opção
+
+- Um modelo que considera todos os três possíveis pares de associação condicional é 
+
+`$$\log (\mu_{ijk}) = \lambda + \lambda^X_i + \lambda^Y_j + \lambda^Z_k + \lambda_{ij}^{XY} + \lambda_{ik}^{XZ} + \lambda_{jk}^{YZ}$$`
+--
+
+- Para esse modelo é possível mostrar que a razão de chances entre qualquer duas variáveis são as mesmas em todos os níveis da terceira variável.
+
+--
+
+- Essa propriedade é conhecida como **associação homogênea**.
+
+--
+
+  - E já discutimos isso anteriormente em tabelas de tripla de entrada.
+  
+--
+
+- Esse modelo log-linear é chamada de modelo de associação homogênea.
+
+--
+
+- O modelo log-linear mais geral é dado por:
+
+`$$\log (\mu_{ijk}) = \lambda + \lambda^X_i + \lambda^Y_j + \lambda^Z_k + \lambda_{ij}^{XY} + \lambda_{ik}^{XZ} + \lambda_{jk}^{YZ} + \lambda_{ijk}^{XYZ}$$`
+
+
+---
+
+### Parâmetros de dois fatores para descrever associações condicionais
+
+- Considere o modelo 
+
+`$$\log (\mu_{ijk}) = \lambda + \lambda^X_i + \lambda^Y_j + \lambda^Z_k + \lambda_{ij}^{XY} + \lambda_{ik}^{XZ} + \lambda_{jk}^{YZ}$$`
+--
+
+- Suponha que estamos interessados numa tabela `\(2 \times 2 \times K\)`.
+
+--
+
+- A razão de chances `\(\theta_{XY(k)}\)` descreve a associação entre `\(X\)` e `\(Y\)` na tabela parcial `\(k\)`.
+
+--
+
+- Da maneira parecida com o que fízemos anteriormente, temos 
+
+`$$\begin{align*} \log \theta_{XY(k)} &amp;= \log \left(\frac{\mu_{11k}\mu_{22k}}{\mu_{12k}\mu_{21k}} \right) \\ 
+&amp;= \lambda_{11}^{XY} + \lambda_{22}^{XY} - \lambda_{12}^{XY} - \lambda_{21}^{XY}\end{align*}$$`
+
+--
+
+- O lado direito não depende de `\(k\)`, então a razão de chances é a mesma para todos os níveis de `\(Z\)`.
+
+
+---
+
+# Exemplo 
+
+- Considere novamente os dados da POF, porém agora adicionamos a informação de gênero também.
+
+
+
+
+```r
+tabela_pof_3
+```
+
+```
+## # A tibble: 8 x 4
+## # Groups:   genero, negro [4]
+##   genero negro cartao total
+##    &lt;dbl&gt; &lt;dbl&gt;  &lt;int&gt; &lt;int&gt;
+## 1      0     0      0   538
+## 2      0     0      1   373
+## 3      0     1      0   784
+## 4      0     1      1   343
+## 5      1     0      0   278
+## 6      1     0      1   145
+## 7      1     1      0   394
+## 8      1     1      1   143
+```
+
+- Podemos ajustar diferentes modelos log-lineares para verificar as diferentes suposições sobre os dados.
+
+---
+
+# Modelos possíveis
+
+- `\(X\)` = `\(\{\)` Negro = 1 `\(\}\)`; `\(Y\)` = `\(\{\)` Cartão = 1 `\(\}\)`; `\(Z\)` = `\(\{\)` Mulher = 1 `\(\}\)`;
+
+- Modelo 1
+`$$\log (\mu_{ijk}) = \lambda + \lambda^X_i + \lambda^Y_j + \lambda^Z_k$$`
+--
+
+- Modelo 2
+`$$\log (\mu_{ijk}) = \lambda + \lambda^X_i + \lambda^Y_j + \lambda^Z_k + \lambda_{ij}^{XY}$$`
+- Modelo 3
+`$$\log (\mu_{ijk}) = \lambda + \lambda^X_i + \lambda^Y_j + \lambda^Z_k + \lambda_{jk}^{YZ}$$`
+--
+
+- Modelo 4
+`$$\log (\mu_{ijk}) = \lambda + \lambda^X_i + \lambda^Y_j + \lambda^Z_k + \lambda_{ij}^{XY} + \lambda_{ik}^{XZ} + \lambda_{jk}^{YZ}$$`
+
+---
+
+# Ajustes no R
+
+- Poderíamos ajustar os quatros modelos propostos da seguinte forma:
+
+
+```r
+modelo_1 &lt;- glm(total ~ cartao + negro + genero, 
+                data = tabela_pof_3, family = poisson)
+
+modelo_2 &lt;- glm(total ~ cartao + negro + genero + 
+                  cartao * negro, 
+                data = tabela_pof_3, family = poisson)
+
+modelo_3 &lt;- glm(total ~ cartao + negro + genero + 
+                  cartao * genero, 
+                data = tabela_pof_3, family = poisson)
+
+modelo_4 &lt;- glm(total ~ cartao + negro + genero + 
+                  cartao * negro + cartao * genero + 
+                  negro * genero, 
+                data = tabela_pof_3, family = poisson)
+```
+
+---
+
+# Previsões de cada modelo
+
+- Podemos usar a função `predict` para obter os valores preditos por cada modelo e comparar com os valores observados
+
+--
+
+- Obteríamos o seguinte: 
+
+
+
+
+```r
+cbind(tabela_pof_3, m1 = m1, m2 = m2, m3 = m3, m4 = m4)
+```
+
+```
+## # A tibble: 8 x 8
+## # Groups:   genero, negro [4]
+##   genero negro cartao total    m1    m2    m3    m4
+##    &lt;dbl&gt; &lt;dbl&gt;  &lt;int&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1      0     0      0   538  603.  555.  588.  541.
+## 2      0     0      1   373  304.  352.  319.  370.
+## 3      0     1      0   784  752.  801.  734.  781.
+## 4      0     1      1   343  379.  330.  397.  346.
+## 5      1     0      0   278  284.  261.  299.  275.
+## 6      1     0      1   145  143.  166.  128.  148.
+## 7      1     1      0   394  354.  377.  373.  397.
+## 8      1     1      1   143  178.  156.  160.  140.
+```
+
+---
+
+## Associação estimada por modelo
+
+- Se considerarmos um modelo com duas interações entre os fatores
+
+`$$\log (\mu_{ijk}) = \lambda + \lambda^X_i + \lambda^Y_j + \lambda^Z_k + \lambda_{ij}^{XY} + \lambda_{jk}^{YZ}$$`
+--
+
+- A razão de chances condicional entre `\(X\)` e `\(Z\)` para os dois níveis de `\(Y\)` é igual a 
+
+`$$1,0 = \frac{369.4104 \times 139.4104}{346.5896 \times 148.5896} = \frac{540.999 \times 396.999}{781.001 \times 275.001}$$`
+
+--
+
+- Também podemos calcular a associação marginal considerando a tabela marginal, em que somamos as entradas de cada tabela parcial
+
+`$$1.022434 = \frac{(369.4104 + 540.999)\times (139.4104 + 396.999)}{(346.5896 + 781.001) \times (148.5896 + 275.001)}$$`
+
+--
+
+- Isso mostra como esses modelos podem ajudar a entender essas associações condicionais quando definimos esses parâmetros das taxas.
+
+---
+
+class: middle, center, inverse
+
+# Fim!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
