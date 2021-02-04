@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Revisão - Estatística Computacional</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2021-02-03" />
+    
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle
+
+## Revisão R
+
+*****
+
+### Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+
+
+
+
+
+---
+class: center, middle, inverse
+
+# Ambiente de trabalho
+
+---
+
+# RStudio
+
+- Plataforma para
+
+  - editar scripts;
+  - ver o ambiente de trabalho;
+  - instalar pacotes manualmente;
+  - ler o help das funções;
+  - visualizar os seus gráficos;
+  - etc.
+  
+--
+
+- Porém, não é a única maneira de usar o R. 
+
+  - Você pode utilizar outros editores como [Emacs](https://www.gnu.org/software/emacs/) com [ESS](https://ess.r-project.org/) .
+  - Um editor de texto como Notepad, etc.
+  
+--
+
+- Por que é interessante usar o RStudio?
+
+  - Exatamente por todas as ferramentas necessárias para o seu trabalho estarem no mesmo software.
+  - Por trabalhar com projetos, que facilitam o processo de análise de dados. 
+
+---
+
+# Projetos no RStudio
+
+- Facilitam a organização de todos os conteúdos.
+
+  - Todos arquivos necessários na mesma pasta.
+  - Possibilidade de gerar os resultados sempre no mesmo local. 
+
+--
+
+- Deixam a colaboração entre pessoas mais organizada.
+
+  - Principalmente com relação a endereços de arquivos.
+  
+--
+
+- Permite também combinar as funcionalidades com softwares de controles de versão como `git`.
+
+--
+
+- É particularmente interessante para quem pretende organizar a sua rotina de códigos em um pacote.
+
+---
+class: inverse, middle, center
+
+# Tipos de objetos
+
+
+---
+
+# Objetos básicos + importantes
+
+- númericos;
+- inteiro;
+- caracter;
+- lógico.
+
+--
+  
+
+```r
+numero &lt;- 2.1; class(numero)
+```
+
+```
+## [1] "numeric"
+```
+
+--
+
+
+```r
+inteiro &lt;- 2L; class(inteiro)
+```
+
+```
+## [1] "integer"
+```
+
+--
+  
+
+```r
+caracter &lt;- "Computador"; class(caracter)
+```
+
+```
+## [1] "character"
+```
+
+
+--
+  
+
+```r
+logico &lt;- 2 &gt; 1; class(logico)
+```
+
+```
+## [1] "logical"
+```
+
+---
+
+# Detalhe importante
+
+- Com relação a memória:
+
+
+```r
+object.size(numero)
+```
+
+```
+## 56 bytes
+```
+
+--
+
+
+```r
+object.size(inteiro)
+```
+
+```
+## 56 bytes
+```
+
+--
+
+- Porém, isso só é verdade para objetos com somente uma posição.
+
+--
+
+- Logo quando consideramos vetores desse tipo de valores, devemos tomar mais cuidado.
+
+--
+
+- Principalmente, quando o tamanho do vetor é muito grande.
+
+  - E você está fazendo essa computação na sua máquina local.
+
+---
+
+# Vetores muito grandes
+
+
+```r
+vetor_numeros &lt;- seq(1, 1e8, by = 1)
+class(vetor_numeros)
+```
+
+```
+## [1] "numeric"
+```
+
+```r
+object.size(vetor_numeros) %&gt;% 
+  format(units = "Mb")
+```
+
+```
+## [1] "762.9 Mb"
+```
+
+--
+
+
+```r
+vetor_inteiros &lt;- 1:1e8
+class(vetor_inteiros)
+```
+
+```
+## [1] "integer"
+```
+
+```r
+object.size(vetor_inteiros) %&gt;% 
+  format(units = "Mb")
+```
+
+```
+## [1] "381.5 Mb"
+```
+
+
+---
+
+# Vetores e matrizes
+
+- Sequências de objetos do mesmo tipo.
+
+  - Caracteres.
+  - Números, inteiros.
+
+
+--
+
+- Utiliza a função `c()` para sua definição.
+
+
+```r
+confusao &lt;- c(2L, 2.1, "Palavra")
+class(confusao)
+```
+
+```
+## [1] "character"
+```
+
+--
+
+- Matriz é um objeto que é um conjunto de sequências do mesmo tipo. 
+
+  - Cada sequência precisa ter a mesma dimensão.
+  
+--
+
+- Acesso a posições de vetores ou matrizes é feito através do operador `[]`, ou `[ , ]`.
+
+  - Posições começam no 1!
+  
+---
+
+# Listas
+
+- Quando queremos utilizar sequências de diferentes tipos utilizamos listas.
+
+
+```r
+lista_exemplo &lt;- list(
+  numero = 2, 
+  vetor = c(1, 2, 3), 
+  matriz = matrix(rep("A", 6), ncol = 3)
+)
+lista_exemplo
+```
+
+```
+## $numero
+## [1] 2
+## 
+## $vetor
+## [1] 1 2 3
+## 
+## $matriz
+##      [,1] [,2] [,3]
+## [1,] "A"  "A"  "A" 
+## [2,] "A"  "A"  "A"
+```
+
+---
+
+# Listas (cont.)
+
+- Note que não é necessário nomear cada posição da lista.
+
+
+```r
+lista_exemplo &lt;- list(
+  2, 
+  c(1, 2, 3), 
+  matrix(rep("A", 6), ncol = 3)
+)
+lista_exemplo
+```
+
+```
+## [[1]]
+## [1] 2
+## 
+## [[2]]
+## [1] 1 2 3
+## 
+## [[3]]
+##      [,1] [,2] [,3]
+## [1,] "A"  "A"  "A" 
+## [2,] "A"  "A"  "A"
+```
+
+--
+
+- Dessa forma, percebemos que podemos acessar os objetos da lista com `[[]]`.
+
+---
+
+# Listas (cont.)
+
+- Uma lista tem dimensão 1. Por isso conseguimos obter a dimensão com `length()`.
+
+
+```r
+length(lista_exemplo)
+```
+
+```
+## [1] 3
+```
+
+--
+
+- Podemos, por exemplo, estar interessados em aplicar uma função para cada membro da lista. 
+--
+Podemos fazer isso com a função `lapply`.
+
+--
+
+
+```r
+lapply(lista_exemplo, length)
+```
+
+```
+## [[1]]
+## [1] 1
+## 
+## [[2]]
+## [1] 3
+## 
+## [[3]]
+## [1] 6
+```
+
+
+---
+
+# Listas (cont.)
+
+- Se tivéssemos usado a função `dim()` ao invés de `length` obteríamos um resultado diferente.
+
+
+```r
+lapply(lista_exemplo, dim)
+```
+
+```
+## [[1]]
+## NULL
+## 
+## [[2]]
+## NULL
+## 
+## [[3]]
+## [1] 2 3
+```
+
+--
+
+- Por que isso acontece?
+
+--
+
+  - Porque vetores e escalares não retornam um resultado para `dim()`.
+
+---
+
+# Listas (cont.)
+
+- Poderíamos criar a nossa própria função também.
+
+
+```r
+lapply(lista_exemplo, function(a){
+  if (class(a) == "matrix") print("Isso é uma matriz")
+  else print("Isso não é uma matriz")
+  print(a)
+  print("--------------------------")
+}) %&gt;% invisible()
+```
+
+```
+## [1] "Isso não é uma matriz"
+## [1] 2
+## [1] "--------------------------"
+## [1] "Isso não é uma matriz"
+## [1] 1 2 3
+## [1] "--------------------------"
+## [1] "Isso é uma matriz"
+##      [,1] [,2] [,3]
+## [1,] "A"  "A"  "A" 
+## [2,] "A"  "A"  "A" 
+## [1] "--------------------------"
+```
+
+---
+class: inverse, middle, center
+
+# Funções
+
+
+---
+
+# Uso de funções
+
+- Funções nos permitem fazer ações mais pontuais com os objetos de interesse. 
+
+--
+
+- São principalmente interessantes quando precisamos repetir o mesmo conjunto de ações.
+
+--
+
+
+```r
+primeira_funcao &lt;- function() {
+  print("Mensagem aqui")
+}
+primeira_funcao()
+```
+
+```
+## [1] "Mensagem aqui"
+```
+
+--
+
+
+```r
+segunda_funcao &lt;- function(argumento) {
+  print(argumento)
+}
+segunda_funcao("Nova mensagem aqui.")
+```
+
+```
+## [1] "Nova mensagem aqui."
+```
+
+---
+
+# Ordem dos argumentos
+
+- A ordem dos argumentos é importante se não escrevermos o nome do argumento ao chamar a função.
+
+
+```r
+f1 &lt;- function(arg1, arg2) {
+  print(paste0("1º argumento: ", arg1, "; 2º argumento: ", arg2, "."))
+}
+f1(1, 2)
+```
+
+```
+## [1] "1º argumento: 1; 2º argumento: 2."
+```
+
+--
+
+- Nomeando os argumentos, podemos colocar na ordem que desejarmos.
+
+
+```r
+f1(arg2 = 2, arg1 = 1)
+```
+
+```
+## [1] "1º argumento: 1; 2º argumento: 2."
+```
+
+--
+
+- Sem valores _default_, a função dá erro se não passarmos todos argumentos.
+
+--
+
+
+```r
+f1 &lt;- function(arg1 = 1, arg2 = 2) {
+```
+
+---
+
+# Argumentos especiais
+
+- Podemos utilizar um argumento especial `...` para utilizarmos em chamadas de função dentro da nossa função.
+
+--
+
+
+```r
+f2 &lt;- function(vetor_numeros, ...){
+  matrix(vetor_numeros, ...)
+}
+
+f2(c(1:6), ncol = 2)
+```
+
+```
+##      [,1] [,2]
+## [1,]    1    4
+## [2,]    2    5
+## [3,]    3    6
+```
+
+--
+
+
+```r
+f2(c(1:6), nrow = 2)
+```
+
+```
+##      [,1] [,2] [,3]
+## [1,]    1    3    5
+## [2,]    2    4    6
+```
+
+---
+
+# Argumentos especiais (cont.)
+
+- Podemos inclusive considerar diversos argumentos
+
+
+```r
+f2(c(1:6), nrow = 2, byrow = TRUE)
+```
+
+```
+##      [,1] [,2] [,3]
+## [1,]    1    2    3
+## [2,]    4    5    6
+```
+
+- Em geral, esse tipo de operador é utilizado como último argumento para facilitar.
+
+--
+
+- É uma ferramenta bastante utilizada quando consideramos diversas funções espalhadas pelo R.
+
+
+```r
+args(summary.lm)
+```
+
+```
+## function (object, correlation = FALSE, symbolic.cor = FALSE, 
+##     ...) 
+## NULL
+```
+
+---
+
+# Sistema de objetos S3
+
+- Mais detalhes podem ser obtidos nos links [aqui](https://rstudio-education.github.io/hopr/s3.html) e [aqui também](http://adv-r.had.co.nz/S3.html).
+
+--
+
+- Esse sistema implementa um estilo de programação orientada a objetos. 
+
+  - Porém, é um pouco diferente de outras linguagens.
+  
+--
+
+- Consideram-se funções genéricas que são utilizadas a depender da classe do objeto.
+
+
+```r
+objeto &lt;- "Bruno"
+class(objeto) &lt;- "minha_classe"
+
+summary.minha_classe &lt;- function(object){
+  print(paste0(object, " - ", object))
+}
+
+summary(objeto)
+```
+
+```
+## [1] "Bruno - Bruno"
+```
+
+--
+
+- Exemplos `print`, `plot`, `summary`, ...
+
+---
+class: inverse, middle, center
+
+# Pacote dplyr
+
+# Operador % (pipe)
+
+
+---
+
+## Pacote `dplyr`
+
+Para manipular banco de dados, um dos melhores pacotes atualmente se chama `dplyr`.
+
+As ações de "ordenar", "selecionar", "filtrar", "fazer transformações" são definidas em funções como:
+
+* `arrange()`
+* `select()`
+* `filter()`
+* `mutate()`
+
+E umas das novidades desse pacote é poder representar essas ações sequencialmente usando o operador "pipe" ou `%&gt;%`. 
+
+Uma rápida apresentação com exemplos usando esse pacote pode ser visto na [vignette](https://cran.r-project.org/web/packages/dplyr/vignettes/dplyr.html).
+
+---
+
+## Necessidade do operador pipe (`%&gt;%`)
+
+Considere que você quer fazer as seguintes operações no banco de dados.
+* Filtrar pessoas negras
+* Selecionar as variáveis "data", "faixa_etaria", "sexo", "Evolução".
+* Criar uma nova variável que é a combinação entre "sexo" e "faixa_etaria".
+* Ordenar o banco de dados de forma decrescente pela "data".
+
+Do ponto de vista computacional, o resultado de cada operação deve ser oferecido para operação seguinte. No R, faríamos o seguinte por exemplo:
+
+
+```r
+dados_resumidos &lt;- arrange(mutate(select(filter(dados, raca_cor == "Negra"), data, faixa_etaria, sexo, evolucao), sexo_idade = paste(sexo, faixa_etaria, sep = " - ")), desc(data))
+```
+
+
+---
+
+## Necessidade do operador pipe (`%&gt;%`)
+
+Para facilitar a leitura do código, poderíamos fazer:
+
+
+```r
+dados_resumidos &lt;- 
+  arrange(
+    mutate(
+      select(
+        filter(
+	        dados, raca_cor == "Negra"
+        ),
+        data, faixa_etaria, sexo, evolucao
+      ),
+      sexo_idade = paste(sexo, faixa_etaria, sep = " - ")
+    ),
+    desc(data)
+  )
+```
+
+--
+
+Podemos reescrever esse código utilizando o operador `%&gt;%`!
+
+---
+
+## Uso do operador pipe
+
+Ao usar o operador `%&gt;%`, podemos entender melhor o uso sequencial das funções.  
+
+
+```r
+dados_resumidos_pipe &lt;- dados %&gt;%
+  filter(raca_cor == "Negra") %&gt;%
+  select(data, faixa_etaria, sexo, evolucao) %&gt;%
+  mutate(sexo_idade = paste(sexo, faixa_etaria, sep = " - ")) %&gt;% 
+  arrange(desc(data))
+```
+
+--
+
+- Basicamente o uso desse operador facilita a compreensão do seu código.
+
+--
+
+- Inclusive o processo lógico de pensar nas operações.
+
+--
+
+- É possível também definir outros argumentos da função a serem utilizados no _pipe_
+ao invés do primeiro argumento.
+
+
+```r
+(-1)^(1:10) %&gt;% plot(x = 1:10, y = .)
+```
+
+
+---
+class: inverse, middle, center
+
+# Exemplo
+
+
+---
+
+# Exemplo
+
+- Seja o experimento de repetir o sorteio da Mega Sena 100 milhões de vezes.
+
+--
+
+- Tomem cuidado com a questão da memória mencionada anteriormente.
+
+--
+
+- Gostaríamos de verificar se em algum momento a combinação 1-2-3-4-5-6 é sorteada.
+
+--
+
+- Quando isso acontecer, gostaríamos de imprimir o número do sorteio e os números sorteados para verificação.
+
+--
+
+- Precisamos verificar ao longo das simulações se o sorteio foi aquele desejado:
+
+--
+
+  - Podemos ordenar o sorteio e comparar as posições com o vetor `1:6`.
+--
+
+  - Podemos checar se a soma é igual a 21.
+  
+--
+
+- A forma de conduzirmos esse estudo pode ser feita de diferentes maneiras. 
+
+--
+
+  - Inclusive nesse caso podemos considerar fazer esse cálculo de forma paralela.
+
+
+```r
+parallel::detectCores()
+```
+
+```
+## [1] 8
+```
+
+
+---
+
+# Usando laços
+
+- Primeiramente, vamos definir o número de simulações:
+
+
+```r
+numero_simulacoes &lt;- 1e8
+```
+
+- Se quisermos fazer esse estudo com laços, podemos fazer o seguinte:
+
+
+```r
+for(a in 1:numero_simulacoes){
+  sorteio &lt;- sample(1:60, 6)
+  if(sum(sorteio) == 21){
+    print(paste0("Sorteio #:", a))
+    print(sorteio)
+  }
+}
+```
+
+--
+
+- Note que os sorteios não são armazenados exatamente para não sobrecarregar a memória do computador.
+
+---
+
+# Usando a função lapply
+
+- Também podemos fazer esse estudo considerando a função `lapply()`.
+
+--
+
+- Para não imprimir todas as posições da lista que a função retorna, podemos usar a função `invisible()`.
+
+--
+
+
+```r
+lapply(1:numero_simulacoes, function(a){
+  sorteio &lt;- sample(1:60, 6)
+  if(sum(sorteio) == 21){
+    print(paste0("Sorteio #:", a))
+    print(sorteio)
+  }
+}) %&gt;% invisible()
+```
+ 
+--
+
+- Notem que consideramos o operador `%&gt;%` ao final do `lapply()`.
+
+
+---
+
+## Com computação em paralelo
+
+- Como cada iteração do nosso estudo pode ser feita de forma separada, podemos considerar o uso de processadores em paralelo.
+
+--
+
+- Essa funcionalidade está facilmente disponível para computadores _multicore_ com sistema Unix.
+
+--
+
+- Uma maneira de usar essa funcionalidade é considerar o pacote `parallel`.
+
+--
+
+- E a função `mclapply` que funciona de maneira similar a `lapply`.
+
+  - A maior diferença é o argumento `mc.cores`.
+  
+--
+
+
+```r
+parallel::mclapply(1:numero_simulacoes, function(a){
+  sorteio &lt;- sample(1:60, 6)
+  if(sum(sorteio) == 21){
+    print(paste0("Sorteio #:", a))
+    print(sorteio)
+  }
+}, mc.cores = 5) %&gt;% 
+  invisible()
+```
+
+---
+
+class: middle, center, inverse
+
+# Fim!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
