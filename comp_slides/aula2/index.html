@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Geração de números aleatórios</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2021-02-07" />
+    
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle
+
+## Geração de números aleatórios
+
+*****
+
+### Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+
+
+
+
+
+---
+class: center, middle, inverse
+
+# Introdução
+
+
+---
+class: right, middle, inverse
+
+### “Nothing in Nature is random. . .
+### a thing appears random only through
+### the incompleteness of our knowledge.”
+
+&lt;br&gt;&lt;br&gt;
+
+Espinoza, Ética
+
+
+---
+
+# Introdução
+
+- Geração de números aleatórios está no centro da ciência estatística.
+
+--
+
+- Se consideramos que `\(X \sim N(\mu, \sigma^2)\)` e eu observo `\(X_1, \ldots, X_n\)`:
+
+--
+
+  - Podemos fazer um teste de hipótese e verificar quanto de evidência temos para rejeitar a hipótese.
+  
+--
+  
+  - Podemos construir intervalos de confiança para `\(\mu\)` e `\(\sigma^2\)` e ponderar sobre os seus possíveis valores.
+  
+--
+
+  - Podemos gerar réplicas da amostra observada a partir do modelo sugerido e verificar o quão plausível foi aquela amostra observada.
+  
+--
+
+- Essa última abordagem é a que estaremos interessados nesse curso.
+
+--
+
+- Nesse sentido é crucial estudarmos como podemos gerar esses valores aleatórios.
+
+---
+class: inverse, middle, center
+
+# Geração de números aleatórios
+
+
+---
+
+# Números aleatórios
+
+- No passado, uma forma de gerar números aleatórios era usar um dado, uma roleta ou algum mecanismo manual.
+
+--
+
+  - Esses métodos são problemáticos porque não podem ser reproduzidos.
+  
+--
+
+  - Além disso, podem estar gerar um vício no processo de geração dos valores.
+  
+--
+
+- Métodos atuais consideram algoritmos computacionais.
+
+--
+
+  - São rápidos.
+  
+  - Geram uma sequência de valores aleatórios.
+  
+  - São reproduzíveis dada uma certa semente.
+  
+--
+
+- Porém, por se tratarem de um algoritmo são chamados também de pseudoaleatórios.
+
+---
+
+# Método linear congruencial
+
+- Esse método parte de uma semente `\(x_0\)` e recursivamente calcula os valores `\(x_n\)` com
+
+`$$x_n = (ax_{n-1} + c)  \mod m,$$`
+
+em que 
+
+- `\(a \in Z^+\)` é o multiplicador
+- `\(c \in Z^+\)` é o incremento
+- `\(m \in Z^+\)` é o módulo
+--
+
+- A operação consiste em dividir `\((ax_{n-1} + c)\)` por `\(m\)` e utilizar o resto da divisão é definido como `\(x_n\)`.
+
+--
+
+- Então, `\(X_i\)` pode assumir os valores `\(\{0, 1, 2, ..., m-1\}\)`.
+
+--
+
+- E o valor `\(U = X_i/m\)` é uma aproximação da distribuição uniforme.
+
+---
+
+# Exemplo
+
+- Se considerarmos
+
+`$$a = c = X_0 = 3 \mbox{ e } m = 5.$$`
+- Então, temos que a sequência de valores pode ser obtida com
+
+`$$x_n = (3x_{n-1} + 3)  \mod 5$$`
+--
+
+- No R, podemos fazer
+
+
+```r
+a &lt;- inc_c &lt;- x &lt;- 3 
+mod_m &lt;- 5
+for (i in 2:10) x[i] &lt;- (a * x[i-1] + inc_c) %% mod_m
+x
+```
+
+```
+##  [1] 3 2 4 0 3 2 4 0 3 2
+```
+
+--
+
+- Notem como a sequência é periódica.
+
+
+---
+
+## Escolhas do algoritmo
+
+- A seguência gerada pelo algoritmo `\(x_0, x_1, x_2, ...\)` vai se repetir em no máximo `\(m\)` passos.
+
+  - No exemplo anterior o período foi igual a 4.
+  
+--
+
+- Por isso, a escolha desses parâmetros deve ser feita com bastante cuidado. 
+
+--
+
+- Implementações computacionais utilizam `\(m\)` como um número primo grande, por exemplo.
+
+--
+
+- Essas escolhas são importantes para garantir que se possa gerar um número grande de variáveis aleatórias uniformes antes de qualquer repetição.
+
+--
+
+- Por exemplo, os seguintes valores parecem funcionar bem:
+
+  - `\(m = 2^{31} - 1\)` 
+  
+  - `\(a = 7^5\)`
+
+
+---
+
+# Teste no R
+
+- Vejamos como se comportam esses valores quando geramos um número grande de variáveis aleatórias uniforme. 
+
+
+```r
+gera_valores_uniformes &lt;- function(semente, a, inc_c = 0, mod_m, tam){
+  x &lt;- semente
+  for (i in 2:tam) x[i] &lt;- (a * x[i-1] + inc_c) %% mod_m  
+  x/mod_m
+}
+valores_uniforme &lt;- gera_valores_uniformes(123456, 
+                                         a = 7^5, 
+                                         mod_m = 2^31 - 1, 
+                                         tam = 1e5)
+```
+
+--
+
+- Podemos ver algumas estatísticas dos valores gerados.
+
+
+```r
+summary(valores_uniforme)
+```
+
+```
+##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+## 0.000026 0.250401 0.500678 0.499982 0.749622 0.999974
+```
+
+
+---
+
+# Gráfico dos valores gerados
+
+
+```r
+ggplot(data.frame(x = valores_uniforme)) + 
+  theme_minimal() + 
+  geom_histogram(aes(x), fill = 'darkviolet') 
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-4-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Gráfico corrigido
+
+
+```r
+ggplot(data.frame(x = valores_uniforme)) + 
+  theme_minimal() + xlim(c(0, 1)) + 
+  geom_histogram(aes(x), fill = 'darkviolet') 
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-5-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+## Aumentando o número de replicas
+
+
+```r
+valores_uniforme &lt;- gera_valores_uniformes(123456, 
+                                         a = 7^5, 
+                                         mod_m = 2^31 - 1, 
+                                         tam = 1e7)
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-7-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Alterando os parâmetros
+
+
+```r
+valores_uniforme &lt;- gera_valores_uniformes(42, 
+                                         a = 5^5, 
+                                         mod_m = 2^35 - 31, 
+                                         tam = 1e7)
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-9-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# Comentários sobre o método
+
+- Para verificar se os números são primos, podemos fazer
+
+
+```r
+sjstats::is_prime(2^35 - 31)
+```
+
+```
+## [1] TRUE
+```
+
+
+--
+
+- Será que na sequência gerada houve algum valor repetido?
+
+--
+
+  - Fica como exercício!
+
+--
+
+- Dicas de como melhorar o algoritmo:
+
+  - o incremento `\(c\)` ser relativamente primo com relação a `\(m\)`.
+  
+  - `\(a - 1\)` é múltiplo de cada primo dividindo `\(m\)`.
+  
+  - `\(a - 1\)` é um múltiplo de 4 quando `\(m\)` é um múltiplo de 4.
+  
+--
+
+- As provas dessas sugestões podem ser encontradas: 
+
+  - Knuth, D. E. (2002), The Art of Computer Programming: seminumerical algorithms, Vol. 2, 3rd edition, Massachusetts: Addison-Wesley.
+
+
+---
+class: inverse, middle, center
+
+# Outros algoritmos
+
+---
+
+# Outros algoritmos
+
+- As opções disponíveis no R para gerar valores podem ser visualizadas com 
+
+
+```r
+?base::RNG
+```
+
+--
+
+- No detalhes do help da função podemos ver as diversas possibilidades. 
+
+--
+
+- Para uso das diferentes possibilidades, podemos fazer
+
+
+```r
+set.seed(42, kind = "Super-Duper")
+runif(10)
+```
+
+```
+##  [1] 0.7728797 0.8384517 0.2611478 0.3929961 0.3998415 0.2860064 0.6586396
+##  [8] 0.2589132 0.8019870 0.2568814
+```
+
+--
+
+
+```r
+set.seed(42, kind = "Marsaglia-Multicarry")
+runif(10)
+```
+
+```
+##  [1] 0.3231314 0.4424344 0.3247695 0.6002291 0.7062763 0.3717531 0.6196484
+##  [8] 0.8348512 0.5076161 0.4579221
+```
+
+
+---
+
+## Sobre essas possibilidades
+
+- O método "Super-Duper" tem período de `\(4,6 \cdot 10^{18}\)` para a maioria de sementes.
+
+- O algoritmo "Marsaglia-Multicarry" tem período de `\(2^{60}\)`.
+
+--
+
+- Podemos citar também o método de "Knuth-TAOCP", que gera sequências de valores fazendo
+
+`$$x_n = (x_{n-100} + x_{n-37})  \mod 2^{30}$$`
+
+--
+
+  - O período desse método é aproximadamente `\(2^{129}\)`.
+  
+--
+
+- Para usar esse método no R basta fazer
+
+--
+
+
+```r
+RNGkind("Knuth-TAOCP-2002")
+```
+
+
+---
+
+# Algoritmo default
+
+- O algoritmo utilizado pelo R como _default_ se chama "Mersenne-Twister". 
+
+--
+
+- Para verificar isso, basta rodar a função `RNGkind()` assim que começar uma sessão. 
+
+--
+
+- O algoritmo foi proposto em 1998 por Matsumoto e Nishimura.
+
+--
+
+- É bastante eficiente e rápido. 
+
+--
+
+- Para parâmetros bem selecionados o algoritmo tem período `\(2^{19937} − 1\)`
+
+--
+
+- Utiliza uma semente com 624 números inteiros. 
+
+--
+
+  - Para acessar essa semente, basta observar o objeto `.Random.seed` no R.
+  
+
+
+
+```r
+sample(.Random.seed, 5)
+```
+
+```
+## [1]   828187816 -1411710120 -1871376352  1756407281   608508815
+```
+
+
+---
+class: inverse, middle, center
+
+# Verificação de geradores de números aleatórios
+
+---
+
+# Introdução
+
+- É possível criar o seu próprio sistema de geração de números aleatórios.
+
+--
+
+- Porém, é importante que esse gerador tenha algumas propriedades.
+
+--
+
+- Em primeiro lugar, é importante que esse gerador "pareça aleatório".
+
+--
+
+- Considerando que esse gerador pode ser usado para estudos de Monte Carlo, é importante que forneça valores razoáveis. 
+  
+--
+
+  - As conclusões de interesse do estudo podem ser prejudicadas.
+  
+--
+
+- Pensando nisso, existem algumas maneiras de se verificar a qualidade de geradores de números aleatórios.
+
+--
+
+  - O pacote `RDieHarder` considera testes propostos por Marsaglia para checar a aleatoriedade desses algoritmos.
+
+---
+
+# Metodologia básica
+
+- Suponha que são o algoritmo gera `\(N\)` valores uniformes no intervalo `\((0, 1)\)`.
+
+--
+
+- Conforme o número de valores gerados aumenta, a média da soma de todos valores gerados deve convergir para `\(\mu = N/2\)`.
+
+--
+
+`$$X_1,\ldots,X_N \Rightarrow Y = \sum_{i} X_i \Rightarrow E(Y) = \frac{N}{2}$$`
+--
+
+- Se `\(N\)` é grande, então a soma desses valores uniformes deve ter distribuição normal com desvio padrão `\(\sigma = \sqrt{N/12}\)`.
+
+--
+
+- Para um determinado experimento, temos então
+
+`$$Y \sim N(\mu = N/2, \sigma^2 = N/12)$$`
+
+
+---
+
+# Metodologia básica (cont.)
+
+- Logo, para `\(N\)` grande eu posso fazer
+
+`$$\begin{align*} P(Y &lt; t) &amp;= P\left(\frac{Y - N/2}{\sqrt{N/12}} &lt; \frac{t - N/2}{\sqrt{N/12}} \right) \\ &amp;= P\left(Z &lt; \frac{t - N/2}{\sqrt{N/12}} \right), \quad Z \sim N(0, 1) \\ &amp;= \Phi\left(\frac{t - N/2}{\sqrt{N/12}}\right) \end{align*}$$`
+
+--
+
+- Logo, 
+
+`$$\frac{Y - N/2}{\sqrt{N/12}} \sim N(0, 1) \Rightarrow \Phi^{-1}\left(\frac{Y - N/2}{\sqrt{N/12}}\right) \sim U(0,1)$$`
+
+--
+
+- Posso repetir esse experimento diversas vezes e verificar se a distribuição uniforme é recuperada. 
+
+--
+
+- Para verificar se isso ocorreu podemos utilizar o teste de Kolmogorov-Smirnov.
+
+
+---
+
+# Exemplo no R - Caso 1
+
+
+
+```r
+N &lt;- 100 # tamanho da amostra gerada
+M &lt;- 500 # Número de repetições de Monte Carlo
+
+# Definindo um algoritmo
+
+set.seed(123456, kind = 'Wichmann-Hill')
+
+valores_gerados &lt;- pnorm(
+                      replicate(M, (sum(runif(N)) - N/2) / sqrt(N/12))
+                      )
+
+ks.test(valores_gerados, "punif")
+```
+
+```
+## 
+## 	One-sample Kolmogorov-Smirnov test
+## 
+## data:  valores_gerados
+## D = 0.055734, p-value = 0.08953
+## alternative hypothesis: two-sided
+```
+
+
+---
+
+# Exemplo no R - Caso 2
+
+
+```r
+N &lt;- 100 # tamanho da amostra gerada
+M &lt;- 500 # Número de repetições de Monte Carlo
+
+# Definindo um algoritmo
+
+set.seed(123456, kind = 'Super-Duper')
+
+valores_gerados &lt;- pnorm(
+                      replicate(M, (sum(runif(N)) - N/2) / sqrt(N/12))
+                      )
+
+ks.test(valores_gerados, "punif")
+```
+
+```
+## 
+## 	One-sample Kolmogorov-Smirnov test
+## 
+## data:  valores_gerados
+## D = 0.030067, p-value = 0.7567
+## alternative hypothesis: two-sided
+```
+
+---
+
+# Exemplo no R - Caso 3
+
+
+
+```r
+N &lt;- 100 # tamanho da amostra gerada
+M &lt;- 500 # Número de repetições de Monte Carlo
+
+# Definindo um algoritmo
+
+set.seed(123456, kind = 'Mersenne-Twister')
+
+valores_gerados &lt;- pnorm(
+                      replicate(M, (sum(runif(N)) - N/2) / sqrt(N/12))
+                      )
+
+ks.test(valores_gerados, "punif")
+```
+
+```
+## 
+## 	One-sample Kolmogorov-Smirnov test
+## 
+## data:  valores_gerados
+## D = 0.030571, p-value = 0.7383
+## alternative hypothesis: two-sided
+```
+
+
+---
+
+# Pacote RDieHarder
+
+- Oferece uma quantidade maior de testes e de opções de geradores de números aleatórios. 
+
+--
+
+- Para obter a lista de opções de geradores de números aleatórios, podemos fazer 
+
+
+```r
+dieharderGenerators()
+```
+
+- Que mostra uma lista com 81 opções. 
+
+--
+
+- Por exemplo, para testar o método "Marsaglia-Multicarry" do R, devemos fazer
+
+
+```r
+teste_mm &lt;- dieharder("R_marsaglia_multic")
+```
+
+--
+
+- Podemos analisar esse objeto fazendo:
+
+
+```r
+summary(teste_mm)
+```
+
+---
+
+# Detalhes interessantes
+
+- Se quisermos verificar o que é feito quando chamamos a função `summary`, podemos verificar a função de fato.
+
+--
+
+
+```r
+library(RDieHarder)
+summary.dieharder
+```
+
+```
+## Error in eval(expr, envir, enclos): object 'summary.dieharder' not found
+```
+
+--
+
+- Isso acontece porque a função não foi exportada para a área de trabalho quando carregamos o pacote.
+
+--
+
+- Mas podemos fazer o seguinte para verificar os resultados da função. 
+
+
+```r
+RDieHarder:::summary.dieharder
+```
+
+---
+
+## Alterando `plot.dieharder`
+
+
+```r
+dieharder("R_marsaglia_multic") %&gt;% 
+  RDieHarder:::plot.dieharder()
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-25-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Resultado `plot_dieharder`
+
+
+&lt;img src="index_files/figure-html/unnamed-chunk-26-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+class: middle, center, inverse
+
+# Fim!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
