@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Geração de variáveis aleatórias discretas</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2021-02-10" />
+    
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle
+
+## Geração de variáveis aleatórias discretas
+
+*****
+
+### Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+
+
+
+
+
+---
+class: center, middle, inverse
+
+# Introdução
+
+
+---
+
+# Ingredientes
+
+- Na aula passada, vimos como gerar números aleatórios a partir de diferentes algoritmos. 
+
+  - Cada algoritmo tem suas próprias características, com relação a eficiência e dificuldade computacional.
+  
+--
+
+- Embora os algoritmos gerassem valores inteiros, mostramos como gerar valores uniformes no intervalo (0, 1).
+
+--
+
+- Isso é importante porque podemos pensar na variável aleatória uniforme no [0, 1] como uma probabilidade.
+
+--
+
+  - Por exemplo, valores entre 0,3 e 0,5 devem ser gerados com probabilidade igual a 20%. 
+
+--
+
+  - Isso vai ser interessante no caso de variáveis discretas.
+
+--
+
+- De modo geral, podemos usar o Método da Transformação Inversa para gerar variáveis aleatórias de diferentes distribuições.
+
+
+---
+class: inverse, middle, center
+
+# Geração de variáveis aleatórias discretas
+
+
+---
+
+# Introdução
+
+- Seja X uma variável aleatória discreta com função de probabilidade
+
+`$$P(X = x_j) = p_j, \quad j = 0,1,\ldots, \quad \sum_{j} p_j = 1.$$`
+--
+
+- Para gerar valores dessa variável aleatória, podemos gerar `\(U\)` com distribuição uniforme em (0, 1) e fazer
+
+`$$X = \begin{cases} x_0 &amp; \mbox{ se } U &lt; p_0 \\ x_1 &amp; \mbox{ se } p_0 \leqslant U &lt; p_0 + p_1 \\ \vdots \\ x_j &amp; \mbox{ se } \sum_{i=0}^{j-1} p_i \leqslant U &lt; \sum_{i=0}^{j} p_i \\ \vdots
+\end{cases}$$`
+
+--
+
+- Como `\(0 &lt; a &lt; b &lt; 1\)`, `\(P(a &lt; U &lt; b) = b - a\)`, temos
+
+`$$P(X = x_j) = P\left(\sum_{i=0}^{j-1} p_i \leqslant U &lt; \sum_{i=0}^{j} p_i\right) = p_j$$`
+
+---
+
+# Detalhes
+
+- Podemos definir os passos anteriores com o seguinte algoritmo:
+
+  1. Se `\(U &lt; p_0\)`, `\(X = x_0\)` e paro.
+  1. Se não, se `\(U &lt; p_0 + p_1\)`, `\(X = x_1\)` e paro.
+  1. Se não, se `\(U &lt; p_0 + p_1 + p_2\)`, `\(X = x_2\)` e paro.
+  1. ...
+
+--
+
+- Se `\(x_i\)` estão ordenados, ou seja, `\(x_0 &lt; x_1 &lt; x_2 &lt; \cdots\)` e se `\(F\)` é função de distribuição acumulada, então
+
+`$$F(x_j) = \sum_{i=0}^j p_i,$$`
+
+--
+
+logo
+
+`$$X \mbox{ é igual a } x_j \quad \mbox{ se } \quad F(x_{j-1}) \leqslant U &lt; F(x_j)$$` 
+
+--
+
+- Que é equivalente a obter a função inversa de `\(F(U)\)`.
+
+---
+
+# Sobre o algoritmo
+
+- Tempo de execução do algoritmo:
+
+--
+
+  - Quanto maior o número de intervalos para procurar, maior o tempo.
+  
+--
+
+- Para melhorar a eficácia do algoritmo:
+
+--
+
+  - Considerar os possíveis valores `\(x_j\)` de `\(X\)` em ordem decrescente como função de `\(p_j\)`.
+  
+--
+
+  - Aqueles valores com maior probabilidade devem ser checados primeiro. 
+  
+--
+
+- Podemos fazer a comparação no `R`.
+
+---
+
+# Exemplo
+
+- Suponha que estamos interessados na seguinte variável aleatória `\(X\)`
+
+`$$P(X = j) = p_j, \quad j = 1, 2, 3, 4, 5.$$`
+
+--
+
+- Considere a função de probabilidade 
+
+`$$P(X = j) = \begin{cases} 0.07, &amp; \mbox{ se } X = 1 \\
+0.08, &amp; \mbox{ se } X = 2 \\ 0.10, &amp; \mbox{ se } X = 3 \\ 0.15, &amp; \mbox{ se } X = 4 \\ 0.60, &amp; \mbox{ se } X = 5 \\\end{cases}$$`
+
+--
+
+
+```r
+retorna_valor &lt;- function(){
+  u &lt;- runif(1)
+  if (u &lt; 0.07) 1
+  else if (u &lt; 0.15) 2
+  else if (u &lt; 0.25) 3
+  else if (u &lt; 0.40) 4
+  else 5
+}
+```
+
+
+---
+
+# Alternativa de código no `R`
+
+
+- Podemos escrever a função de uma forma um pouco diferente.
+
+
+```r
+retorna_valor_2 &lt;- function(){
+  u &lt;- runif(1)
+  if (u &lt; 0.60) 5
+  else if (u &lt; 0.75) 4
+  else if (u &lt; 0.85) 3
+  else if (u &lt; 0.93) 2
+  else 1
+}
+```
+
+--
+
+
+```r
+set.seed(42)
+retorna_valor()
+```
+
+```
+## [1] 5
+```
+
+--
+
+
+```r
+set.seed(42)
+retorna_valor_2()
+```
+
+```
+## [1] 2
+```
+
+
+---
+
+# Checando as funções 
+
+- Podemos verificar se as funções estão retornando as quantidades esperadas
+
+
+```r
+n_mc &lt;- 1000
+set.seed(42)
+1:n_mc %&gt;%
+  sapply(function(a) retorna_valor()) %&gt;% 
+  table() %&gt;% 
+  prop.table()
+```
+
+```
+## .
+##     1     2     3     4     5 
+## 0.067 0.104 0.097 0.153 0.579
+```
+
+--
+
+- As proporções estão um pouco diferentes do esperado. 
+--
+Mas isso pode ser um problema do tamanho da amostra. 
+
+
+```r
+n_mc &lt;- 100000
+```
+
+
+```
+## .
+##       1       2       3       4       5 
+## 0.07007 0.08217 0.09889 0.14771 0.60116
+```
+
+---
+
+# Utilizando a segunda função
+
+
+```r
+n_mc &lt;- 1000
+set.seed(42)
+1:n_mc %&gt;%
+  sapply(function(a) retorna_valor_2()) %&gt;% 
+  table() %&gt;% 
+  prop.table()
+```
+
+```
+## .
+##     1     2     3     4     5 
+## 0.070 0.079 0.097 0.131 0.623
+```
+
+
+--
+
+- Aumentando o tamanho da amostra.
+
+
+```r
+n_mc &lt;- 100000
+```
+
+
+```
+## .
+##       1       2       3       4       5 
+## 0.07007 0.08217 0.09889 0.14771 0.60116
+```
+
+
+---
+
+## Comparando o tempo de execução
+
+- Podemos utilizar a função `system.time()` para comparar o tempo de execução. 
+
+- Primeiro para a função `retorna_valor()`.
+
+
+```r
+n_mc &lt;- 100000
+set.seed(1234)
+system.time(1:n_mc %&gt;%
+  sapply(function(a) retorna_valor()))
+```
+
+```
+##    user  system elapsed 
+##   0.276   0.000   0.278
+```
+
+
+--
+
+- Em seguida, para a função `retorna_valor_2()`.
+
+
+```r
+n_mc &lt;- 100000
+set.seed(1234)
+system.time(1:n_mc %&gt;%
+  sapply(function(a) retorna_valor_2()))
+```
+
+```
+##    user  system elapsed 
+##   0.315   0.000   0.317
+```
+
+---
+
+# Outras opções
+
+- Podemos utilizar também a função `ifelse`
+
+
+```r
+retorna_valor_3 &lt;- function(){
+  u &lt;- runif(1)
+  ifelse(u &lt; 0.07, 1, 
+         ifelse(u &lt; 0.15, 2, 
+                ifelse(u &lt; 0.25, 3, 
+                       ifelse(u &lt; 0.40, 4, 5))))
+}
+```
+
+--
+
+- Podemos fazer a mesma operação para a outra função.
+
+
+```r
+retorna_valor_4 &lt;- function(){
+  u &lt;- runif(1)
+  ifelse(u &lt; 0.60, 5, 
+          ifelse(u &lt; 0.75, 4, 
+                 ifelse(u &lt; 0.85, 3, 
+                        ifelse(u &lt; 0.93, 2, 1))))
+}
+```
+
+---
+
+# Pacote `microbenchmark`
+
+- Podemos comparar as quatro funções com o pacote `microbenchmark`
+
+
+```r
+set.seed(111)
+microbenchmark::microbenchmark(retorna_valor, 
+                               retorna_valor_2, 
+                               retorna_valor_3, 
+                               retorna_valor_4, 
+                               times = 1000L)
+```
+
+```
+## Unit: nanoseconds
+##             expr min   lq    mean median    uq   max neval
+##    retorna_valor  36 80.0 265.168  137.5 258.0 25486  1000
+##  retorna_valor_2  34 53.0 267.344  135.0 254.0 21424  1000
+##  retorna_valor_3  36 66.0 220.255  138.0 264.0 16685  1000
+##  retorna_valor_4  36 54.5 238.434  138.5 250.5 17855  1000
+```
+
+
+---
+class: inverse, middle, center
+
+# Dist. uniforme discreta
+
+---
+
+# Caso uniforme discreta
+
+- Considere o caso que `\(X\)` é uma variável aleatória em que
+
+`$$X = \{ 1, 2, \cdots, n\}$$`
+
+--
+
+- Suponha que todos valores ocorrem com mesma probabilidade. 
+--
+ Logo, 
+ 
+ `$$P(X = j) = \frac{1}{n}, \quad \forall j \in \{ 1, 2, \cdots, n\}$$`
+--
+
+`$$X \mbox{ é igual a } j \quad \mbox{ se } \quad \frac{j-1}{n} \leqslant U &lt; \frac{j}{n}.$$` 
+
+--
+
+- Multiplicando todos valores por `\(n\)`, temos que
+
+`$$X \mbox{ é igual a } j \quad \mbox{ se } \quad j-1 \leqslant nU &lt; j.$$` 
+--
+
+- Em outras palavras, `\(X = \lfloor nU \rfloor + 1\)`, em que 
+
+
+`$$\lfloor t \rfloor \mbox{ é o maior inteiro menor ou igual que t}$$`
+
+---
+class: inverse, middle, center
+
+# Como fazer isso no R
+
+---
+
+# Exemplo no R
+
+- Podemos escrever uma função para gerar valores discretos uniformes
+
+
+```r
+uniforme_discreta &lt;- function(n){
+  u &lt;- runif(1)
+  floor(n * u) + 1
+}
+```
+
+--
+
+- Usando a função
+
+
+```r
+set.seed(30)
+uniforme_discreta(n = 10)
+```
+
+```
+## [1] 1
+```
+
+```r
+uniforme_discreta(n = 10)
+```
+
+```
+## [1] 5
+```
+
+---
+
+# Checando seu funcionamento
+
+- Podemos considerar diferentes tamanhos de `\(n\)`.
+
+--
+
+- Podemos checar somente se o primeiro valor está sendo gerado de acordo com as probabilidades esperadas.
+
+--
+
+
+```r
+n &lt;- 2:10
+set.seed(10)
+observado &lt;- sapply(n, 
+                    function(a){
+                      sum(replicate(1000, uniforme_discreta(a)) == 1)/1000
+                    }) 
+```
+ 
+--
+
+
+```r
+esperado &lt;- 1/2:10; round(esperado, 3)
+```
+
+```
+## [1] 0.500 0.333 0.250 0.200 0.167 0.143 0.125 0.111 0.100
+```
+
+--
+
+
+```r
+observado
+```
+
+```
+## [1] 0.499 0.337 0.262 0.188 0.170 0.122 0.123 0.101 0.114
+```
+
+---
+class: inverse, middle, center
+
+# Exemplo 
+# Dist. Geométrica
+
+
+---
+
+# Exemplo - Dist. Geométrica 
+
+Lembre que se `\(X\)` tem distribuição geométrica, sua função de probabilidade é dada por
+
+`$$P(X = j) = p(1-p)^{j-1}, \quad j=1,2,\ldots$$`
+--
+
+- Para facilitar a notação, podemos escrever `\(q = 1-p\)`, logo
+
+`$$P(X = j) = pq^{j-1}, \quad j=1,2,\ldots$$`
+
+--
+
+- Essa variável aleatória pode ser vista como o número de vezes até obter o primeiro sucesso em sequência de `\(j\)` tentativas independentes. 
+
+--
+
+- O sucesso ocorre com probabilidade `\(p\)`. 
+
+--
+
+- Podemos calcular a f.d.a. como
+
+--
+
+`$$\begin{align*} F(j) = \sum_{i=1}^j P(X = i) &amp;= 1 - P(X &gt; j)\\ &amp;= 1 - P(\{\mbox{Primeiros j tentativas são fracassos}\}) \\ &amp;= 1 - q^j, \quad j \geqslant 1 \end{align*}$$`
+
+---
+
+## Geração de números aleatórios
+
+- Podemos gerar valores aleatórios a partir `\(U \sim U(0,1)\)`, fazendo
+
+`$$X \mbox{ é igual a } j \quad \mbox{ se } \quad 1-q^{j-1} \leqslant U &lt; 1-q^{j}.$$` 
+
+--
+
+- De maneira equivalente, podemos fazer
+
+`$$X \mbox{ é igual a } j \quad \mbox{ se } \quad q^{j} &lt; 1-U \leqslant q^{j-1}.$$` 
+--
+
+- Logo, podemos definir `\(X\)` tal que 
+
+`$$X = \min\{j: q^{j} &lt; 1-U\}$$`
+
+--
+
+- Essa equivalência entre esses dois resultados pode ser vista nos gráficos a seguir. 
+
+---
+
+# Considerando a FDA
+
+- Gerando um valor aleatório entre 0 e 1, representado pela linha vermelha.
+
+&lt;img src="fig/graf_geom1.png" width="453" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# Considerando 1-FDA
+
+- Gerando um valor aleatório entre 0 e 1, representado pela linha vermelha.
+
+&lt;img src="fig/graf_geom3.png" width="453" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# Considerando a FDA
+
+- Gerando um valor aleatório entre 0 e 1, representado pela linha vermelha.
+
+&lt;img src="fig/graf_geom2.png" width="453" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# Considerando 1-FDA
+
+- Gerando um valor aleatório entre 0 e 1, representado pela linha vermelha.
+
+&lt;img src="fig/graf_geom4.png" width="453" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# Mais alguns detalhes
+
+- Podemos aplicar a função logaritmo, que é uma função monótona para simplificar a expressão um pouco com
+
+`$$\begin{align*} X &amp;= \min\{j: j \cdot \log(q) &lt; \log(1-U)\} \\ &amp;= \min\left\{j: j &gt; \frac{\log(1-U)}{\log(q)} \right\} \end{align*}$$`
+--
+
+- Fazendo uso da função `\(\lfloor . \rfloor\)` novamente, temos
+
+`$$X = \lfloor \log(1-U)/\log(q)  \rfloor + 1$$`
+--
+
+- Finalmente, podemos utilizar que `\(1-U \sim U(0,1)\)`.
+
+- Assim podemos gerar valores aleatórios da distribuição geométrica de parâmetro `\(p\)` com
+
+`$$X = \lfloor \log(U)/\log(q)  \rfloor + 1$$`
+
+---
+
+# Exemplo no R
+
+
+```r
+rgeometrica &lt;- function(p = 0.5){
+  u &lt;- runif(1)
+  floor(log(u)/log(1-p)) + 1
+}
+```
+
+
+
+```r
+set.seed(42)
+rgeometrica()
+```
+
+```
+## [1] 1
+```
+
+
+
+```r
+set.seed(1234)
+rgeometrica(0.1)
+```
+
+```
+## [1] 21
+```
+
+---
+class: inverse, middle, center
+
+# Exemplo 
+# Sequência de Bernoulli's independentes
+
+---
+
+# Sequência de Bernoulli's i.i.d.
+
+- Suponha que você quer gerar `\(X_1, \ldots, X_n\)`.
+
+  - `\(X_i \sim Ber(p), \quad i=1,...,n.\)`
+  
+--
+
+- Isso poderia ser facilmente feito gerando `\(n\)` variáveis uniforme em (0, 1), `\(U_1, ..., U_n\)` e fazendo
+
+`$$X_i  = \begin{cases} 1, &amp; \mbox{ se } U_i \leqslant p \\ 0, &amp; \mbox{ se } U_i &gt; p
+\end{cases}$$`
+
+--
+
+- No R, poderíamos fazer
+
+
+```r
+rbernoulli &lt;- function(p){
+  u &lt;- runif(1)
+  if (u &lt;= p) 1
+  else 0
+}
+set.seed(42)
+rbernoulli(0.7)
+```
+
+```
+## [1] 0
+```
+
+---
+
+# Forma mais eficiente
+
+- Podemos pensar na sequência de eventos Bernoulli de forma conjunta.
+
+--
+
+- Podemos considerar o exemplo anterior para a variável geométrica 
+
+--
+
+- Ali podemos gerar uma sequência de zeros ou uns, até obter o primeiro fracasso ou sucesso, respectivamente.
+
+--
+
+- Por exemplo, se `\(X \sim \mbox{Geométrica}(p)\)`.
+
+--
+
+  - Gero um valor aleatório para `\(X\)`, `\(X_1 = 4\)`.
+  
+--
+
+  - Posso pensar que `\(X_1 = 4\)` é equivalente a sequência de Bernoulli's `\(\{0, 0, 0, 1\}\)`.
+  
+--
+
+- Posso definir um algoritmo então que gera v.a. Geométrica para completar a sequência de Bernoulli's.
+
+
+---
+
+# Algoritmo
+
+- **Objetivo**: Gerar `\(n\)` valores da distribuição `\(\mbox{Ber}(p)\)`.
+
+### Passos
+
+1. Se `\(p \leqslant 1/2\)`, então gero uma sequência de zeros até observar o primeiro sucesso. Caso contrário, faço o inverso. 
+1. Gero variável geométrica `\(N\)` com parâmetro `\(p\)`.
+1. Suponha que `\(N = j\)`.
+  
+  a. Se `\(j &gt; n\)`, então `\(X_i = 0\)` (ou 1, a depender de `\(p\)`), `\(i=1,\ldots,n\)`.
+  
+  b. Se `\(j = n\)`, então `\(X_i = 0\)`, `\(i=1, \ldots, n-1\)`, `\(X_n = 1\)`.
+  
+  c. Se `\(j &lt; n\)`, faço o passo b para completar a sequência até j. Depois volto para passo 3 para completar posições seguintes.
+  
+---
+
+# Exemplo no R
+
+- Podemos fazer esse algoritmo utilizando recursão.
+
+
+```r
+rseq_bernoulli &lt;- function(n, p){
+  if (p &lt;= 0.5){
+    sucesso &lt;- 1
+    fracasso &lt;- 0
+    N &lt;- rgeometrica(p)
+  }
+  else {
+    sucesso &lt;- 0
+    fracasso &lt;- 1
+    N &lt;- rgeometrica(1-p)
+  }
+  if (N &gt; n) saida &lt;- rep(fracasso, n)
+  else if (N == n) saida &lt;- c(rep(fracasso, n-1), sucesso)
+  else saida &lt;- c(rep(fracasso, N-1), sucesso, rseq_bernoulli(n-N, p))
+  saida
+}
+```
+
+
+---
+
+# Testando código
+
+
+```r
+set.seed(20)
+rseq_bernoulli(n = 20, p = 0.4)
+```
+
+```
+##  [1] 1 1 0 0 1 0 1 1 1 0 0 0 0 1 0 0 0 0 0 1
+```
+
+
+```r
+set.seed(42)
+rseq_bernoulli(n = 20, p = 0.7)
+```
+
+```
+##  [1] 0 0 1 1 1 0 0 1 0 1 0 0 1 1 1 1 1 0 1 0
+```
+
+
+```r
+set.seed(42)
+rseq_bernoulli(n = 20, p = 0.3)
+```
+
+```
+##  [1] 1 1 0 0 0 1 1 0 1 0 1 1 0 0 0 0 0 1 0 1
+```
+
+---
+
+# Checando a função
+
+- Como anteriormente, podemos gerar diversas réplicas e verificar a proporção de zeros e uns.
+
+- Podemos utilizar diferentes valores de `\(p\)`.
+
+
+```r
+valores_p &lt;- 1:9/10
+n_mc &lt;- 1000
+set.seed(1234)
+observado &lt;- lapply(valores_p, function(a) 
+  replicate(n_mc, mean(rseq_bernoulli(30, a))))
+```
+
+--
+
+- E analisar os resultados utilizando gráficos.
+
+- Primeiro, salvando os resultados em um data.frame.
+
+
+```r
+dados_grafico &lt;- data.frame(valores = unlist(observado), 
+                            p = rep(valores_p, each = n_mc))
+```
+
+---
+
+
+```r
+ggplot(dados_grafico) + theme_classic() + 
+  geom_density(aes(x = valores, color = as.factor(p)), adjust = 2) + 
+  scale_color_viridis_d() + 
+  theme(legend.position = 'none') + 
+  geom_vline(data = data.frame(x = 1:9/10), 
+             aes(xintercept = x), linetype = 2, color = 'grey')
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-35-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+
+class: middle, center, inverse
+
+# Fim!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
