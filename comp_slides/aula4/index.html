@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Geração de variáveis aleatórias discretas - Parte 2</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2021-02-21" />
+    
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle
+
+## Geração de variáveis aleatórias discretas - Parte 2
+
+*****
+
+### Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+
+
+
+
+
+---
+class: center, middle, inverse
+
+# Lembrete
+
+
+---
+
+# Ingredientes
+
+- Na aula passada, vimos como gerar números aleatórios com distribuição discreta.
+
+--
+
+- Consideramos a relação de `\(U \sim U(0,1)\)` e gerar um valor de `\(X\)` com sua função de probabilidade, a partir da relação
+
+`$$P(X = x_j) = P\left(\sum_{i=0}^{j-1} p_i \leqslant U &lt; \sum_{i=0}^{j} p_i\right) = p_j$$`
+--
+
+- Se `\(x_i\)` estão ordenados e se `\(F\)` é função de distribuição acumulada, então
+
+`$$F(x_j) = \sum_{i=0}^j p_i,$$`
+
+--
+
+logo
+
+`$$X \mbox{ é igual a } x_j \quad \mbox{ se } \quad F(x_{j-1}) \leqslant U &lt; F(x_j)$$` 
+
+
+---
+class: center, middle, inverse
+
+# Exemplo
+
+# Distribuição Poisson
+
+---
+
+# Distribuição Poisson
+
+- Uma variável aleatória `\(X\)` tem distribuição Poisson com média `\(\lambda\)` se 
+
+`$$p_i = P(X = i) = \frac{e^{-\lambda} \lambda^i}{i!} \quad \quad i=0,1,\ldots$$`
+--
+
+- Um passo importante na geração de valores Poisson é observar o seguinte
+
+`$$\begin{align*} P(X = i + 1) &amp;= \frac{\lambda}{i + 1} P(X = i) \\ 
+&amp;= \frac{\lambda}{i + 1} \frac{e^{-\lambda} \lambda^i}{i!} \\
+&amp;= \frac{e^{-\lambda} \lambda^{i+1}}{(i+1)!} \end{align*}$$`
+
+--
+
+- Temos a seguinte recursão
+
+`$$p_{i+1} = \frac{\lambda}{i + 1} p_i$$`
+---
+
+# Algoritmo
+
+- O seguinte algoritmo pode ser construído então
+
+### Passos
+
+1. Gero um valor `\(U\)` com distribuição uniforme 
+1. `\(i = 0\)`, `\(p = e^{-\lambda}\)`, `\(F = p\)`
+1. Se `\(U &lt; F\)`, então `\(X = i\)` e saio do algoritmo.
+1. Atualizo 
+  
+  a. `\(p = \lambda p/(i+1)\)`
+  
+  b. `\(F = F + p\)`
+  
+  c. `\(i = i+1\)`.
+  
+1. Volto para o passo 3.
+
+
+---
+
+# No R
+
+- Podemos fazer no R o seguinte
+
+
+```r
+r_poisson &lt;- function(lambda){
+  u &lt;- runif(1)
+  pronto &lt;- FALSE
+  i &lt;- 0
+  p &lt;- exp(-lambda)
+  fda &lt;- p
+  while (!pronto){
+    if (u &lt; fda){
+      saida &lt;- i
+      pronto &lt;- TRUE
+    }
+    p &lt;- ((lambda)/(i+1)) * p
+    fda &lt;- fda + p
+    i &lt;- i + 1
+  }
+  saida
+}
+```
+
+---
+
+# Testando
+
+- Podemos testar a função da seguinte forma
+
+
+```r
+set.seed(1234)
+r_poisson(4)
+```
+
+```
+## [1] 2
+```
+
+--
+
+
+```r
+set.seed(42)
+r_poisson(10)
+```
+
+```
+## [1] 14
+```
+
+--
+
+- Para criar uma função que gera valores de uma amostra de tamanho `\(n\)`, 
+
+
+```r
+r_poisson_amostra &lt;- function(n, lambda){
+  replicate(n, r_poisson(lambda))
+}
+set.seed(42); r_poisson_amostra(5, 10)
+```
+
+```
+## [1] 14 15  8 13 11
+```
+
+
+---
+
+# Algumas considerações 
+
+- Note a distribuição de probabilidade quando `\(X \sim P(\lambda = 5)\)`
+
+&lt;img src="index_files/figure-html/unnamed-chunk-5-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# Algumas considerações 
+
+- Note a distribuição de probabilidade quando `\(X \sim P(\lambda = 120)\)`
+
+&lt;img src="index_files/figure-html/unnamed-chunk-6-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Comparando o tempo de execução
+
+- Podemos gerar um número grande de réplicas, considerando diferentes `\(\lambda\)`'s
+
+--
+
+- E comparar o seu tempo de execução
+
+
+
+```r
+set.seed(42)
+system.time(r_poisson_amostra(10000, 5))
+```
+
+```
+##    user  system elapsed 
+##   0.042   0.008   0.050
+```
+
+
+```r
+set.seed(42)
+system.time(r_poisson_amostra(10000, 120))
+```
+
+```
+##    user  system elapsed 
+##   0.262   0.004   0.266
+```
+
+---
+class: inverse, middle, center
+
+# Algoritmo de aceitação-rejeição
+
+
+---
+
+# Ideia
+
+- Método mais utilizado no caso contínuo, porém podemos apresentar sua versão versão discreta.
+
+--
+
+- Suponha que você saiba gerar valores de uma variável aleatória com distribuição de probabilidade `\(q_j, j \geq 0\)`.
+
+--
+
+`$$P(Y = j) = q_j, \quad \quad j = 0, 1, \ldots$$`
+--
+
+- Nós gostaríamos de usar isso como base para valores de `\(X\)`.
+
+`$$P(X = j) = p_j, \quad \quad j = 0, 1, \ldots$$`.
+
+--
+
+- Nós aceitamos o valor gerado de `\(Y\)` com probabilidade proporcional a 
+
+`$$p_j/q_j$$`
+
+---
+
+# Graficamente
+
+&lt;img src="index_files/figure-html/unnamed-chunk-9-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Graficamente
+
+&lt;img src="index_files/figure-html/unnamed-chunk-10-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Algoritmo
+
+- Devemos encontrar a constante `\(c\)` tal que 
+
+`$$p_j \leqslant c \cdot q_j, \quad \forall j: p_j &gt; 0$$`
+## Método de aceitação
+
+1. Gero um valor de `\(Y = y\)`, com densidade de probabilidade `\(q_j\)`.
+2. Gero um valor uniforme `\(U(0,1)\)`.
+3. Se `\(U &lt; \frac{p_y}{c q_y}\)`, então `\(X = Y\)` e saio. Se não, volto ao passo 1.
+
+--
+
+- Note que para alguns dos passos o valor gerado de `\(Y\)` é simplesmente rejeitado.
+
+--
+
+- E para alguns passos o valor é aceito.
+
+---
+
+# Exemplo - Binomial
+
+- Vamos escrever uma função valores da binomial a partir da distribuição uniforme discreta, começando no 0.
+
+--
+
+
+```r
+r_binomial_ar &lt;- function(n, p){
+  aceito &lt;- FALSE
+  while(!aceito){
+    unif_discr &lt;- floor(runif(1) * (n+1))
+    const_c &lt;- max(dbinom(0:n, n, p))/(1/(n+1))
+    valor_comparacao &lt;- dbinom(unif_discr, n, p) / 
+      (const_c * (1/(n + 1)))
+    if (runif(1) &lt; valor_comparacao){
+      aceito &lt;- TRUE
+      saida &lt;- unif_discr
+    }
+  }
+  saida
+}
+```
+
+---
+
+# Verificando a função
+
+- Podemos verificar se a função parece funcionar
+
+
+```r
+set.seed(1234)
+r_binomial_ar(10, 0.5)
+```
+
+```
+## [1] 6
+```
+
+--
+
+- Repetindo esse passo um grande número de vezes, podemos observar as frequências observadas.
+
+
+```r
+set.seed(1234)
+n_mc &lt;- 10000
+valores_observados &lt;- replicate(n_mc, r_binomial_ar(10, 0.5))
+table(valores_observados) %&gt;% prop.table() %&gt;% round(3)
+```
+
+```
+## valores_observados
+##     0     1     2     3     4     5     6     7     8     9    10 
+## 0.001 0.009 0.044 0.115 0.204 0.249 0.201 0.122 0.045 0.010 0.001
+```
+
+---
+
+# Para fazer o gráfico
+
+
+```r
+x &lt;- 0:10
+
+valores_grafico &lt;- 
+  data.frame(y = c(dbinom(x, 10, 0.5),
+                   prop.table(table(valores_observados))), 
+             x = rep(x, times = 2), 
+             tipo = rep(c("Teóricos", "Observados"), 
+                        each = length(x)))
+
+ggplot(valores_grafico) + 
+  theme_classic() +
+  geom_bar(aes(x, y, fill = tipo), 
+           stat = 'identity', 
+           position = 'dodge') +
+  scale_fill_viridis_d() + 
+  scale_x_continuous(breaks = 0:9)
+```
+
+---
+
+# Resultado
+
+&lt;img src="index_files/figure-html/unnamed-chunk-15-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+class: inverse, middle, center
+
+
+# Teorema do Método da Aceitação-Rejeição
+
+---
+
+# Resultado
+
+**Teorema: ** _O algoritmo da aceitação-rejeição gera uma variável aleatória `\(X\)` tal que_ 
+
+`$$P(X = j) = p_j, \quad j = 0, 1, \ldots$$`
+_Adicionalmente, o número de iterações do algoritmo necessário para `\(X\)` é uma variável aleatória geométrica com média `\(c\)`_
+
+--
+
+**Prova: **
+
+Primeiramente, vamos determinar a probabilidade de uma única iteração produzir o valor aceito `\(j\)`. 
+--
+Note que 
+
+--
+
+`$$\begin{align*} P(Y=j, \{\mbox{O valor é aceito}\}) &amp;= P(Y=j) P(\{\mbox{O valor é aceito}\} | Y = j) \\
+&amp;= q_j \frac{p_j}{c \cdot q_j} \\
+&amp;= \frac{p_j}{c}\end{align*}$$`
+
+---
+
+Somando sobre o índice `\(j\)`, podemos obter a probabilidade marginal 
+
+`$$\begin{align*} P(\{\mbox{O valor é aceito}\}) &amp;= \sum_j \frac{p_j}{c} \\
+&amp;= \frac{1}{c} \sum_j p_j\\ 
+&amp;= \frac{1}{c} \end{align*}$$`
+
+Como aceitamos cada valor de forma independente com probabilidade `\(1/c\)`, 
+o número de iterações necessárias tem distribuição geométrica.
+
+--
+
+Além disso, 
+
+`$$\begin{align*} P(X = j) &amp;= \sum_n P(X = j, \{j \mbox{ aceito na iteração n}\})\\
+&amp;= \sum_n P(X = j |\{j \mbox{ aceito na iteração n}\})P(j \mbox{ aceito na iteração n}\})\\
+&amp;= \sum_n p_j \left(1 - \frac{1}{c}\right)^{n-1} \frac{1}{c}   \\ 
+&amp;= p_j \sum_n \left(1 - \frac{1}{c}\right)^{n-1} \frac{1}{c} = p_j\end{align*}$$`
+
+---
+
+class: middle, center, inverse
+
+# Fim!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
