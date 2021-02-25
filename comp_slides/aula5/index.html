@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Geração de variáveis aleatórias contínuas</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2021-02-25" />
+    
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle
+
+## Geração de variáveis aleatórias contínuas
+
+*****
+
+### Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+
+
+
+
+
+---
+class: center, middle, inverse
+
+# Introdução
+
+
+---
+
+# Caso discreto
+
+- Consideramos a relação de `\(U \sim U(0,1)\)` e gerar um valor de `\(X\)` com sua função de probabilidade, a partir da relação
+
+`$$P(X = x_j) = P\left(\sum_{i=0}^{j-1} p_i \leqslant U &lt; \sum_{i=0}^{j} p_i\right) = p_j$$`
+
+
+- Se `\(x_i\)` estão ordenados e se `\(F\)` é função de distribuição acumulada, então
+
+`$$F(x_j) = \sum_{i=0}^j p_i,$$`
+
+logo
+
+`$$X \mbox{ é igual a } x_j \quad \mbox{ se } \quad F(x_{j-1}) \leqslant U &lt; F(x_j)$$` 
+
+--
+
+- É como se estívessemos utilizando a função inversa de `\(F(.)\)` para obter os nossos valores aleatórios.
+
+
+---
+class: inverse, middle, center
+
+# Caso contínuo 
+
+# Método da Transformação Inversa
+
+
+---
+
+# Algoritmo
+
+- Considere uma variável aleatória com função de distribuição acumulada (f.d.a.) `\(F\)`.
+
+--
+
+- Um método para gerar um valor aleatório para tal variável é dado pela seguinte proposição.
+
+--
+
+**Proposição: ** _Seja `\(U\)` uma variável aleatória com distribuição uniforme no intervalo `\((0, 1)\)`. Para qualquer função de distribuição acumulada contínua `\(F\)` a variável aleatória `\(X\)` definida por_
+
+`$$X = F^{-1}(U)$$`
+_tem distribuição `\(F\)`._
+
+Obs: `\(F^{-1}(u)\)` é definida para ser o valor de `\(x\)` tal que `\(F(x) = u\)`.
+
+--
+
+- Essa proposição nos permite gerar valores aleatórias das mais diferentes distribuições contínuas. 
+
+--
+
+- Basta ser possível definir a inversa de função de distribuição acumulada. 
+--
+Porém, essa tarefa nem sempre é simples de ser realizada.
+
+---
+
+# Prova da proposição
+
+**Prova: ** Seja `\(F_X\)` a função de distribuiçao acumulada da v.a. `\(X = F^{-1}(U)\)`. Logo,
+
+`$$\begin{align*} F_X(x) &amp;= P(X \leqslant x) \\ 
+&amp;= P(F^{-1}(U) \leqslant x)\end{align*}$$`
+
+--
+
+- Como `\(F\)` é uma f.d.a., então `\(F(x)\)` é função crescente monótona de `\(x\)`, então
+  
+  - a desigualdade `\(a \leqslant b\)` é equivalente a `\(F(a) \leqslant F(b)\)`.
+  
+--
+
+- Então, podemos escrever
+
+`$$\begin{align*} F_X(x) &amp;= P\left(F\left(F^{-1}(U)\right) \leqslant F(x)\right) \quad \quad \mbox{como } F\left(F^{-1}(U)\right) = U\\ 
+&amp;= P(U \leqslant F(x)) \quad \quad \quad \quad \quad \quad \,\, \mbox{como } U \mbox{ é uniforme em (0,1)}\\
+&amp;= F(x) \end{align*}$$`
+
+--
+
+- Esse resultado é importante porque nos mostra que para gerar uma variável aleatória com f.d.a. `\(F\)`, basta gerar uma variável aleatória uniforme e fazer 
+
+`$$X = F^{-1}(U)$$`
+
+---
+class: inverse, middle, center
+
+# Exemplos
+
+---
+
+# Exemplo 1
+
+- Suponha que você esteja interessado em gerar um valor aleatório de `\(X\)`, em que `\(X\)` tem f.d.a. igual a 
+
+`$$F(x) = x^n, \quad 0 &lt; x &lt; 1.$$`
+
+--
+
+- Se fizermos `\(x = F^{-1}(u)\)`, então temos
+
+`$$u = F(x) = x^n \quad \Rightarrow \quad x = u^{1/n}$$`
+--
+
+Logo, podemos gerar um valor aleatório de `\(X\)`, gerando um valor de `\(U\)` e fazendo `\(X = U^{1/n}\)`.
+
+--
+
+- Note que a função densidade de `\(X\)` é dada por 
+
+`$$f(x) = \frac{d F(x)}{dx} = n x^{n-1}, \quad 0 &lt; x &lt; 1.$$`
+
+--
+
+- Podemos chamar esse algoritmo um número grande e verificar se ele retorna a densidade desejada.
+
+---
+
+# No R 
+
+- Função densidade de `\(X\)` (Vamos considerar `\(n = 5\)` como valor _default_ da função)
+
+
+```r
+dens &lt;- function(x, n = 5){
+  n * x^(n-1)
+}
+```
+
+--
+
+- Podemos verificar se é uma densidade fazendo 
+
+```r
+integrate(dens, 0, 1)
+```
+
+```
+## 1 with absolute error &lt; 1.1e-14
+```
+
+--
+
+- Função para gerar valores aleatórios
+
+
+```r
+r_x &lt;- function(n = 5){
+  u &lt;- runif(1)
+  u^(1/n)
+}
+```
+
+---
+
+# Testando a função 
+
+- Gerando um número grande de vezes 
+
+
+```r
+valores_gerados &lt;- replicate(5e4, r_x())
+```
+
+--
+
+
+```r
+hist(valores_gerados, prob = TRUE, main = "", xlab = "x")
+curve(dens(x), add = TRUE, col = "blue")
+```
+
+--
+
+&lt;img src="index_files/figure-html/unnamed-chunk-6-1.png" width="40%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# Exemplo 2
+
+- Se `\(X\)` tem distribuição exponencial com `\(\lambda = 1\)`, então sua f.d.a. é dada por
+
+`$$F(x) = 1 - e^{-x}$$`
+--
+
+- Se quisermos inverter essa função podemos fazer `\(u = 1 - e^{-x}\)` e obter
+
+`$$x = -\log(1-u)$$`
+--
+
+- Podemos obter um valor com distribuição exponencial de parâmetro 1, gerando uma variável `\(U\)` com distribuição uniforme e fazendo 
+
+`$$X = - \log(1-U)$$`
+--
+
+- Podemos considerar também que 
+
+`$$-\log(1-U) \sim -\log(U)$$`
+---
+
+# Resultado da exponencial
+
+- Sabemos que se a densidade de `\(X \sim \mbox{Exp}(\lambda)\)` é dada por
+
+`$$f(x|\lambda) = \lambda e^{-\lambda x}, \quad x &gt; 0,$$`
+
+Então `\(E(X) = 1/\lambda\)`.
+
+--
+
+- Além disso, é possível mostrar que se `\(Y \sim \mbox{Exp}(1)\)`, então
+
+`$$X = \frac{1}{\lambda} Y \sim \mbox{Exp}(\lambda).$$`
+--
+
+-  Então, para gerar um valor aleatório da distribuição exponencial com parâmetro `\(\lambda\)`, basta fazermos
+
+`$$X = - \frac{1}{\lambda}\log(U)$$`
+
+---
+
+# No R
+
+- Podemos considerar a função `rexp` do pacote base do R.
+
+
+```r
+?rexp
+```
+
+--
+
+- Mas podemos criar nossa própria função e comparar os resultados.
+
+--
+
+
+```r
+r_exp &lt;- function(lambda){
+  u &lt;- runif(1)
+  (-1 / lambda) * log(u)
+}
+```
+
+--
+
+
+```r
+set.seed(1234); r_exp(lambda = 2)
+```
+
+```
+## [1] 1.087081
+```
+
+--
+
+
+```r
+set.seed(1234); rexp(1, 2)
+```
+
+```
+## [1] 1.250879
+```
+
+---
+
+# Alguns comentários
+
+- Com relação a vetorizar uma função, podemos fazer de duas formas: 
+
+
+```r
+r_exp2 &lt;- function(n, lambda){
+  replicate(n, r_exp(lambda))
+}
+```
+
+--
+
+- Podemos também considerar uma alteração simples na função anterior
+
+
+```r
+r_exp3 &lt;- function(n, lambda){
+  u &lt;- runif(n)
+  (-1 / lambda) * log(u)
+}
+```
+
+--
+
+
+```r
+rexp
+```
+
+```
+## function (n, rate = 1) 
+## .Call(C_rexp, n, 1/rate)
+## &lt;bytecode: 0x5599a90a07c8&gt;
+## &lt;environment: namespace:stats&gt;
+```
+
+---
+
+# Comparando as três opções
+
+- Podemos utilizar a função `microbenchmark::microbenchmark` 
+
+--
+
+
+```r
+microbenchmark::microbenchmark(rexp(50, 2), 
+                               r_exp2(50, 2), 
+                               r_exp3(50, 2), 
+                               times = 500L)
+```
+
+```
+## Unit: microseconds
+##           expr     min       lq       mean   median      uq      max neval
+##    rexp(50, 2)   3.069   3.6580   6.000422   4.2065   5.713   55.369   500
+##  r_exp2(50, 2) 111.991 121.9655 241.824554 165.7590 248.765 5969.789   500
+##  r_exp3(50, 2)   4.209   5.0865  13.057874   5.8225   8.303 2199.609   500
+```
+
+--
+
+- Notem como chamar a função repetidas vezes com `replicate` é bastante custoso computacionalmente.
+
+--
+
+- E que versão utilizando somente `R` puro é bastante competitiva com a versão utilizando código compilado.
+
+---
+
+# Testando a função
+
+--
+
+
+```r
+set.seed(42); dados &lt;- data.frame(x = r_exp3(5e4, 5))
+ggplot(dados) + theme_classic() + geom_density(aes(x)) +
+  geom_function(fun = dexp, colour = "red", args = list(rate = 5))
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-15-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Exemplo 3
+
+### Distribuição Gama
+
+- Suponha que estejamos interessados em gerar valores aleatórios de `\(X\)`, quando 
+
+`$$X \sim \mbox{Gama}(n, \lambda)$$`
+--
+
+- A f.d.a. de `\(X\)` é dada por 
+
+`$$F(x) = \int_0^x \frac{\lambda e^{-\lambda y} (\lambda y)^{n-1}}{(n-1)!} dy$$`
+--
+
+- Não é possível encontrar uma forma fechada para sua expressão. 
+
+--
+
+- Porém, podemos usar o fato que `\(\mbox{Gama}(n, \lambda)\)` pode ser vista como uma soma de `\(n\)` variáveis exponenciais independentes com parâmetro `\(\lambda\)`.
+
+---
+
+# Algoritmo
+
+- Podemos gerar uma sequência de `\(n\)` v.a. uniformes `\(U_1,\ldots,U_n\)` e fazer
+
+`$$X = -\frac{1}{\lambda} \log(U_1) - \cdots -\frac{1}{\lambda} \log(U_n)$$`
+
+--
+
+- E podemos considerar propriedades de logaritmos para obter a seguinte expressão 
+
+`$$X = -\frac{1}{\lambda} \log(U_1 \cdots U_n)$$`
+--
+
+- Nesse caso, fazemos somente uma operação logaritmica, ao invés de `\(n\)`.
+
+--
+
+- No R, podemos fazer
+
+
+```r
+r_gamma &lt;- function(n, lambda){
+  u &lt;- runif(n)
+  -(1/lambda) * log(prod(u))
+}
+```
+
+---
+
+# Testando a função
+
+
+```r
+set.seed(42); dados &lt;- data.frame(x = replicate(5e4, r_gamma(10, 5)))
+ggplot(dados) + theme_classic() + geom_density(aes(x)) +
+  geom_function(fun = dgamma, colour = "red", args = list(shape = 10, rate = 5))
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-17-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+class: middle, center, inverse
+
+# Fim!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
