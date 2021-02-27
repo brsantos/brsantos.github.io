@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Geração de variáveis aleatórias contínuas</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2021-02-27" />
+    
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle
+
+## Geração de variáveis aleatórias contínuas - Parte II
+
+*****
+
+### Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+
+
+
+
+
+---
+class: center, middle, inverse
+
+# Última aula
+
+
+---
+
+# Método da transformação inversa
+
+
+**Proposição: ** _Seja `\(U\)` uma variável aleatória com distribuição uniforme no intervalo `\((0, 1)\)`. Para qualquer função de distribuição acumulada contínua `\(F\)` a variável aleatória `\(X\)` definida por_
+
+`$$X = F^{-1}(U)$$`
+_tem distribuição `\(F\)`._
+
+--
+
+- Vimos alguns exemplos:
+
+  - Classe de potências.
+
+  - Exponencial
+
+  - Gama
+
+---
+class: inverse, middle, center
+
+# Método da aceitação-rejeição
+
+---
+
+# Algoritmo
+
+- Método bastante similar com o caso discreto.
+
+--
+
+  - Diferença está em considerar densidades ao invés de funções de probabilidade.
+  
+--
+
+- Utilizamos uma distribuição de probabilidade da qual sabemos gerar valores aleatórios, com densidade `\(g(x)\)`.
+
+--
+
+- Precisamos obter o valor `\(c\)` como anteriormente.
+
+--
+
+- O valor de `\(c\)` deve ser tal que
+
+`$$\frac{f(x)}{g(x)} \leqslant c, \quad \quad \mbox{ para todo } x$$`
+--
+
+- Outra forma de escrever isso é 
+
+`$$f(x) \leqslant c \cdot g(x), \quad \quad \mbox{ para todo } x$$`
+
+---
+
+# Algoritmo
+
+- O método pode ser descrito da seguinte forma.
+
+## Método de aceitação-rejeição
+
+1. Gero um valor de `\(Y\)`, com densidade `\(g(.)\)`.
+2. Gero um valor uniforme `\(U \sim U(0,1)\)`.
+3. Se `\(U &lt; \frac{f(y)}{c g(y)}\)`, então `\(X = Y\)` e saio. Se não, volto ao passo 1.
+
+--
+
+- Veja como o método é bastante similar ao caso discreto.
+
+--
+
+- A única diferença é que agora consideramos as densidades `\(f(.)\)` e `\(g(.)\)`
+
+---
+class: inverse, middle, center
+
+# Exemplos
+
+---
+
+# Exemplo 1
+
+- Suponha que estamos interessados em gerar valores de uma variável aleatória com a seguinte densidade: 
+
+`$$f(x) = 20 x (1-x)^3, \quad 0 &lt; x &lt; 1.$$`
+--
+
+- Podemos perceber que `\(X \sim Beta(2, 4)\)`.
+
+--
+
+- Podemos fazer o gráfico da sua densidade com 
+
+
+```r
+curve(dbeta(x, 2, 4))
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-1-1.png" width="30%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# Gerando valores aleatórios
+
+- Vamos considerar o método da rejeição com 
+
+`$$g(x) = 1, 0 &lt; x &lt; 1.$$`
+
+--
+
+- Logo, nossa proposta tem distribuição uniforme. 
+
+--
+
+- Precisamos encontrar `\(c\)` tal que a linha vermelha fique acima da linha preta
+
+&lt;img src="index_files/figure-html/unnamed-chunk-2-1.png" width="40%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Encontrando `\(c\)`
+
+
+- Podemos utilizar cálculo para encontrar o máximo de 
+
+`$$\frac{f(x)}{g(x)} = 20x(1-x)^3.$$`
+--
+
+- Se calcularmos a derivada, vamos encontrar
+
+`$$\frac{d}{dx} \left( \frac{f(x)}{g(x)} \right) = 20[(1-x)^3 + 3x(1-x)^2]$$`
+--
+
+- Se igualarmos isso a zero, vamos encontrar que `\(x = 1/4\)` maximiza essa função.  Logo,
+
+`$$\frac{f(x)}{g(x)} \leq 20 \left(\frac{1}{4}\right)\left(\frac{3}{4}\right)^3 = \frac{135}{64} = c.$$`
+--
+
+- Daí, temos 
+`$$\frac{f(x)}{c g(x)} = \frac{256}{27} x(1-x)^3.$$`
+
+---
+
+## Algoritmo de aceitação-rejeição
+
+1. Gero valor `\(U_1\)` com distribuição uniforme.
+2. Gero valor `\(U_2\)` com distribuição uniforme.
+3. Se `\(U_2 \leqslant \frac{256}{27} U_1(1-U_1)^3\)` saio e faço `\(X = U_1\)`. Se não, retorno, ao passo 1.
+
+--
+
+- No R, podemos fazer assim
+
+
+```r
+r_beta_24 &lt;- function(){
+  aceito &lt;- FALSE
+  while(!aceito){
+    u1 &lt;- runif(1)
+    u2 &lt;- runif(1)
+    if (u2 &lt;= (256/27) * (u1) * (1-u1)^3){
+      aceito &lt;- TRUE
+      saida &lt;- u1
+    }
+  }
+  saida
+}
+```
+
+---
+
+# Comparação com `rbeta`
+
+- Chamando a função
+
+
+```r
+set.seed(42)
+r_beta_24()
+```
+
+```
+## [1] 0.2861395
+```
+
+--
+
+Podemos comparar a performance dessa função com a `rbeta`
+
+
+```r
+set.seed(42)
+n &lt;- 5e4
+nossos_valores &lt;- replicate(n, r_beta_24())
+r_valores &lt;- rbeta(n, 2, 4)
+plot(density(nossos_valores), 
+     main = "", 
+     xlab = "x", 
+     ylab = "Densidade")
+lines(density(r_valores), col = 2)
+curve(dbeta(x, 2, 4), col = 3, add = TRUE)
+```
+
+---
+
+# Resultado
+
+&lt;img src="index_files/figure-html/unnamed-chunk-6-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Exemplo 2
+
+- Suponha que estamos interessados em gerar valores de `\(X \sim \mbox{Gama}(3/2, 1).\)`
+
+--
+
+- Nesse caso, a densidade é dada por 
+
+`$$f(x) = K x^{1/2}e^{-x}, \quad x &gt; 0,$$`
+em que `\(K = 1/\Gamma(3/2) = 2/\sqrt{\pi}\)`.
+
+--
+
+
+```r
+curve(dgamma(x, 3/2, 1), 0, 5)
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-7-1.png" width="30%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Densidade proposta
+
+- A variável `\(X\)` anterior tem média 3/2.
+
+--
+
+- Logo, uma tentativa natural é considerar uma distribuição com média 3/2. 
+
+--
+
+- Como `\(X\)` é uma variável não negativa, podemos considerar uma variável exponencial com média 3/2 como proposta.
+
+--
+
+`$$g(x) = \frac{2}{3} e^{-2x/3}, \quad \quad x &gt; 0.$$`
+
+--
+
+- Precisamos encontrar `\(c\)` tal que a linha vermelha fique acima da preta
+
+&lt;img src="index_files/figure-html/unnamed-chunk-8-1.png" width="30%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Encontrando `\(c\)`
+
+- Temos que 
+
+`$$\frac{f(x)}{g(x)} = \frac{K x^{1/2}e^{-x}}{(2/3)e^{-2x/3}} = \frac{3K}{2} x^{1/2}e^{-x/3}$$`
+
+--
+
+- Derivando, temos
+
+`$$\frac{d}{dx} \left( \frac{f(x)}{g(x)} \right) = \frac{3K}{2}\left[\frac{1}{2}x^{-1/2}e^{-x/3} - \frac{1}{3}x^{1/2}e^{-x/3} \right]$$`
+
+--
+
+- Igualando a zero, temos que encontrar `\(x\)` tal que 
+
+`$$\frac{1}{2}x^{-1/2}e^{-x/3} = \frac{1}{3}x^{1/2}e^{-x/3}$$`
+--
+
+- Logo, `\(x\)` é igual a 3/2. 
+--
+Então, temos 
+
+`$$\frac{f(x)}{g(x)} \leqslant \frac{3K}{2} \left(\frac{3}{2}\right)^{1/2}e^{-1/2} = \frac{3^{3/2}}{(2\pi e)^{1/2}}$$`
+
+---
+
+## Algoritmo de aceitação-rejeição
+
+1. Gero valor `\(Y\)` com distribuição exponencial com média 3/2.
+2. Gero valor `\(U\)` com distribuição uniforme.
+3. Se `\(U \leqslant (2 e y/3)^{1/2} e^{-x/3}\)` saio e faço `\(X = Y\)`. Se não, retorno, ao passo 1.
+
+--
+
+- No R, podemos fazer assim
+
+
+```r
+r_gama_3Meios1 &lt;- function(){
+  aceito &lt;- FALSE
+  while(!aceito){
+    y &lt;- rexp(1, 2/3)
+    u &lt;- runif(1)
+    if (u &lt;= ((2 * exp(1) * y)/3)^(1/2) * exp(-y/3)){
+      aceito &lt;- TRUE
+      saida &lt;- y
+    }
+  }
+  saida
+}
+```
+
+---
+
+# Testando nossa função
+
+
+- Chamando a função
+
+
+```r
+set.seed(42)
+r_gama_3Meios1()
+```
+
+```
+## [1] 0.4252366
+```
+
+--
+
+Podemos comparar a performance dessa função com a `rgamma`
+
+
+```r
+set.seed(42)
+n &lt;- 5e4
+nossos_valores &lt;- replicate(n, r_gama_3Meios1())
+r_valores &lt;- rgamma(n, 3/2, 1)
+plot(density(nossos_valores), 
+     main = "", 
+     xlab = "x", 
+     ylab = "Densidade")
+lines(density(r_valores), col = 2)
+curve(dgamma(x, 3/2, 1), col = 3, add = TRUE)
+```
+
+---
+
+# Resultado
+
+&lt;img src="index_files/figure-html/unnamed-chunk-12-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Exemplo 3
+
+- Suponha que estamos interessados em gerar valores da distribuição normal padrão. 
+
+--
+
+- Primeiramente, vamos considerar a variável que é simplesmente o valor absoluto de `\(Z\)`, que tem densidade
+
+`$$f(x) = \frac{2}{\sqrt{2\pi}} e^{-x^2/2}, \quad 0 &lt; x &lt; \infty.$$`
+--
+
+
+```r
+fx &lt;- function(x) 2 * exp(-x^2/2) / sqrt(2 * pi)
+curve(fx(x), 0, 4)
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-13-1.png" width="30%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Outra forma de plotar isso
+
+
+```r
+curve(2 * dnorm(x), 0, 4)
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-14-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Densidade proposta
+
+- Vamos considerar como proposta a distribuição exponencial com média 1.
+
+--
+
+`$$g(x) = e^{-x}, \quad 0 &lt; x &lt; \infty.$$`
+
+--
+
+- Então, temos
+
+`$$\frac{f(x)}{g(x)} = \frac{2}{\sqrt{2\pi}} e^{x-x^2/2}$$`
+--
+
+- Logo, o valor que maximiza a razão é igual ao valor que maximiza
+
+`$$x - \frac{x^2}{2}$$`
+--
+
+- Então, temos que `\(x\)` é igual a 1.
+
+--
+
+- Para obter o valor de `\(c\)`, temos que 
+
+`$$\frac{f(x)}{g(x)} \leqslant \frac{2}{\sqrt{2\pi}} e^{1/2} = \sqrt{2e/\pi} = c$$`
+---
+
+# Ingredientes do algoritmo
+
+- Devemos calcular
+
+`$$\begin{align*} \frac{f(x)}{c \cdot g(x)} &amp;= \exp\left\{x - \frac{x^2}{2} - \frac{1}{2} \right\}  \\ &amp;= \exp\left\{ - \frac{(x-1)^2}{2} \right\} \end{align*}$$`
+--
+
+- Podemos fazer um algoritmo para gerar valores da distribuição normal padrão com
+
+1. Gero valor `\(Y\)` com distribuição exponencial com média 1.
+2. Gero valor `\(U_1\)` com distribuição uniforme.
+3. Se `\(U_1 \leqslant \exp\{ -(y-1)^2/2\}\)`, passo ao passo 4. Se não, retorno, ao passo 1.
+4. Gero `\(U_2\)` com distribuição uniforme.
+5. Gero `\(Z\)` da seguinte forma
+
+`$$Z = \begin{cases} Y, &amp; \mbox{ se } U_2 \geqslant 1/2 \\ 
+-Y, &amp; \mbox{ se } U_2 &lt; 1/2 \end{cases}$$`
+
+---
+
+# No R
+
+- Podemos fazer o algoritmo da seguinte forma no R
+
+
+```r
+r_normal_padrao &lt;- function(){
+  aceito &lt;- FALSE
+  while(!aceito){
+    y &lt;- rexp(1, 1)
+    u1 &lt;- runif(1)
+    if (u1 &lt;= exp(-((y - 1)^2)/2)){
+      aceito &lt;- TRUE
+      u2 &lt;- runif(1)
+      if (u2 &gt;= 0.5) saida &lt;- y
+      else saida &lt;- -y
+    }
+  }
+  saida
+}
+```
+
+---
+
+# Testando a função
+
+
+```r
+set.seed(42)
+r_normal_padrao()
+```
+
+```
+## [1] 0.283491
+```
+
+--
+
+Podemos comparar a performance dessa função com a `rnorm`
+
+
+```r
+set.seed(42)
+n &lt;- 5e4
+nossos_valores &lt;- replicate(n, r_normal_padrao())
+r_valores &lt;- rnorm(n)
+plot(density(nossos_valores), 
+     main = "", 
+     xlab = "x", 
+     ylab = "Densidade")
+lines(density(r_valores), col = 2)
+curve(dnorm(x), col = 3, add = TRUE)
+```
+
+---
+
+# Resultado
+
+&lt;img src="index_files/figure-html/unnamed-chunk-18-1.png" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+## Comparação do tempo de execução
+
+- Podemos comparar o tempo para gerar esses valores para as duas funções.
+
+--
+
+
+```r
+set.seed(42)
+n &lt;- 1e6
+system.time(replicate(n, r_normal_padrao()))
+```
+
+```
+##    user  system elapsed 
+##   9.390   0.028   9.422
+```
+
+```r
+system.time(rnorm(n))
+```
+
+```
+##    user  system elapsed 
+##   0.059   0.000   0.059
+```
+
+--
+
+- Percebemos como o método utilizado pelo `R` como padrão é muito mais rápido que o nosso algoritmo gerado pelo método da aceitação-rejeição. 
+
+---
+class: middle, center, inverse
+
+# Fim!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
