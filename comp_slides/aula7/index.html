@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Geração de variáveis aleatórias contínuas</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2021-03-03" />
+    
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle
+
+## Geração de variáveis aleatórias contínuas - Parte III
+
+*****
+
+### Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+
+
+
+
+
+---
+class: center, middle, inverse
+
+# Última aula
+
+
+---
+
+---
+
+## Método de aceitação-rejeição
+
+1. Gero um valor de `\(Y\)`, com densidade `\(g(.)\)`.
+2. Gero um valor uniforme `\(U \sim U(0,1)\)`.
+3. Se `\(U &lt; \frac{f(y)}{c g(y)}\)`, então `\(X = Y\)` e saio. Se não, volto ao passo 1.
+
+--
+
+- Método bastante similar ao caso discreto.
+
+--
+
+- Diferença é considerar as densidades `\(f(.)\)` e `\(g(.)\)`
+
+---
+class: inverse, middle, center
+
+# Mais um exemplo
+
+---
+
+# Gama truncada
+
+- Considere que estamos interessados em gerar uma variável aleatória
+
+`$$X|X \geqslant 5 \sim \mbox{Gama}(2, 1)$$`
+--
+
+- Isto significa que a densidade de interesse é dada por 
+
+`$$f(x) = \frac{x e^{-x}}{\int_5^\infty x e^{-x} dx} = \frac{x e^{-x}}{6 e^{-5}}, \quad \quad x \geqslant 5$$`
+--
+
+- `\(E(X) = 2\)`. 
+--
+Portanto, é interessante considerar uma proposta com mesma média.
+
+--
+
+- Uma opção é usar como proposta a distribuição exponencial com média 2, mas truncada para valores maiores que 5 também.
+
+--
+
+`$$g(x) = \frac{\frac{1}{2}e^{-x/2}}{e^{-5/2}}, \quad \quad x \geqslant 5.$$`
+
+---
+
+# Encontrando `\(c\)`
+
+- Temos que
+
+`$$\frac{f(x)}{g(x)} = \frac{e^{5/2}}{3} x e^{-x/2}, \quad x \geqslant 5$$`
+
+--
+
+- Como essa razão é uma função decrescente em `\(x\)` para valores maiores que 5.
+
+--
+
+- Temos que 
+
+`$$c = \max_{x \geqslant 5} \left\{ \frac{f(x)}{g(x)} \right\} = \frac{f(5)}{g(5)} = \frac{5}{3}$$`
+
+--
+
+- Pela propriedade de falta de mémoria da exponencial, para gerar valores de 
+
+`$$X|X&gt;5 \sim \mbox{Exp}(\lambda = 1/2)$$`
+
+--
+
+- Basta gerar 
+
+`$$\begin{align*} X &amp;\sim Exp(\lambda = 1/2) \\ 
+&amp; X + 5\end{align*}$$`
+
+---
+
+# Algoritmo
+
+1. Gero um valor aleatório `\(U_1\)`.
+2. Faço `\(Y = 5 - 2 \log U_1\)`.
+1. Gero um valor aleatório `\(U_2\)`.
+1. Se `\(U_2 \leqslant \frac{e^{5/2}}{3} Y e^{-Y/2} \Rightarrow  X = Y\)` e saio. Se não, retorno ao passo 1.
+
+--
+
+- No R, podemos fazer assim
+
+
+```r
+r_gama_truncada5 &lt;- function(){
+  aceito &lt;- FALSE
+  while(!aceito){
+    u1 &lt;- runif(1)
+    y &lt;- 5 - 2 * log(u1)
+    u2 &lt;- runif(1)
+    if (u2 &lt;= (exp(2.5) / 3) * y * exp(-y / 2)){
+      aceito &lt;- TRUE
+      saida &lt;- y
+    }
+  }
+  saida
+}
+```
+
+---
+
+# Testando a função
+
+
+```r
+set.seed(1234)
+r_gama_truncada5()
+```
+
+```
+## [1] 5.990972
+```
+
+--
+
+- A função para a densidade pode ser feita da seguinte forma:
+
+
+```r
+fx &lt;- function(x){
+  x * exp(5 - x) / 6
+} 
+```
+
+
+- Podemos verificar se a densidade é realmente uma distribuição de probabilidade.
+
+
+```r
+integrate(fx, 5, Inf)
+```
+
+```
+## 1 with absolute error &lt; 1.1e-06
+```
+
+--
+
+- Como a integral de 5 a `\(\infty\)` é igual a 1, então a densidade é uma função de probabilidade. 
+
+---
+
+# Gráfico da densidade
+
+
+```r
+curve(fx(x), 5, 15)
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-5-1.png" width="55%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# Gráfico da densidade
+
+
+```r
+ggplot() + theme_classic() + stat_function(fun = fx, xlim = c(5, 15)) 
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-6-1.png" width="55%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Checando a função
+
+- Podemos gerar várias réplicas do experimento e checar se a densidade é obtida.
+
+
+```r
+set.seed(42)
+valores &lt;- replicate(1e5, r_gama_truncada5())
+```
+
+
+```r
+hist(valores, prob = TRUE, main = "")
+curve(fx(x), add = TRUE, col = 2)
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-8-1.png" width="40%" style="display: block; margin: auto;" /&gt;
+
+---
+class: inverse, middle, center
+
+# Método polar para gerar variáveis aleatórias normais padrão
+ 
+---
+
+# Coordenadas polares
+
+- Sejam `\(X\)` e `\(Y\)` variáveis aleatórias normais padrão.
+
+- Sejam `\(R\)` e `\(\Theta\)` suas respectivas coordenadas polares.
+
+&lt;img src="index_files/figure-html/unnamed-chunk-9-1.png" width="55%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Representação das variáveis
+
+- Podemos representar a relação entre as variáveis da seguinte forma:
+
+`$$\begin{align*} R^2 &amp;= X^2 + Y^2 \\
+\tan \Theta &amp;= \frac{Y}{X} \end{align*}$$`
+
+--
+
+- Como `\(X\)` e `\(Y\)` são independentes, a sua função densidade conjunta é dada por 
+
+`$$f(x, y) = \frac{1}{\sqrt{2\pi}}e^{-x^2/2}\frac{1}{\sqrt{2\pi}}e^{-y^2/2}= \frac{1}{2\pi}e^{-(x^2+y^2)/2}$$`
+
+--
+
+- Se fizermos a mudança de variáveis, com 
+
+`$$d = x^2 + y^2, \quad \quad \theta = \tan^{-1} (y/x)$$`
+
+--
+
+- A densidade vai ser dada por
+
+`$$f(d, \theta) = \frac{1}{2\pi} \frac{1}{2} e^{-d/2}, \quad 0 &lt; d &lt; \infty, \quad 0 &lt; \theta &lt; 2\pi.$$`
+---
+
+## Representação das variáveis
+
+- Porém, olhando a densidade anterior, reescrita aqui 
+`$$f(d, \theta) = \frac{1}{2\pi} \frac{1}{2} e^{-d/2}, \quad 0 &lt; d &lt; \infty, \quad 0 &lt; \theta &lt; 2\pi.$$`
+--
+
+- Podemos ver que `\(R^2\)` e `\(\Theta\)` são **independentes**,
+
+--
+
+  - `\(\Theta \sim U(0, 2\pi)\)`.
+  
+--
+
+  - `\(R^2 \sim \mbox{Exp}(\lambda = 1/2), \quad E(X) = 2\)`
+
+--
+
+- É possível gerar um par de variáveis aleatórias independentes `\(X\)` e `\(Y\)` a partir de uma variável exponencial e uma variável uniforme.
+
+--
+
+- Primeiro, geramos as variáveis segundo as coordenadas polares e depois invertemos os seus valores. 
+
+---
+
+# Algoritmo
+
+### Transformação de Box-Muller 
+
+1. Gero valores aleatórios uniformes `\(U_1\)` e `\(U_2\)`.
+1. Faço `\(R^2 = -2\log U_1\)`. `\(\Theta = 2\pi U_2\)`.
+1. Agora faço:
+
+`$$\begin{align*} X &amp;= R \cdot \cos(\Theta) = \sqrt{-2\log U_1}\cdot \cos(2\pi U_2) \\
+Y &amp;= R \cdot \mbox{sen}(\Theta) = \sqrt{-2\log U_1}\cdot \mbox{sen}(2\pi U_2) \end{align*}$$`
+
+--
+
+- No R, poderíamos fazer assim
+
+
+```r
+par_var_normais &lt;- function(){
+ u &lt;- runif(2)
+ c(sqrt(-2 * log(u[1])) * cos(2 * pi * u[2]), 
+   sqrt(-2 * log(u[1])) * sin(2 * pi * u[2]))
+}
+```
+
+---
+
+## Testando a função
+
+
+```r
+set.seed(42)
+par_var_normais()
+```
+
+```
+## [1]  0.3894476 -0.1625330
+```
+
+--
+
+
+```r
+set.seed(42); valores &lt;- replicate(5e4/2, par_var_normais())
+curve(dnorm(x), -2.5, 2.5); lines(density(valores), col = 2)
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-12-1.png" width="40%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Observações
+
+- O algoritmo não é dos mais eficientes:
+
+  - pois é necessário calcular funções trigonométricas como seno e cosseno.
+  
+--
+
+- Existe uma forma de não considerar esse problema.
+
+--
+
+- Primeiramente, note que se gerarmos `\(U\)` com distribuição uniforme no intervalo (0, 1):
+
+  - `\(2U - 1\)` é uniforme em `\((-1, 1)\)`.
+  
+--
+
+- Logo, se gerarmos dois valores `\(U_1\)` e `\(U_2\)` e fizermos
+
+`$$\begin{align*} V_1 &amp;= 2U_1 - 1 \\ V_2 &amp;= 2U_2 - 1 \end{align*}$$`
+--
+
+- O par `\((V_1, V_2)\)` é uniformemente distribuído no quarado de área 4 centrado no `\((0, 0)\)`.
+
+
+---
+
+# Representação gráfica
+
+&lt;img src="index_files/figure-html/unnamed-chunk-13-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Novo algoritmo
+
+- Considerando somente pontos dentro do círculo unitário.
+
+--
+
+- Podemos considerar que estamos gerando ângulos de forma aleatória.
+
+--
+
+- E que `\(\Theta \sim U(0, 2\pi)\)`.
+
+--
+
+- Logo, podemos calcular o seno e cosseno desses ângulos.
+
+`$$\begin{align*} \mbox{sen}(\theta) &amp;= \frac{V_2}{R} = \frac{V_2}{(V_1^2 + V_2^2)^{1/2}} \\ 
+\mbox{cos}(\theta) &amp;= \frac{V_1}{R} = \frac{V_1}{(V_1^2 + V_2^2)^{1/2}}\end{align*}$$`
+--
+
+- Logo, podemos alterar o algoritmo anterior de Box-Muller para
+
+`$$\begin{align*} X &amp;= (-2\log U_1)^{1/2} \cdot \frac{V_1}{(V_1^2 + V_2^2)^{1/2}}\\
+Y &amp;=  (-2\log U_1)^{1/2} \cdot \frac{V_2}{(V_1^2 + V_2^2)^{1/2}} \end{align*}$$`
+
+
+---
+
+# Novo algoritmo (cont.)
+
+- Se considerarmos que o número `\(R^2 = V_1^2 + V_2^2\)` têm distribuição uniforme no intervalo `\((0,1)\)` e é independente de `\(\Theta\)`.
+
+- Podemos utilizar `\(R^2\)` no lugar de `\(U_1\)`. 
+--
+Seja `\(S = R^2\)`.
+
+`$$\begin{align*} X &amp;= (-2\log S)^{1/2} \frac{V_1}{S^{1/2}} = V_1 \left(\frac{-2\log S}{S}\right)^{1/2} \\
+Y &amp;= (-2\log S)^{1/2} \frac{V_2}{S^{1/2}} = V_2 \left(\frac{-2\log S}{S}\right)^{1/2} \end{align*}$$`
+
+---
+
+# Método polar
+
+- O algoritmo fica dado por 
+
+1. Gero dois valores uniformes `\(U_1\)` e `\(U_2\)`.
+1. Faço `\(V_1 = 2U_1 - 1, V_2 = 2U_2 - 1, S = V_1^2 + V_2^2\)`.
+1. Se `\(S &gt; 1\)` retorno ao Passo 1. Se não, continuo para o próximo passo.
+1. Calculo o valor de duas variáveis independentes normais.
+
+`$$X = V_1 \sqrt{\frac{-2\log S}{S}}, \quad Y = V_2 \sqrt{\frac{-2\log S}{S}}$$`
+--
+
+- A implementação desse algoritmo fica como exercício!
+
+--
+
+- É interessante comparar a eficiência entre esse algoritmo e os anteriores para gerar valores aleatórios da distribuição normal. 
+
+
+
+---
+class: middle, center, inverse
+
+# Fim!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
