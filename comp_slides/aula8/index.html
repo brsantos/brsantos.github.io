@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Simulação de processos aleatórios</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2021-03-10" />
+    <script src="libs/fabric/fabric.min.js"></script>
+    <link href="libs/xaringanExtra-scribble/scribble.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-scribble/scribble.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', function() { window.xeScribble = new Scribble({"pen_color":["#FF0000"],"pen_size":3,"eraser_size":30}) })</script>
+    <script src="libs/kePrint/kePrint.js"></script>
+    <link href="libs/lightable/lightable.css" rel="stylesheet" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle
+
+## Simulação de processos aleatórios
+
+*****
+
+### Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+
+
+
+
+
+
+
+
+---
+class: center, middle, inverse
+
+# Considerações iniciais
+
+
+---
+
+# Até aqui
+
+- Discutimos a importância de gerar valores aleatórios
+
+--
+
+- Apresentamos diferentes métodos para geração de variáveis aleatórias.
+
+--
+
+  - Método da transformação inversa.
+  
+--
+
+  - Método da aceitação-rejeição.
+  
+--
+
+- Ambos métodos poderiam ser considerados:
+
+  - variáveis discretas;
+  
+  - variáveis contínuas.
+  
+--
+
+- Também apresentamos o método polar para gerar variáveis aleatórias com distribuição normal.
+
+
+---
+class: inverse, middle, center
+
+# Simulação de processos aleatórios
+
+---
+
+# Processos aleatórios
+
+- Poderíamos pensar numa sequências de variáveis aleatórias.
+
+  - Processos estocásticos?
+  
+--
+
+- Alguns exemplos:
+
+  - A forma como a pandemia avança: números de infectados, ocupação de leitos, ...
+  
+--
+
+  - Sistemas de eleição: 
+  
+--
+
+  - Jogos olímpicos;
+  
+--
+
+  - Copa do Mundo;
+
+--
+
+  - Campeonato Brasileiro.
+  
+  
+--
+
+
+### Como simular esses processos?
+    
+---
+class: inverse, right, middle
+
+
+--
+
+&lt;br&gt;&lt;br&gt;
+&lt;br&gt;&lt;br&gt;
+
+# "All models are wrong, but some are useful." 
+
+&lt;br&gt;&lt;br&gt;
+
+### George Box
+
+---
+
+# Modelos estatísticos
+
+- É preciso fazer suposições sobre os fatores que afetam os elementos do sistema.
+
+--
+
+- Essas suposições devem ser sempre vistas como uma simples aproximação da realidade.
+
+--
+
+- Por se tratar um processo aleatório, podemos utilizar de variáveis aleatórias para "imitar" o sistema.
+
+--
+
+- Por exemplo, no caso de eleições:
+
+--
+
+  - Conhecendo a população de eleitores (distribuição sociodemográfica).
+  
+--
+
+  - É possível fazer suposição sobre a probabilidade de cada pessoa votar em uma pessoa candidata a depender de suas características.
+  
+--
+
+  - É preciso também fazer suposições sobre quem vai comparecer as eleições.
+  
+--
+
+  - Tendo todas essas suposições, podemos gerar valores aleatórios dessas variáveis e repetir o processo um número grande de vezes. 
+  
+--
+
+- O mesmo pode ser feito para competições esportivas.
+
+
+---
+class: inverse, middle, center
+
+# Campeonato Brasileiro
+
+
+---
+
+# Campeonato Brasileiro - 2020
+
+- Os dados de todos os jogos podem ser obtidos online. 
+
+
+```r
+url_chancedegol &lt;- "https://www.chancedegol.com.br/br20.htm"
+
+r &lt;- httr::GET(url_chancedegol)
+
+tabelas &lt;- httr::content(r, "text", encoding = "latin1") %&gt;% 
+  xml2::read_html() %&gt;% 
+  xml2::xml_find_all("//table") 
+
+dados &lt;- tabelas[[8]] %&gt;% 
+  rvest::html_table() %&gt;% 
+  tibble::as_tibble()
+```
+
+
+
+```r
+names(dados) &lt;- as.character(dados[1, ])
+dados &lt;- dados[-1, ]
+
+dados &lt;- dados %&gt;% 
+  janitor::clean_names()
+```
+
+---
+
+# Dados
+
+- É preciso fazer algumas transformações nos dados.
+
+--
+
+- Resultado em uma única coluna/variável.
+
+
+
+
+```r
+head(dados$x)
+```
+
+```
+## [1] "0x2" "0x1" "3x2" "0x1" "1x1" "1x0"
+```
+
+--
+
+- É preciso separar os resultados.
+
+
+```r
+dados &lt;- dados %&gt;% 
+  mutate(gols_mandante = as.numeric(stringr::str_split(x, 
+                                                       "x", 
+                                                       simplify = TRUE)[, 1]), 
+         gols_visitante = as.numeric(stringr::str_split(x, 
+                                                        "x", 
+                                                        simplify = TRUE)[, 2]))
+```
+
+
+---
+
+# Calculando os pontos
+
+- Depois é possível calcular os pontos de cada time em cada jogo.
+
+
+```r
+dados &lt;- dados %&gt;% 
+  mutate(pontos_mandante = ifelse(gols_mandante &gt; gols_visitante, 3,
+                                  ifelse(gols_mandante == gols_visitante, 1, 
+                                         0)), 
+         pontos_visitante = ifelse(pontos_mandante == 3, 0, 
+                                   ifelse(pontos_mandante == 1, 1, 3)))
+```
+
+--
+
+- Assim é preciso calcular os pontos de mandantes e visitantes de forma separada
+
+
+```r
+pontos_mandante &lt;- dados %&gt;% 
+  group_by(mandante) %&gt;% 
+  summarise(pontos_mandante = sum(pontos_mandante)) %&gt;% 
+  arrange(desc(mandante)) %&gt;% 
+  rename(time = mandante)
+```
+
+
+---
+
+# Calculando os pontos (cont.)
+
+- Em seguida, dos visitantes: 
+
+
+```r
+pontos_visitante &lt;- dados %&gt;% 
+  group_by(visitante) %&gt;% 
+  summarise(pontos_visitante = sum(pontos_visitante)) %&gt;% 
+  arrange(desc(pontos_visitante)) %&gt;% 
+  rename(time = visitante)
+```
+
+--
+
+- Por último, podemos juntar as duas bases para obter o resultado final 
+
+
+```r
+pontos_total &lt;- inner_join(pontos_mandante, pontos_visitante) %&gt;% 
+  mutate(pontos = pontos_mandante + pontos_visitante) %&gt;% 
+  arrange(desc(pontos))
+```
+
+---
+# Função para calcular tabela
+
+
+```r
+calcula_tabela &lt;- function(data_escolhida, dados_escolhidos = dados){
+  dados_parciais &lt;- filter(dados_escolhidos, data_certa &lt;= data_escolhida)
+  
+  pontos_mandante &lt;- dados_parciais %&gt;% 
+    group_by(mandante) %&gt;% 
+    summarise(pontos_mandante = sum(pontos_mandante), 
+              gols_m = sum(gols_mandante),
+              gols_s_m = sum(gols_visitante),
+              jogos_m = n()) %&gt;% 
+    rename(time = mandante)
+  
+  pontos_visitante &lt;- dados_parciais %&gt;% 
+    group_by(visitante) %&gt;% 
+    summarise(pontos_visitante = sum(pontos_visitante), 
+              gols_v = sum(gols_visitante), 
+              gols_s_v = sum(gols_mandante),
+              jogos_v = n()) %&gt;% 
+    rename(time = visitante)
+  
+  inner_join(pontos_mandante, pontos_visitante, by = "time")
+}
+```
+
+---
+
+# Função para calcular estatísticas
+
+
+```r
+calcula_estatisticas &lt;- function(tabela){
+  tabela %&gt;% 
+    mutate(pontos = pontos_mandante + pontos_visitante, 
+           jogos = jogos_m + jogos_v,
+           gols_feitos = gols_m + gols_v, 
+           gols_sofridos = gols_s_m + gols_s_v, 
+           saldo_gols = gols_feitos - gols_sofridos, 
+           media_gols_m = gols_m/jogos_m, 
+           media_gols_v = gols_v/jogos_v, 
+           media_gols = gols_feitos/jogos_m, 
+           media_gols_s_m = gols_s_m/jogos_m, 
+           media_gols_s_v = gols_s_m/jogos_v, 
+           media_gols_s = gols_sofridos/jogos)
+}
+```
+
+--
+
+- Podemos então considerar uma sequência de datas para observar a variação dos dados.
+
+---
+
+# Sequência de datas
+
+- Primeiro, devemos deixar o formato da variável data de forma correta no banco de dados.
+
+
+```r
+dados &lt;- dados %&gt;% 
+  mutate(data_certa = as.Date(data, 
+                              format = "%d/%m/%Y"))
+```
+
+--
+
+- Depois, podemos criar uma sequência de datas em que gostaríamos de observar algumas estatísticas.
+
+
+```r
+seq_datas_seg &lt;- seq.Date(from = as.Date("2020-08-24"), 
+                          to = as.Date("2021-03-01"),
+                          by = 7)
+
+seq_datas_qui &lt;- seq.Date(from = as.Date("2020-08-27"), 
+                          to = as.Date("2021-03-04"),
+                          by = 7)
+
+seq_datas &lt;- c(seq_datas_seg, seq_datas_qui) %&gt;% 
+  sort()
+```
+
+
+---
+
+# Estatísticas por data
+
+- Podemos utilizar a função `lapply()` para calcular aquelas estatísticas para diferentes datas.
+
+
+```r
+pontos_data &lt;- lapply(seq_datas, function(a){
+  calcula_tabela(a) %&gt;% 
+    calcula_estatisticas() %&gt;% 
+    mutate(data_classificacao = a)
+}) %&gt;% do.call(rbind.data.frame, .)
+```
+
+--
+
+- Podemos usar o `ggplot2` para fazer gráficos das informações:
+
+
+```r
+faz_grafico_linha &lt;- function(variavel){
+  ggplot(pontos_data) + theme_classic() +
+    geom_line(aes(x = data_classificacao, color = time)) + 
+    aes_string(y = variavel) + 
+    scale_color_viridis_d() + 
+    theme(legend.position = 'bottom')
+}
+
+faz_grafico_linha("pontos")
+```
+
+---
+
+# Resultado gráfico
+
+&lt;img src="fig/pontos_linha.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Gráfico interativo
+
+
+```r
+grafico_int &lt;- 
+  hchart(pontos_data, type = "line", 
+         hcaes(x = data_classificacao, 
+               y = pontos, 
+               group = time)) %&gt;%
+  hc_title(text = "Campeonato Brasileiro") %&gt;%
+  hc_subtitle(text = "Evolução dos pontos") %&gt;%
+  hc_xAxis(title = list(text = "")) %&gt;%
+  hc_yAxis(max = 72, 
+           title = list(text = "Pontos")) %&gt;%
+  hc_credits(
+    enabled = TRUE,
+    text = "Fonte: Chance de Gol",
+    href = "https://www.chancedegol.com.br/") %&gt;%
+  hc_add_theme(hc_theme_538())
+
+htmlwidgets::saveWidget(
+  grafico_int, 
+  file = 'graf_pontos.html', 
+  libdir = "aux_files", selfcontained = FALSE)
+```
+
+---
+class: inverse, middle, center
+
+# Simulando valores
+
+---
+
+## Considerando informações de uma data fixa
+
+- Vamos iniciar a simulação considerando uma certa data:
+
+--
+
+  - Data: 01/11/2020
+  
+--
+
+- Podemos definir a data e filtrar os dados até aquele momento.
+
+
+```r
+data_escolhida &lt;- as.Date("2020-11-01")
+
+dados_parciais &lt;- filter(dados, data_certa &lt;= data_escolhida)
+```
+
+--
+
+- Podemos considerar as informações de forma diferentes para os times mandantes e para os times visitantes:
+
+
+```r
+media_gols_mandante &lt;- dados_parciais %&gt;% group_by(mandante) %&gt;% 
+  summarise(m_gols = mean(gols_mandante)) %&gt;% 
+  rename(time = mandante)
+
+media_gols_visitante &lt;- dados_parciais %&gt;% group_by(visitante) %&gt;% 
+  summarise(m_gols = mean(gols_visitante)) %&gt;% 
+  rename(time = visitante)
+```
+
+---
+
+# Uma função para simular os gols
+
+- Podemos criar uma função para simular gols a depender do time:
+
+
+```r
+simula_gols &lt;- function(time, media_gols){
+  posicao_time &lt;- which(media_gols$time == time) 
+  m &lt;- media_gols$m_gols[posicao_time]
+  rpois(1, m)
+}
+```
+
+--
+
+- Como a função é utilizada: 
+
+
+```r
+set.seed(42)
+simula_gols("Botafogo", media_gols = media_gols_mandante)
+```
+
+
+```
+## [1] 2
+```
+
+--
+
+
+```r
+simula_gols("Botafogo", media_gols = media_gols_visitante)
+```
+
+
+```
+## [1] 3
+```
+
+
+---
+
+# Simulação de todos os jogos
+
+- Se somos capazes de simular os gols de todos times mandantes e visitantes
+
+--
+
+  - Somos capazes de simular o campeonato todo.
+  
+--
+
+- Podemos criar uma função para simular todos os jogos:
+
+
+```r
+simula_todos_jogos &lt;- function(times_m, times_v){
+  gols_simulados_mandante &lt;- sapply(times_m, 
+                                    simula_gols, 
+                                    media_gols = media_gols_mandante)
+  
+  gols_simulados_visitante &lt;- sapply(times_v, 
+                                     simula_gols, 
+                                     media_gols = media_gols_visitante)
+  
+  list(gols_simulados_mandante = gols_simulados_mandante, 
+       gols_simulados_visitante = gols_simulados_visitante)
+}
+```
+
+---
+# Função para calcular pontos
+
+- Para facilitar nossa simulação, podemos considerar a seguinte função:
+
+
+```r
+calcula_pontos &lt;- function(gols_m, gols_v){
+  pontos_m &lt;- ifelse(gols_m &gt; gols_v, 3, ifelse(gols_m == gols_v, 1, 0))
+  
+  pontos_v = ifelse(pontos_m == 3, 0, ifelse(pontos_m == 1, 1, 3))
+  
+  list(pontos_m = pontos_m, pontos_v = pontos_v)
+}
+```
+
+--
+
+- Usando a função
+
+
+```r
+calcula_pontos(gols_m = c(3, 1), 
+               gols_v = c(1, 1))
+```
+
+```
+## $pontos_m
+## [1] 3 1
+## 
+## $pontos_v
+## [1] 0 1
+```
+
+---
+
+# Função para agrupar os pontos
+
+- Precisamos uma função para agrupar os pontos que foram calculados.
+
+
+```r
+agrupa_pontos &lt;- function(lista_pontos, times_m, times_v){
+  pontos_sim_mandante_g &lt;- data.frame(time = times_m, 
+                                      pontos = lista_pontos$pontos_m) %&gt;% 
+    group_by(time) %&gt;% 
+    summarise(pontos_s_m = sum(pontos))
+  
+  pontos_sim_visitante_g &lt;- data.frame(time = times_v, 
+                                       pontos = lista_pontos$pontos_v) %&gt;% 
+    group_by(time) %&gt;% 
+    summarise(pontos_s_v = sum(pontos))
+  
+  inner_join(pontos_sim_mandante_g, pontos_sim_visitante_g, by = "time") %&gt;% 
+    mutate(pontos_s = pontos_s_m + pontos_s_v) %&gt;% 
+    arrange(desc(pontos_s))
+}
+```
+
+
+---
+
+# Simulando o campeonato
+
+- Por fim, podemos fazer uma função que faz a simulação de todos os jogos.
+
+
+```r
+simula_campeao &lt;- function(){
+  jogos_simulados &lt;- simula_todos_jogos(times_m = dados$mandante, 
+                                        times_v = dados$visitante)
+  
+  gols_simulados_mandante &lt;- jogos_simulados$gols_simulados_mandante
+  gols_simulados_visitante &lt;- jogos_simulados$gols_simulados_visitante
+  
+  pontos_simulados &lt;- calcula_pontos(gols_simulados_mandante, 
+                                     gols_simulados_visitante)
+
+  pontos_agrupados &lt;- agrupa_pontos(lista_pontos = pontos_simulados, 
+                                    times_m = dados$mandante, 
+                                    times_v = dados$visitante)
+  
+  campeao &lt;- pontos_agrupados$time[1] %&gt;% as.character()
+
+  return(campeao)
+}
+```
+
+
+---
+
+# Repetindo o processo 
+
+- Para verificar a probabilidade de cada time ser campeão, podemos repetir o processo um número grande de vezes.
+
+--
+
+- Um valor possível é 10.000, porém outros valores poderiam ser testados.
+
+
+```r
+set.seed(1234)
+numero_simulacoes &lt;- 10000
+campeoes &lt;- replicate(numero_simulacoes, simula_campeao())
+```
+
+
+
+- Podemos utilizar a função `janitor::tabyl()` para observar os resultados
+
+
+```r
+janitor::tabyl(campeoes) 
+```
+
+---
+
+class: center, middle
+
+.left-column[
+# Resultados
+]
+
+.right-column[
+&lt;table class="table" style="font-size: 16px; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; campeoes &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; n &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; percent &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Atlético GO &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0002 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Atlético MG &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2935 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2935 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Bahia &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 185 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0185 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Botafogo &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 38 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0038 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Ceará &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 241 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0241 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Corinthians &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 75 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0075 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Flamengo &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2742 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2742 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Fluminense &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 749 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0749 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Fortaleza &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0004 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Goiás &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 49 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0049 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Grêmio &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 53 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0053 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Internacional &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1300 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1300 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Palmeiras &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 215 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0215 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Red Bull Bragantino &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 57 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0057 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Santos &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 400 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0400 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; São Paulo &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 867 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0867 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Sport &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 11 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0011 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Vasco &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 77 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0077 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+---
+
+### Alterando a simulação
+
+--
+
+
+```r
+simula_campeao_data &lt;- function(replicacoes, data_simulacao){
+  dados_observados &lt;- calcula_tabela(data_simulacao) %&gt;% calcula_estatisticas()  
+  dados_simular &lt;- filter(dados, data_certa &gt; data_simulacao)
+  
+  retorna_campeao &lt;- function(dados_observados, dados_simular){
+    jogos_simulados &lt;- simula_todos_jogos(times_m = dados_simular$mandante, 
+                                          times_v = dados_simular$visitante)
+    gols_simulados_mandante &lt;- jogos_simulados$gols_simulados_mandante
+    gols_simulados_visitante &lt;- jogos_simulados$gols_simulados_visitante
+    pontos_simulados &lt;- calcula_pontos(gols_simulados_mandante, 
+                                       gols_simulados_visitante)
+    pontos_agrupados &lt;- agrupa_pontos(lista_pontos = pontos_simulados, 
+                                      times_m = dados_simular$mandante, 
+                                      times_v = dados_simular$visitante)
+    dados_finais &lt;- dados_observados %&gt;% inner_join(pontos_agrupados, by = "time") %&gt;%
+      mutate(pontos_finais = pontos + pontos_s) %&gt;% 
+      arrange(desc(pontos_finais))
+    
+    dados_finais$time[1]
+  }
+  replicate(replicacoes, retorna_campeao(dados_observados, dados_simular))
+}
+```
+
+---
+
+## Novos resultados
+
+
+```r
+set.seed(1234)
+numero_simulacoes &lt;- 10000
+campeoes2 &lt;- simula_campeao_data(numero_simulacoes, as.Date("2020-11-01"))
+```
+
+
+
+
+```r
+janitor::tabyl(campeoes2) 
+```
+
+.center[
+&lt;table class="table" style="font-size: 12px; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; campeoes2 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; n &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; percent &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Atlético MG &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2694 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2694 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Ceará &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 14 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0014 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Corinthians &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0001 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Flamengo &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2867 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2867 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Fluminense &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 549 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0549 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Grêmio &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0008 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Internacional &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2114 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2114 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Palmeiras &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 79 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0079 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Santos &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 167 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0167 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; São Paulo &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1504 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1504 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Sport &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0001 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Vasco &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0002 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+
+---
+
+# Probabilidade de ser campeão no tempo
+
+- Podemos calcular a probabilidade anterior para diferentes momentos.
+
+--
+
+- Poderíamos definir datas da Rodada 10 até a Rodada 34.
+
+
+```r
+seq_datas_simulacao &lt;- seq_datas[which(seq_datas &gt;= as.Date("2020-09-12") &amp;
+                               seq_datas &lt;= as.Date("2021-02-02"))]
+```
+
+--
+
+- Para diminuir o tempo computacional, podemos considerar fazer os cálculos em 
+paralelo.
+
+
+```r
+campeoes_por_data &lt;- parallel::mclapply(seq_datas_simulacao, function(a){
+  simula_campeao_data(numero_simulacoes, as.Date(a))
+}, mc.cores = 6)
+```
+
+---
+
+# Analisando os resultados
+
+- Primeiro, precisamos organizar os resultados obtidos.
+
+--
+
+- Primeiro obtendo a sequência dos nomes dos times que foram declarados campeão em alguma iteração da simulação.
+
+
+```r
+nomes_campeoes &lt;- lapply(campeoes_por_data, table) %&gt;% lapply(rownames) %&gt;% unlist()
+```
+
+--
+
+- Em seguida, obtendo as respectivas frequências.
+
+
+```r
+freq_campeoes &lt;- lapply(campeoes_por_data, table) %&gt;% unlist() %&gt;% as.numeric()
+```
+
+--
+
+E por último, obtendo as datas em que as simulações foram feitas
+
+
+```r
+n_times_por_data &lt;- lapply(campeoes_por_data, table) %&gt;% sapply(length)
+
+lista_datas_simulacoes &lt;- 1:length(seq_datas_simulacao) %&gt;%
+  lapply(function(a) rep(seq_datas_simulacao[a], n_times_por_data[a])) 
+
+datas_simulacoes &lt;- do.call("c", lista_datas_simulacoes)
+```
+
+---
+
+# Fazendo o gráfico
+
+- Salvando os vetores em um `data.frame`.
+
+
+```r
+dados_campeoes &lt;- data.frame(datas_simulacoes = datas_simulacoes, 
+                             times = nomes_campeoes, 
+                             prob = freq_campeoes/numero_simulacoes)
+```
+
+--
+
+- Filtrando somente times com pelo menos 1% de chance de ser campeão antes de fazer o gráfico.
+
+
+```r
+filter(dados_campeoes, prob &gt; 0.01) %&gt;%
+  ggplot() +
+  theme_minimal() +
+  aes(x = datas_simulacoes, y = prob, color = times) +
+  scale_color_viridis_d(option = "inferno") +
+  geom_line() + 
+  theme(legend.position = "bottom")
+```
+
+---
+
+# Resultado
+
+&lt;img src="fig/grafico_probabilidades.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Resultado interativo 
+
+
+```r
+grafico_prob &lt;- filter(dados_campeoes, prob &gt; 0.01) %&gt;%
+  hchart(type = "line", 
+         hcaes(x = datas_simulacoes, 
+               y = prob, 
+               group = times)) %&gt;%
+  hc_title(text = "Campeonato Brasileiro") %&gt;%
+  hc_subtitle(text = "Probabilidade de ser campeão por data") %&gt;%
+  hc_xAxis(title = list(text = "")) %&gt;%
+  hc_yAxis(title = list(text = "Probabilidade de título")) %&gt;%
+  hc_add_theme(hc_theme_538())
+
+htmlwidgets::saveWidget(
+  grafico_prob, 
+  file = 'graf_prob.html', 
+  libdir = "aux_files", selfcontained = FALSE)
+```
+
+
+---
+
+# Comentários finais
+
+- A simulação anterior ao longo do tempo não atualizou a média de gols ao longo do tempo. 
+
+--
+
+- Poderia ter sido feito um estudo sem considerar as diferenças entre gols como mandante ou visitante.
+
+--
+
+- Poderia ter sido feita uma simulação também considerando os gols sofridos. 
+
+--
+
+  - Os resultados seriam muito diferentes?
+  
+--
+
+- **Fica como exercício**
+
+---
+class: middle, center, inverse
+
+# Fim!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
