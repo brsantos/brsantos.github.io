@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Integração estocástica</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2021-03-14" />
+    <script src="libs/fabric/fabric.min.js"></script>
+    <link href="libs/xaringanExtra-scribble/scribble.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-scribble/scribble.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', function() { window.xeScribble = new Scribble({"pen_color":["#FF0000"],"pen_size":3,"eraser_size":30}) })</script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle
+
+## Integração estocástica
+
+*****
+
+### Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+
+
+
+
+
+
+
+---
+class: center, middle, inverse
+
+# Introdução
+
+
+---
+
+#  Introdução
+
+--
+
+- Os próximos dois temas do curso serão:
+
+  - Integração.
+  
+  - Otimização.
+  
+--
+
+- O tema de otimização pode ter sido visto de forma mais superficial em cursos de inferência:
+
+  - Obtenção de estimadores de máxima verossimilhança.
+  
+--
+
+  - Aqui estaremos interessados em discutir o aspecto computacional, quando não é possível encontrar uma solução fechada.
+  
+--
+
+- Com relação à integração:
+
+  - existem diversas quantidades de interesse dentro de um problema estatístico que podem definidas em forma de integral.
+  
+--
+
+`$$\int_\mathcal{X} h(x)f(x)dx$$`
+
+---
+
+# Sobre integrais no R
+
+- Alternativas a utilizar métodos de simulação para a integral
+
+`$$\int_\mathcal{X} h(x)f(x)dx$$`
+quando `\(f()\)` é uma densidade de probabilidade:
+
+--
+
+  - Método de Simpson:
+  
+  - Regra Trapezoidal
+  
+--
+
+- Podemos utilizar também as funções do `R` definidas para isso:
+
+--
+
+  - `MASS::area`
+  
+  - `integrate`
+  
+--
+
+- O problema é que em alguns casos o resultado do cálculo da integral não retorna o valor esperado.
+  
+---
+
+# Exemplo no R
+
+- Considere que estamos interessados na seguinte integral
+
+`$$\Gamma(\lambda) = \int_0^\infty x^{\lambda -1 }\exp\{-x\} dx$$`
+--
+
+- Podemos obter o valor dessa função também pela função `gamma`.
+
+--
+
+- A implementação dessa função no R, poderia ser feita da seguinte forma
+
+
+```r
+gamma_alt &lt;- function(lambda){
+  integral &lt;- integrate(function(x){
+    x^{lambda - 1} * exp(- x)
+  }, 0, Inf)
+  integral$value
+}
+```
+
+--
+
+- Podemos comparar o gráfico do valor calculado com a função `integrate` com o verdadeiro valor.
+
+  - Para diferentes valores de `\(\lambda\)`.
+  
+  
+---
+
+# Comparação
+
+- Sequência de `\(\lambda\)`'s.
+
+
+```r
+seq_lambdas &lt;- seq(0.01, 10, length.out = 100)
+```
+
+--
+
+- Calculando o valor da integral para esses valores
+
+
+```r
+valores_integrate &lt;- sapply(seq_lambdas, gamma_alt)
+```
+
+--
+
+- Obtendo os valores reais
+
+
+```r
+valores_reais &lt;- sapply(seq_lambdas, gamma)
+```
+
+--
+
+- Fazendo o gráfico de comparação
+
+
+```r
+plot(valores_reais, valores_integrate, xlab = "log(integrate(f))", 
+     ylab = expression(Gamma(lambda)), pch = 19, cex = 0.6)
+```
+
+---
+
+# Resultado
+
+&lt;img src="index_files/figure-html/unnamed-chunk-6-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Resultado - escala logarítmica
+
+&lt;img src="index_files/figure-html/unnamed-chunk-7-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Exemplo 2 no R
+
+- Vamos considerar um segundo exemplo em que temos uma amostra aleatória de `\(X_1, ..., X_{10}\)`.
+
+- `\(X_i \sim \mbox{Cauchy}(\theta = 350), \quad i=1,\ldots,10.\)`
+
+--
+
+`$$f(x ; \theta) = \frac{1}{\pi[1 + (x - \theta)^2]}$$`
+
+--
+
+- Suponha que estamos interessados na quantidade
+
+`$$m(x) = \int_{-\infty}^\infty \prod_{i=1}^{10} \frac{1}{\pi[1 + (x_i - \theta)^2]} d\theta$$`
+--
+
+- Se utilizarmos a função `integrate` não vamos obter um resultado razoável.
+
+--
+
+- Gerando valores da distribuição Cauchy
+
+
+```r
+set.seed(42)
+valores_cauchy &lt;- rcauchy(10, location = 350)
+```
+
+---
+
+# Exemplo 2 no R (cont.)
+
+- Calculando o valor do produtório:
+
+
+```r
+vero &lt;- function(theta_vetor){
+  val_vero &lt;- function(um_theta) prod(dcauchy(valores_cauchy, location = um_theta))
+  sapply(theta_vetor, val_vero)
+}
+```
+
+--
+
+- Chamando a função `integrate`, obtemos os seguintes resultados:
+
+
+```r
+integrate(vero, -Inf, Inf)
+```
+
+```
+## 3.948713e-44 with absolute error &lt; 7.8e-44
+```
+--
+
+
+```r
+integrate(vero, 200, 400)
+```
+
+```
+## 4.211597e-10 with absolute error &lt; 7.8e-10
+```
+
+---
+
+# Comparação com a função `area`
+
+- Podemos comparar o resultado com a função `area` do pacote `MASS`.
+
+- Vamos construir funções que calculam o valor da integral entre `\(-a\)` e `\(a\)` para as duas funções.
+
+
+```r
+f_integrate &lt;- function(a){
+  integrate(vero, -a, a)$value
+}
+
+f_area &lt;- function(a){
+  MASS::area(vero, -a, a)
+}
+```
+
+--
+
+- Gerando uma sequência de valores para testar a função e depois aplicando a função:
+
+
+```r
+valores_a = seq(1, 10^3, length.out = 10^3)
+```
+
+--
+
+
+```r
+valores_integrate_a &lt;- log(sapply(valores_a, f_integrate))
+valores_area_a &lt;- log(sapply(valores_a, f_area))
+```
+
+---
+
+# Dois resultados são iguais?
+
+--
+
+&lt;img src="index_files/figure-html/unnamed-chunk-15-1.png" width="45%" style="display: block; margin: auto;" /&gt;
+
+---
+class: inverse, middle, center
+
+# Integração de Monte Carlo
+
+---
+
+# Considerações iniciais
+
+- Podemos colocar o problema de integração como o valor esperado de uma certa densidade.
+
+--
+
+- Da seguinte forma
+
+`$$E_f(h(X)) = \int_\mathcal{X} h(x)f(x)dx$$`
+--
+
+- O príncipio de Monte Carlo está na ideia de gerar amostras 
+
+`$$(X_1, X_2, \ldots, X_n)$$`
+--
+
+e aproximar o valor da integral por 
+
+`$$\bar{h}_n = \frac{1}{n} \sum_{i=1}^n h(x_i)$$`
+
+--
+
+- Fazemos isso porque `\(\bar{h}_n\)` converge para `\(E_f(h(X))\)` pela Lei Forte dos Grandes Números.
+
+---
+
+# Considerações iniciais (cont.)
+
+- Se `\(h^2(X)\)` tem variância finita sob `\(f\)`, então podemos calcular a sua variância, que controla a velocidade de convergência para o verdadeiro valor, 
+
+`$$\mbox{var}(\bar{h}_n) = \frac{1}{n}\int_\mathcal{X} \left(h(x) - E_f[h(X)]\right)^2f(x)dx$$`
+--
+
+- Tal valor pode ser estimado a partir da amostra `\((X_1, \ldots, X_n)\)`
+
+`$$v_n = \frac{1}{n^2} \sum_{i=1}^n [h(x_i) - \bar{h}_n]^2$$`
+--
+
+- Mais ainda, pelo Teorema Central do Limite, para `\(n\)` grande, temos
+
+`$$\frac{\bar{h}_n - E_f(h(X))}{\sqrt{v_n}} \sim N(0, 1)$$`
+---
+class: inverse, middle, center
+
+# Exemplos
+
+---
+
+# Função no intervalo (0, 1)
+
+- Considere a função 
+
+`$$h(x) = [\cos(50x) + \mbox{sen}(20x)]$$`
+
+
+```r
+h &lt;- function(x) (cos(50 * x) + sin(20 * x))^2
+curve(h(x))
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-16-1.png" width="30%" style="display: block; margin: auto;" /&gt;
+
+---
+# Integral
+
+- Podemos estar interessados na integral 
+
+`$$\int_0^1 h(x)dx$$`
+--
+
+- Podemos aproximar essa integral gerando `\(U_1,\ldots,U_n \sim U(0,1)\)` e fazer 
+
+`$$\frac{1}{n} \sum_{i=1}^n h(U_i)$$`
+--
+
+- No R, podemos fazer uma comparação para diferentes valores de `\(n\)` e o resultado obtido com `integrate` 
+
+
+```r
+valor_integrate &lt;- integrate(h, 0, 1)$val
+n_mc &lt;- 1e4
+valores_mc &lt;- h(runif(n_mc))
+estimativas_nc &lt;- cumsum(valores_mc)/(1:n_mc)
+```
+
+---
+
+# Resultado gráfico
+
+--
+
+
+```r
+plot(1:n_mc, estimativas_nc, type = 'l', xlab = "# de iterações MC")
+abline(h = valor_integrate, lty = 2, col = "red")
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-18-1.png" width="40%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Podemos construir uma banda de confiança
+
+- Podemos obter o cálculo do erro padrão, que é a raiz quadrada de `\(v_n\)`
+
+
+
+```r
+erro_padrao &lt;- sqrt(cumsum((valores_mc - estimativas_nc)^2))/(1:n_mc)
+```
+
+
+```r
+plot(1:n_mc, estimativas_nc, type = 'l', xlab = "# de interações MC")
+abline(h = valor_integrate, lty = 2, col = "red")
+lines(1:n_mc, estimativas_nc + 1.96 * erro_padrao, col = "gold")
+lines(1:n_mc, estimativas_nc - 1.96 * erro_padrao, col = "gold")
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-20-1.png" width="27%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# Distribuição Normal
+
+- A função de distribuição acumulada da distribuição Normal padrão 
+
+`$$\Phi(t) = \int_{-\infty}^t \frac{1}{\sqrt{2\pi}} \exp\left\{-\frac{1}{2} x^2\right\} dx$$`
+--
+
+- Pode ser aproximada considerando a seguinte função `\(h()\)`
+
+`$$h(t) = \begin{cases} 1, &amp; \mbox{ se } Z &lt; t \\ 
+0, &amp; \mbox{ caso contrário} \end{cases}$$`
+
+--
+
+- O seguinte pode ser observado
+
+`$$E_f(h(t)) = P(Z &lt; t) = \Phi(t)$$`
+
+- A aproximação dessa integração pelo método de Monte Carlo pode ser feita com 
+
+`$$\hat{\Phi}(t) = \frac{1}{n} \sum_{i=1}^n \mathbb{I}(Z_i &lt; t), \quad \quad Z_i \sim N(0, 1)$$`
+---
+
+# No R
+
+- Podemos testar o método com alguns quantis da distribuição normal 
+
+
+```r
+valores_probabilidades &lt;- c(0.5, 0.9, 0.95, 0.99)
+valores_teste &lt;- qnorm(valores_probabilidades)
+valores_teste
+```
+
+```
+## [1] 0.000000 1.281552 1.644854 2.326348
+```
+
+--
+
+- Valores da distribuição normal considerados
+
+
+```r
+set.seed(1234)
+n_mc &lt;- 1e6
+valores_normal &lt;- rnorm(n_mc)
+```
+
+--
+
+- Podemos guardar as somas acumuladas em uma matriz
+
+
+```r
+matriz_comparacoes &lt;- sapply(valores_teste, function(a){
+  cumsum((valores_normal &lt; a))/(1:n_mc)
+})
+```
+
+---
+
+# Fazendo o gráfico das aproximações
+
+- Podemos fazer cada uma das aproximações com uma cor diferente
+
+
+```r
+cores_linhas &lt;- viridisLite::viridis(length(valores_probabilidades))
+lapply(1:length(valores_probabilidades), function(a){
+  if (a == 1){
+    plot(1:n_mc, matriz_comparacoes[, a], type = "l", col = cores_linhas[a], 
+         ylim = c(0.45, 1.05))
+    abline(h = valores_probabilidades[a], lty = 2, col = cores_linhas[a])
+  }
+  else {
+    lines(1:n_mc, matriz_comparacoes[, a], type = "l", col = cores_linhas[a])
+    abline(h = valores_probabilidades[a], lty = 2, col = cores_linhas[a])
+  }
+}) %&gt;% invisible()
+```
+
+
+
+---
+class: middle
+
+.left-column[
+# Resultado]
+
+.right-column[
+&lt;img src="index_files/figure-html/unnamed-chunk-25-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+# A precisão da estimativa
+
+- Podemos comparar o valor obtido para `\(\hat{\Phi}(t)\)` para alguns valores de `\(n\)`.
+
+
+```r
+valores_n &lt;- 10^(2:6)
+
+tabela_valores &lt;- cbind(valores_n, matriz_comparacoes[valores_n, ]) %&gt;% 
+  as_tibble() 
+colnames(tabela_valores) &lt;- c("n", "t = 0", "t = 1,28", "t = 1,64", "t = 2,33")
+```
+
+--
+
+&lt;img src="fig/tabela_final.png" width="75%" style="display: block; margin: auto;" /&gt;
+
+
+
+---
+class: middle, center, inverse
+
+# Fim!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
