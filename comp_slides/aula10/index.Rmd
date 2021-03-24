@@ -1,0 +1,611 @@
+---
+title: "Integração estocástica - Parte II"
+subtitle: 
+author: "Bruno Santos"
+header-includes:
+   - \usepackage{cancel}
+institute: "Departamento de Estatística - UFES"
+date: "`r Sys.Date()`"
+output: 
+  xaringan::moon_reader:
+    lib_dir: libs
+    seal: false
+    css: xaringan-themer.css
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:9'
+---
+class: middle
+
+## Integração estocástica - Parte II
+
+*****
+
+### Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+library(dplyr)
+library(ggplot2)
+library(kableExtra)
+library(patchwork)
+knitr::opts_chunk$set(echo = TRUE, 
+                      message = FALSE, 
+                      warning = FALSE)
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+style_mono_light(
+  base_color = "#002366",
+  text_font_google   = google_font("Lato", "300", "300i"),
+  header_font_google = google_font("Architects Daughter")
+)
+```
+
+```{r xaringan-scribble, echo=FALSE}
+xaringanExtra::use_scribble()
+```
+
+
+---
+class: center, middle, inverse
+
+# Recapitulação
+
+
+---
+
+# Da última aula
+
+- Considerando a teoria de geração de variáveis aleatórias
+
+--
+
+- Tendo o interesse em integrais do tipo
+
+$$E_f(h(X)) = \int_\mathcal{X} h(x)f(x)dx$$
+
+em que $f(x)$ é uma função densidade de probabilidade.
+
+--
+
+- É possível aproximar o valor dessa integral por 
+
+$$\bar{h}_n = \frac{1}{n} \sum_{i=1}^n h(x_i)$$
+em que os $x_i$'s são gerados de acordo com a densidade $f(.)$.
+
+--
+
+- Vimos um exemplo em que aproximamos o valor da probabilidade
+
+$$\Phi(t) = \int_{-\infty}^t \frac{1}{\sqrt{2\pi}} \exp\left\{-\frac{1}{2} x^2\right\} dx$$
+que é a função de distribuição acumulada de uma v.a. com distribuição normal padrão.
+
+
+---
+class: middle, center, inverse 
+
+# Técnicas para a redução da variância
+
+---
+
+# Importance sampling 
+
+- Pode ser traduzido como "amostrador de importância".
+
+--
+
+- Considera funções de importância, que são distribuições instrumentais.
+
+--
+
+- Propõe uma mudança de medida de referência.
+
+--
+
+- Começamos inicialmente com a mesma integral de interesse:
+
+$$E_f(h(X)) = \int_\mathcal{X} h(x)f(x)dx$$
+--
+
+- Considerando uma densidade $g()$ que é estritamente positiva quando $h \times f$ são diferentes de zero, nós podemos reescrever a integral anterior como
+
+$$E_f(h(X)) = \int_\mathcal{X} \frac{h(x)f(x)}{g(x)}g(x)dx = E_g\left[\frac{h(x)f(x)}{g(x)}\right]$$
+--
+
+- Note que esse é um valor esperado tendo em vista a densidade $g$.
+
+---
+
+# Cálculo da integral
+
+- Vamos aproximar o cálculo da integral por
+
+$$\frac{1}{n} \sum_{i=1}^n \frac{f(x_i)}{g(x_i)}h(x_i) \rightarrow E_f(h(X)),$$
+
+que é baseado numa amostra de valores $(x_1, \ldots, x_n)$ gerados a partir de $g$.
+
+--
+
+- A única restrição que devemos estar atentos é que o suporte de $h \times f$ deve estar contido no suporte de $g$.
+
+--
+
+- Dessa forma, somos capazes de calcular uma integral associada a densidade $f$ porém usando valores gerados por $g$.
+
+--
+
+- Isso pode ser interessante quando estamos interessados numa certa região de $f$ com pouca densidade.
+
+--
+
+  - Nesse caso, se geramos valores a partir de $f$ demoraria muito tempo para observar algum valor de interesse realmente.
+  
+  
+---
+class: inverse, middle, center
+
+# Exemplo 
+
+
+---
+
+# Distribuição normal
+
+- Considere que estamos interessados em fazer um estudo de Monte Carlo nas caudas da distribuição normal.
+
+--
+
+- Porém, isso pode ser problemático porque as probabilidades são muito pequenas nessa região.
+
+--
+
+- Por exemplo, se $Z \sim N(0, 1)$ poderíamos estar interessados em calcular $P(Z > 4,5)$.
+
+--
+
+- Usando o R, poderíamos observar
+
+```{r}
+pnorm(-4.5)
+```
+
+--
+
+- Na escala logarítmica, teríamos
+
+```{r}
+pnorm(-4.5, log = TRUE)
+```
+
+--
+
+- Essa probabilidade nos dá que devemos observar um valor acima de 4,5 (ou abaixo de -4,5) uma vez a cada 3 milhões de iterações.
+
+---
+
+# Utilizando *importance sampling*
+
+- Precisamos considerar uma distribuição de probabilidade no intervalo $(4.5, \infty)$.
+
+--
+
+- Uma possível candidata é considerar a distribuição Exponencial de parâmetro 1 truncada no valor 4,5.
+
+--
+
+- Sua densidade é dada
+
+$$g(y) = \frac{e^{-y}}{\int_{4.5}^\infty e^{-x} dx} = \exp\{-(y - 4.5) \}$$
+--
+
+- O algoritmo de *importance sampling* para esse problema seria dado por 
+
+$$\frac{1}{n} \sum_{i=1}^n \frac{f(y_i)}{g(y_i)} = \frac{1}{n} \sum_{i=1}^n \frac{\exp\{-y_i^2/2 + y_i - 4.5\}}{\sqrt{2\pi}}$$
+--
+
+- Esse algoritmo então é capaz de obter uma aproximação para a integral
+
+$$\int^{\infty}_{4.5} \frac{1}{\sqrt{2\pi}} \exp\left\{-\frac{1}{2} x^2\right\} dx$$
+
+---
+
+# No R
+
+```{r, fig.align='center', out.width="35%"}
+set.seed(1234); n_sim <- 10^3; y <- rexp(n_sim) + 4.5
+pesos <- dnorm(y) / dexp(y - 4.5)
+plot(cumsum(pesos) / 1:n_sim, type = "l", ylab = "Valores da aproximação")
+abline(h = pnorm(-4.5), col = "red")
+```
+
+---
+class: inverse, middle, center
+
+# Sampling importance resampling
+
+---
+
+# Uma variação do algoritmo
+
+- Podemos considerar esse tipo de algoritmo não só pra calcular integrais, mas também para gerar valores de distribuições de probabilidade complexas.
+
+--
+
+- Lembrando que estamos gerando $Y_1, \ldots, Y_n$ a partir de $g$, com os pesos de importância iguais a $f(Y_i)/g(Y_i)$.
+
+--
+
+- Podemos considerar essa amostra com uma amostragem multinomial para amostrar (quase) de $f$.
+
+--
+
+- Podemos definir os pesos (probs.) para fazer essa amostra multinomial como
+
+$$w_i = \frac{f(Y_i)/g(Y_i)}{\sum_{j=1}^n f(Y_j)/g(Y_j)}$$
+--
+
+- Esse processo de amostragem adiciona um vício nos valores, porém para $n$ grande isso é negligenciável.
+
+--
+
+- A aproximação da integral de interesse dada anteriormente é dada então por 
+
+$$\frac{1}{n} \sum_{i=1}^n h(y_i) \frac{f(y_i)/g(y_i)}{\sum_{j=1}^n f(Y_j)/g(Y_j)} \rightarrow E_f(h(Y)),$$
+
+---
+
+class: middle, center, inverse
+
+# Exemplo
+
+---
+
+# Distribuição Beta: modelo bayesiano
+
+- Considere então que temos uma observação da distribuição $\mbox{Beta}(\alpha, \beta)$.
+
+$$f(x|\alpha, \beta) = \frac{\Gamma(\alpha+\beta)}{\Gamma(\alpha)\Gamma(\beta)}x^{\alpha-1}(1 - \alpha)^{\beta-1}\mathbb{I}_{[0,1]}(x)$$
+--
+
+- Em um problema de inferência bayesiana, temos que definir uma densidade a priori para $(\alpha, \beta)$ para podermos definir a distribuição a posteriori
+
+$$\pi(\alpha, \beta|x) = \frac{f(x|\alpha, \beta) \pi(\alpha, \beta)}{m(x)}$$
+--
+
+- Existe uma família de priori's conjugadas para $(\alpha, \beta)$ da seguinte forma
+
+$$\pi(\alpha, \beta) \propto  \left\{\frac{\Gamma(\alpha+\beta)}{\Gamma(\alpha)\Gamma(\beta)}\right\}^\lambda x_0^\alpha y_0^\beta,$$
+em que $\lambda$, $x_0$ e $y_0$ são hiperparâmetros, que definem a distribuição a priori. 
+
+---
+
+# Estudo da distribuição a posteriori
+
+- Podemos obter a distribuição a posteriori fazendo
+
+$$\pi(\alpha, \beta|x) \propto  \left\{\frac{\Gamma(\alpha+\beta)}{\Gamma(\alpha)\Gamma(\beta)}\right\}^{\lambda+1} [x_0 x]^\alpha [y_0(1-x)]^\beta,$$
+--
+
+- Não é possível gerar valores da distribuição a posteriori devido às funções $\Gamma(.)$.
+
+--
+
+- Obter qualquer simulação de Monte Carlo para falar de probabilidades em $\pi(\alpha, \beta|x)$ é impossível.
+
+--
+
+- Apesar de não conseguirmos gerar valores dessa distribuição, podemos observar um esboço dessa distribuição de probabilidades para alguns valores de $(\alpha, \beta)$.
+
+- No R, podemos fazer a expressão para calcular $\pi(\alpha, \beta|x)$, para $\lambda = 1$, $x_0 = y_0 = 0.5$ e $x = 0.6$.
+
+```{r}
+post_alpha_beta <- function(a, b){
+  exp(2 * (lgamma(a + b) - lgamma(a) - lgamma(b)) + a * log(.3) + b * log(.2))
+}
+```
+
+
+---
+
+# Observando essa função bivariada
+
+- Vamos considerar um grid de valores para observar essa função
+
+```{r}
+seq_alpha <- 1:150; seq_beta <- 1:100
+```
+
+--
+
+- Podemos utilizar a função `outer` para aplicar a função `post_alpha_beta` em todos os possíveis valores de $(\alpha, \beta)$.
+
+```{r}
+valores_post <- outer(seq_alpha, seq_beta, post_alpha_beta)
+```
+
+--
+
+```{r}
+dim(valores_post)
+```
+
+--
+
+- Isso seria equivalente a fazer
+
+```{r, eval = FALSE}
+for(i in 1:150){
+  for(j in 1:100){
+    valores_post[i, j] <- post_alpha_beta(a = seq_alpha[i], b = seq_beta[j])
+  }
+}
+```
+
+---
+
+# Resultado gráfico
+
+```{r, fig.align="center", out.width="40%"}
+image(seq_alpha, seq_beta, valores_post, 
+      xlab = expression(alpha), ylab = expression(beta))
+```
+
+---
+
+# Uma outra opção 
+
+```{r, fig.align="center", out.width="40%"}
+persp(seq_alpha, seq_beta, valores_post, 
+      xlab = expression(alpha), ylab = expression(beta), theta = 45, phi = 80, 
+      col = 'royalblue')
+```
+
+
+---
+
+# Utilizando o `ggplot2`
+
+```{r, fig.align="center", out.width="40%"}
+valores_x <- expand.grid(seq_alpha, seq_beta)
+valores_y <- apply(valores_x, 1, function(a) post_alpha_beta(a[1], a[2]))
+dados_graf <- data.frame(cbind(valores_x, valores_y))
+gg <- ggplot(dados_graf) + theme_minimal() + 
+  geom_tile(aes(x = Var1, y = Var2, fill = valores_y)) + 
+  scale_fill_viridis_c(option = "C")
+```
+
+---
+
+# Usando `rayshader`
+
+- Um pacote para fazer animações bem interessantes no R, principalmente com mapas.
+
+--
+
+- Recomendo a visita aos sites: 
+
+  - [https://www.rayshader.com/](https://www.rayshader.com/)
+  - [https://www.rayrender.net/](https://www.rayrender.net/)
+  
+--
+
+- Os comandos ficam assim: 
+
+```{r, eval = FALSE}
+library(rayshader)
+
+gg <- ggplot(dados_graf) + theme_minimal() + 
+  geom_tile(aes(x = Var1, y = Var2, fill = valores_y)) + 
+  scale_fill_viridis_c(option = "C") 
+
+
+plot_gg(gg, multicore = TRUE, width = 5, height = 5, scale = 250)
+
+render_movie(filename = "fig/densidade2.mp4")
+```
+
+---
+
+# Resultado 
+
+.center[
+<iframe width="560" height="315" src="https://www.youtube.com/embed/IVpn-mmP7cY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+]
+
+---
+
+# Resultado 
+
+.center[
+<iframe width="560" height="315" src="https://www.youtube.com/embed/zQciHNEIQwg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+]
+
+
+---
+
+# Obtendo uma proposta  $g$
+
+- Precisamos definir uma distribuição de probabilidade bivariada para gerar os valores.
+
+--
+
+- Uma sugestão é considerar uma distribuição normal bivariada com os seguintes parâmetros
+
+$$N\left(\begin{bmatrix} 55 \\ 45 \end{bmatrix} ; \begin{bmatrix} 3200  & 2900 \\ 2900 & 3000 \end{bmatrix} \right)$$
+
+--
+
+- Podemos gerar valores dessa fazendo
+
+```{r}
+set.seed(42)
+n_mc <- 1e5
+valores_media <- c(55, 45)
+valores_cov <- matrix(c(3200, 2900, 2900, 3000), 
+                      ncol = 2)
+
+valores_biv <- mvtnorm::rmvnorm(n_mc, mean = valores_media, sigma = valores_cov) %>%
+  as.data.frame()
+```
+
+--
+
+- Podemos checar se esses valores estão próximos da nossa densidade de interesse.
+
+
+---
+
+# Checando valores gerados
+
+- O código para fazer os gráficos lado a lado.
+
+```{r, eval = FALSE, fig.align="center", out.width="70%"}
+library(patchwork)
+
+gg1 <- ggplot(dados_graf) + theme_minimal() + 
+  geom_tile(aes(x = Var1, y = Var2, fill = valores_y)) + 
+  scale_fill_viridis_c(option = "C") +
+  theme(legend.position = "none") +
+  ylim(c(0, 100)) + xlim(c(0, 150))
+
+gg2 <- ggplot(valores_biv) + theme_minimal() + 
+  aes(x = V1, y = V2) + 
+   stat_density_2d(aes(fill = ..density..), geom = "tile", 
+                   contour = FALSE, n = 50) + 
+  scale_fill_viridis_c(option = "C") +
+  theme(legend.position = "none") +
+  ylim(c(0, 100)) + xlim(c(0, 150))
+
+gg1 | gg2
+```
+
+---
+
+# Resultado
+
+
+```{r, echo = FALSE, fig.align="center", out.width="45%"}
+library(patchwork)
+
+gg1 <- ggplot(dados_graf) + theme_minimal() + 
+  geom_tile(aes(x = Var1, y = Var2, fill = valores_y)) + 
+  scale_fill_viridis_c(option = "C") +
+  theme(legend.position = "none") +
+  ylim(c(0, 100)) + xlim(c(0, 150))
+
+gg2 <- ggplot(valores_biv) + theme_minimal() + 
+  aes(x = V1, y = V2) + 
+   stat_density_2d(aes(fill = ..density..), geom = "tile", 
+                   contour = FALSE, n = 50) + 
+  scale_fill_viridis_c(option = "C") +
+  theme(legend.position = "none") +
+  ylim(c(0, 100)) + xlim(c(0, 150))
+
+gg1 | gg2
+```
+
+---
+
+# Implementando o algoritmo
+
+- Para obter uma amostra de $\pi(\alpha, \beta | x)$ devemos fazer:
+
+--
+
+```{r}
+valores_biv <- valores_biv[valores_biv$V1 > 0 & valores_biv$V2 > 0, ]
+post_alpha_beta <- function(a, log = FALSE){
+  if (!log){
+    exp(2 * (lgamma(a[1] + a[2]) - lgamma(a[1]) - lgamma(a[2])) + a[1] * log(.3) + a[2] * log(.2))
+  } 
+  else {
+    2 * (lgamma(a[1] + a[2]) - lgamma(a[1]) - lgamma(a[2])) + a[1] * log(.3) + a[2] * log(.2)
+  }
+}
+
+p_den1 <- apply(valores_biv, 1, mvtnorm::dmvnorm, mean = valores_media, 
+                sigma = valores_cov, log = TRUE)
+p_num1 <- apply(valores_biv, 1, post_alpha_beta, log = TRUE)
+pesos_selecao <- exp(p_num1 - p_den1)/sum(exp(p_num1 - p_den1))
+
+summary(pesos_selecao)
+```
+
+
+---
+
+# Fazendo a reamostragem
+
+- Agora podemos sortear dentre os valores gerados, aqueles que devem compor a minha amostra pra poder recuperar a distribuição de interesse.
+
+```{r}
+amostra_selecionada <- sample(1:length(pesos_selecao), 
+                              size = length(pesos_selecao), 
+                              prob = pesos_selecao, 
+                              replace = TRUE)
+```
+
+--
+
+- Sorteamos os índices das observações, agora podemos obter esses dados do nosso conjunto de valores gerados:
+
+```{r}
+obs_selecionadas <- valores_biv[amostra_selecionada, ]
+```
+
+--
+
+- Podemos verificar graficamente se os valores gerados realmente se aproximam da nossa densidade de interesse.
+
+---
+
+# Código no R
+
+```{r, eval = FALSE}
+gg3 <- ggplot(obs_selecionadas) + theme_minimal() + 
+  aes(x = V1, y = V2) + 
+  stat_density_2d(aes(fill = ..density..), geom = "tile", 
+                 contour = FALSE, n = 60) + 
+  scale_fill_viridis_c(option = "C") +
+  theme(legend.position = "none") + 
+  ylim(c(0, 100)) + xlim(c(0, 150))
+
+gg1 | gg2 | gg3
+```
+
+---
+
+# Resultado
+
+```{r, echo = FALSE, fig.align="center", out.width="45%"}
+gg3 <- ggplot(obs_selecionadas) + theme_minimal() + 
+  aes(x = V1, y = V2) + 
+  stat_density_2d(aes(fill = ..density..), geom = "tile", 
+                 contour = FALSE, n = 60) + 
+  scale_fill_viridis_c(option = "C") +
+  theme(legend.position = "none") + 
+  ylim(c(0, 100)) + xlim(c(0, 150))
+
+gg1 | gg2 | gg3
+```
+
+
+
+---
+class: middle, center, inverse
+
+# Fim!
+
+
+
+
+
+
+

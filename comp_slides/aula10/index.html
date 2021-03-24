@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Integração estocástica - Parte II</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2021-03-24" />
+    <script src="libs/fabric/fabric.min.js"></script>
+    <link href="libs/xaringanExtra-scribble/scribble.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-scribble/scribble.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', function() { window.xeScribble = new Scribble({"pen_color":["#FF0000"],"pen_size":3,"eraser_size":30}) })</script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle
+
+## Integração estocástica - Parte II
+
+*****
+
+### Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+
+
+
+
+
+
+
+---
+class: center, middle, inverse
+
+# Recapitulação
+
+
+---
+
+# Da última aula
+
+- Considerando a teoria de geração de variáveis aleatórias
+
+--
+
+- Tendo o interesse em integrais do tipo
+
+`$$E_f(h(X)) = \int_\mathcal{X} h(x)f(x)dx$$`
+
+em que `\(f(x)\)` é uma função densidade de probabilidade.
+
+--
+
+- É possível aproximar o valor dessa integral por 
+
+`$$\bar{h}_n = \frac{1}{n} \sum_{i=1}^n h(x_i)$$`
+em que os `\(x_i\)`'s são gerados de acordo com a densidade `\(f(.)\)`.
+
+--
+
+- Vimos um exemplo em que aproximamos o valor da probabilidade
+
+`$$\Phi(t) = \int_{-\infty}^t \frac{1}{\sqrt{2\pi}} \exp\left\{-\frac{1}{2} x^2\right\} dx$$`
+que é a função de distribuição acumulada de uma v.a. com distribuição normal padrão.
+
+
+---
+class: middle, center, inverse 
+
+# Técnicas para a redução da variância
+
+---
+
+# Importance sampling 
+
+- Pode ser traduzido como "amostrador de importância".
+
+--
+
+- Considera funções de importância, que são distribuições instrumentais.
+
+--
+
+- Propõe uma mudança de medida de referência.
+
+--
+
+- Começamos inicialmente com a mesma integral de interesse:
+
+`$$E_f(h(X)) = \int_\mathcal{X} h(x)f(x)dx$$`
+--
+
+- Considerando uma densidade `\(g()\)` que é estritamente positiva quando `\(h \times f\)` são diferentes de zero, nós podemos reescrever a integral anterior como
+
+`$$E_f(h(X)) = \int_\mathcal{X} \frac{h(x)f(x)}{g(x)}g(x)dx = E_g\left[\frac{h(x)f(x)}{g(x)}\right]$$`
+--
+
+- Note que esse é um valor esperado tendo em vista a densidade `\(g\)`.
+
+---
+
+# Cálculo da integral
+
+- Vamos aproximar o cálculo da integral por
+
+`$$\frac{1}{n} \sum_{i=1}^n \frac{f(x_i)}{g(x_i)}h(x_i) \rightarrow E_f(h(X)),$$`
+
+que é baseado numa amostra de valores `\((x_1, \ldots, x_n)\)` gerados a partir de `\(g\)`.
+
+--
+
+- A única restrição que devemos estar atentos é que o suporte de `\(h \times f\)` deve estar contido no suporte de `\(g\)`.
+
+--
+
+- Dessa forma, somos capazes de calcular uma integral associada a densidade `\(f\)` porém usando valores gerados por `\(g\)`.
+
+--
+
+- Isso pode ser interessante quando estamos interessados numa certa região de `\(f\)` com pouca densidade.
+
+--
+
+  - Nesse caso, se geramos valores a partir de `\(f\)` demoraria muito tempo para observar algum valor de interesse realmente.
+  
+  
+---
+class: inverse, middle, center
+
+# Exemplo 
+
+
+---
+
+# Distribuição normal
+
+- Considere que estamos interessados em fazer um estudo de Monte Carlo nas caudas da distribuição normal.
+
+--
+
+- Porém, isso pode ser problemático porque as probabilidades são muito pequenas nessa região.
+
+--
+
+- Por exemplo, se `\(Z \sim N(0, 1)\)` poderíamos estar interessados em calcular `\(P(Z &gt; 4,5)\)`.
+
+--
+
+- Usando o R, poderíamos observar
+
+
+```r
+pnorm(-4.5)
+```
+
+```
+## [1] 3.397673e-06
+```
+
+--
+
+- Na escala logarítmica, teríamos
+
+
+```r
+pnorm(-4.5, log = TRUE)
+```
+
+```
+## [1] -12.59242
+```
+
+--
+
+- Essa probabilidade nos dá que devemos observar um valor acima de 4,5 (ou abaixo de -4,5) uma vez a cada 3 milhões de iterações.
+
+---
+
+# Utilizando *importance sampling*
+
+- Precisamos considerar uma distribuição de probabilidade no intervalo `\((4.5, \infty)\)`.
+
+--
+
+- Uma possível candidata é considerar a distribuição Exponencial de parâmetro 1 truncada no valor 4,5.
+
+--
+
+- Sua densidade é dada
+
+`$$g(y) = \frac{e^{-y}}{\int_{4.5}^\infty e^{-x} dx} = \exp\{-(y - 4.5) \}$$`
+--
+
+- O algoritmo de *importance sampling* para esse problema seria dado por 
+
+`$$\frac{1}{n} \sum_{i=1}^n \frac{f(y_i)}{g(y_i)} = \frac{1}{n} \sum_{i=1}^n \frac{\exp\{-y_i^2/2 + y_i - 4.5\}}{\sqrt{2\pi}}$$`
+--
+
+- Esse algoritmo então é capaz de obter uma aproximação para a integral
+
+`$$\int^{\infty}_{4.5} \frac{1}{\sqrt{2\pi}} \exp\left\{-\frac{1}{2} x^2\right\} dx$$`
+
+---
+
+# No R
+
+
+```r
+set.seed(1234); n_sim &lt;- 10^3; y &lt;- rexp(n_sim) + 4.5
+pesos &lt;- dnorm(y) / dexp(y - 4.5)
+plot(cumsum(pesos) / 1:n_sim, type = "l", ylab = "Valores da aproximação")
+abline(h = pnorm(-4.5), col = "red")
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-3-1.png" width="35%" style="display: block; margin: auto;" /&gt;
+
+---
+class: inverse, middle, center
+
+# Sampling importance resampling
+
+---
+
+# Uma variação do algoritmo
+
+- Podemos considerar esse tipo de algoritmo não só pra calcular integrais, mas também para gerar valores de distribuições de probabilidade complexas.
+
+--
+
+- Lembrando que estamos gerando `\(Y_1, \ldots, Y_n\)` a partir de `\(g\)`, com os pesos de importância iguais a `\(f(Y_i)/g(Y_i)\)`.
+
+--
+
+- Podemos considerar essa amostra com uma amostragem multinomial para amostrar (quase) de `\(f\)`.
+
+--
+
+- Podemos definir os pesos (probs.) para fazer essa amostra multinomial como
+
+`$$w_i = \frac{f(Y_i)/g(Y_i)}{\sum_{j=1}^n f(Y_j)/g(Y_j)}$$`
+--
+
+- Esse processo de amostragem adiciona um vício nos valores, porém para `\(n\)` grande isso é negligenciável.
+
+--
+
+- A aproximação da integral de interesse dada anteriormente é dada então por 
+
+`$$\frac{1}{n} \sum_{i=1}^n h(y_i) \frac{f(y_i)/g(y_i)}{\sum_{j=1}^n f(Y_j)/g(Y_j)} \rightarrow E_f(h(Y)),$$`
+
+---
+
+class: middle, center, inverse
+
+# Exemplo
+
+---
+
+# Distribuição Beta: modelo bayesiano
+
+- Considere então que temos uma observação da distribuição `\(\mbox{Beta}(\alpha, \beta)\)`.
+
+`$$f(x|\alpha, \beta) = \frac{\Gamma(\alpha+\beta)}{\Gamma(\alpha)\Gamma(\beta)}x^{\alpha-1}(1 - \alpha)^{\beta-1}\mathbb{I}_{[0,1]}(x)$$`
+--
+
+- Em um problema de inferência bayesiana, temos que definir uma densidade a priori para `\((\alpha, \beta)\)` para podermos definir a distribuição a posteriori
+
+`$$\pi(\alpha, \beta|x) = \frac{f(x|\alpha, \beta) \pi(\alpha, \beta)}{m(x)}$$`
+--
+
+- Existe uma família de priori's conjugadas para `\((\alpha, \beta)\)` da seguinte forma
+
+`$$\pi(\alpha, \beta) \propto  \left\{\frac{\Gamma(\alpha+\beta)}{\Gamma(\alpha)\Gamma(\beta)}\right\}^\lambda x_0^\alpha y_0^\beta,$$`
+em que `\(\lambda\)`, `\(x_0\)` e `\(y_0\)` são hiperparâmetros, que definem a distribuição a priori. 
+
+---
+
+# Estudo da distribuição a posteriori
+
+- Podemos obter a distribuição a posteriori fazendo
+
+`$$\pi(\alpha, \beta|x) \propto  \left\{\frac{\Gamma(\alpha+\beta)}{\Gamma(\alpha)\Gamma(\beta)}\right\}^{\lambda+1} [x_0 x]^\alpha [y_0(1-x)]^\beta,$$`
+--
+
+- Não é possível gerar valores da distribuição a posteriori devido às funções `\(\Gamma(.)\)`.
+
+--
+
+- Obter qualquer simulação de Monte Carlo para falar de probabilidades em `\(\pi(\alpha, \beta|x)\)` é impossível.
+
+--
+
+- Apesar de não conseguirmos gerar valores dessa distribuição, podemos observar um esboço dessa distribuição de probabilidades para alguns valores de `\((\alpha, \beta)\)`.
+
+- No R, podemos fazer a expressão para calcular `\(\pi(\alpha, \beta|x)\)`, para `\(\lambda = 1\)`, `\(x_0 = y_0 = 0.5\)` e `\(x = 0.6\)`.
+
+
+```r
+post_alpha_beta &lt;- function(a, b){
+  exp(2 * (lgamma(a + b) - lgamma(a) - lgamma(b)) + a * log(.3) + b * log(.2))
+}
+```
+
+
+---
+
+# Observando essa função bivariada
+
+- Vamos considerar um grid de valores para observar essa função
+
+
+```r
+seq_alpha &lt;- 1:150; seq_beta &lt;- 1:100
+```
+
+--
+
+- Podemos utilizar a função `outer` para aplicar a função `post_alpha_beta` em todos os possíveis valores de `\((\alpha, \beta)\)`.
+
+
+```r
+valores_post &lt;- outer(seq_alpha, seq_beta, post_alpha_beta)
+```
+
+--
+
+
+```r
+dim(valores_post)
+```
+
+```
+## [1] 150 100
+```
+
+--
+
+- Isso seria equivalente a fazer
+
+
+```r
+for(i in 1:150){
+  for(j in 1:100){
+    valores_post[i, j] &lt;- post_alpha_beta(a = seq_alpha[i], b = seq_beta[j])
+  }
+}
+```
+
+---
+
+# Resultado gráfico
+
+
+```r
+image(seq_alpha, seq_beta, valores_post, 
+      xlab = expression(alpha), ylab = expression(beta))
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-9-1.png" width="40%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Uma outra opção 
+
+
+```r
+persp(seq_alpha, seq_beta, valores_post, 
+      xlab = expression(alpha), ylab = expression(beta), theta = 45, phi = 80, 
+      col = 'royalblue')
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-10-1.png" width="40%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# Utilizando o `ggplot2`
+
+
+```r
+valores_x &lt;- expand.grid(seq_alpha, seq_beta)
+valores_y &lt;- apply(valores_x, 1, function(a) post_alpha_beta(a[1], a[2]))
+dados_graf &lt;- data.frame(cbind(valores_x, valores_y))
+gg &lt;- ggplot(dados_graf) + theme_minimal() + 
+  geom_tile(aes(x = Var1, y = Var2, fill = valores_y)) + 
+  scale_fill_viridis_c(option = "C")
+```
+
+---
+
+# Usando `rayshader`
+
+- Um pacote para fazer animações bem interessantes no R, principalmente com mapas.
+
+--
+
+- Recomendo a visita aos sites: 
+
+  - [https://www.rayshader.com/](https://www.rayshader.com/)
+  - [https://www.rayrender.net/](https://www.rayrender.net/)
+  
+--
+
+- Os comandos ficam assim: 
+
+
+```r
+library(rayshader)
+
+gg &lt;- ggplot(dados_graf) + theme_minimal() + 
+  geom_tile(aes(x = Var1, y = Var2, fill = valores_y)) + 
+  scale_fill_viridis_c(option = "C") 
+
+
+plot_gg(gg, multicore = TRUE, width = 5, height = 5, scale = 250)
+
+render_movie(filename = "fig/densidade2.mp4")
+```
+
+---
+
+# Resultado 
+
+.center[
+&lt;iframe width="560" height="315" src="https://www.youtube.com/embed/IVpn-mmP7cY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen&gt;&lt;/iframe&gt;
+]
+
+---
+
+# Resultado 
+
+.center[
+&lt;iframe width="560" height="315" src="https://www.youtube.com/embed/zQciHNEIQwg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen&gt;&lt;/iframe&gt;
+]
+
+
+---
+
+# Obtendo uma proposta  `\(g\)`
+
+- Precisamos definir uma distribuição de probabilidade bivariada para gerar os valores.
+
+--
+
+- Uma sugestão é considerar uma distribuição normal bivariada com os seguintes parâmetros
+
+`$$N\left(\begin{bmatrix} 55 \\ 45 \end{bmatrix} ; \begin{bmatrix} 3200  &amp; 2900 \\ 2900 &amp; 3000 \end{bmatrix} \right)$$`
+
+--
+
+- Podemos gerar valores dessa fazendo
+
+
+```r
+set.seed(42)
+n_mc &lt;- 1e5
+valores_media &lt;- c(55, 45)
+valores_cov &lt;- matrix(c(3200, 2900, 2900, 3000), 
+                      ncol = 2)
+
+valores_biv &lt;- mvtnorm::rmvnorm(n_mc, 
+                                       mean = valores_media, 
+                                       sigma = valores_cov) %&gt;% 
+  as.data.frame()
+```
+
+--
+
+- Podemos checar se esses valores estão próximos da nossa densidade de interesse.
+
+
+---
+
+# Checando valores gerados
+
+- O código para fazer os gráficos lado a lado.
+
+
+```r
+library(patchwork)
+
+gg1 &lt;- ggplot(dados_graf) + theme_minimal() + 
+  geom_tile(aes(x = Var1, y = Var2, fill = valores_y)) + 
+  scale_fill_viridis_c(option = "C") +
+  theme(legend.position = "none") +
+  ylim(c(0, 100)) + xlim(c(0, 150))
+
+gg2 &lt;- ggplot(valores_biv) + theme_minimal() + 
+  aes(x = V1, y = V2) + 
+   stat_density_2d(aes(fill = ..density..), geom = "tile", 
+                   contour = FALSE, n = 50) + 
+  scale_fill_viridis_c(option = "C") +
+  theme(legend.position = "none") +
+  ylim(c(0, 100)) + xlim(c(0, 150))
+
+gg1 | gg2
+```
+
+---
+
+# Resultado
+
+
+&lt;img src="index_files/figure-html/unnamed-chunk-15-1.png" width="45%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Implementando o algoritmo
+
+- Para obter uma amostra de `\(\pi(\alpha, \beta | x)\)` devemos fazer:
+
+--
+
+
+```r
+valores_biv &lt;- valores_biv[valores_biv$V1 &gt; 0 &amp; valores_biv$V2 &gt; 0, ]
+post_alpha_beta &lt;- function(a, log = FALSE){
+  if (!log){
+    exp(2 * (lgamma(a[1] + a[2]) - lgamma(a[1]) - lgamma(a[2])) + a[1] * log(.3) + a[2] * log(.2))
+  } 
+  else {
+    2 * (lgamma(a[1] + a[2]) - lgamma(a[1]) - lgamma(a[2])) + a[1] * log(.3) + a[2] * log(.2)
+  }
+}
+
+p_den1 &lt;- apply(valores_biv, 1, mvtnorm::dmvnorm, mean = valores_media, 
+                sigma = valores_cov, log = TRUE)
+p_num1 &lt;- apply(valores_biv, 1, post_alpha_beta, log = TRUE)
+pesos_selecao &lt;- exp(p_num1 - p_den1)/sum(exp(p_num1 - p_den1))
+
+summary(pesos_selecao)
+```
+
+```
+##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+## 0.000e+00 3.170e-07 6.161e-06 1.297e-05 1.903e-05 1.754e-02
+```
+
+
+---
+
+# Fazendo a reamostragem
+
+- Agora podemos sortear dentre os valores gerados, aqueles que devem compor a minha amostra pra poder recuperar a distribuição de interesse.
+
+
+```r
+amostra_selecionada &lt;- sample(1:length(pesos_selecao), 
+                              size = length(pesos_selecao), 
+                              prob = pesos_selecao, 
+                              replace = TRUE)
+```
+
+--
+
+- Sorteamos os índices das observações, agora podemos obter esses dados do nosso conjunto de valores gerados:
+
+
+```r
+obs_selecionadas &lt;- valores_biv[amostra_selecionada, ]
+```
+
+--
+
+- Podemos verificar graficamente se os valores gerados realmente se aproximam da nossa densidade de interesse.
+
+---
+
+# Código no R
+
+
+```r
+gg3 &lt;- ggplot(obs_selecionadas) + theme_minimal() + 
+  aes(x = V1, y = V2) + 
+  stat_density_2d(aes(fill = ..density..), geom = "tile", 
+                 contour = FALSE, n = 60) + 
+  scale_fill_viridis_c(option = "C") +
+  theme(legend.position = "none") + 
+  ylim(c(0, 100)) + xlim(c(0, 150))
+
+gg1 | gg2 | gg3
+```
+
+---
+
+# Resultado
+
+&lt;img src="index_files/figure-html/unnamed-chunk-20-1.png" width="45%" style="display: block; margin: auto;" /&gt;
+
+
+
+---
+class: middle, center, inverse
+
+# Fim!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
