@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Métodos de otimização</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2021-03-28" />
+    <script src="libs/fabric/fabric.min.js"></script>
+    <link href="libs/xaringanExtra-scribble/scribble.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-scribble/scribble.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', function() { window.xeScribble = new Scribble({"pen_color":["#FF0000"],"pen_size":3,"eraser_size":30}) })</script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle
+
+## Métodos de otimização
+
+*****
+
+### Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+
+
+
+
+
+
+
+---
+class: center, middle, inverse
+
+# Sobre integração estocástica
+
+
+---
+
+# Sobre integração estocástica
+
+- No último exemplo estudado, consideramos um exemplo de um caso bivariado.
+
+--
+
+- Ao utilizarmos o algoritmo SIR para gerarmos valores aleatórios de `\(\pi(\alpha, \beta | x)\)`, podemos utilizar esses valores para calcular integrais do tipo
+
+`$$\int_\mathbb{R} \int_\mathbb{R} h(\alpha, \beta) \pi(\alpha, \beta|x) d\alpha d\beta$$`
+--
+
+- Além disso, o exemplo tratou de falar sobre um problema do ponto de vista bayesiano de forma mais sucinta.
+
+--
+
+  - Poderíamos discutir algumas medidas que podem ser importantes para avaliar em algoritmos do tipo MCMC.
+  
+---
+class: inverse, middle, center
+
+# Métodos de otimização
+
+
+---
+
+# Um exemplo anterior
+
+- Na aula sobre o método de aceitação e rejeição para variáveis contínuas tínhamos a seguinte situação. 
+
+--
+
+`$$f(x) = 20 x (1-x)^3, \quad 0 &lt; x &lt; 1.$$`
+
+`$$g(x) = 1, \quad 0 &lt; x &lt; 1.$$`
+
+
+- Precisávamos encontrar `\(c\)` tal que a linha vermelha fique acima da linha preta
+
+&lt;img src="index_files/figure-html/unnamed-chunk-1-1.png" width="30%" style="display: block; margin: auto;" /&gt;
+
+---
+# Método força bruta
+
+- Utilizamos o cálculo para encontrar de `\(x\)` considerando a derivada.
+
+`$$\frac{d}{dx} \left( \frac{f(x)}{g(x)} \right) = 20[(1-x)^3 + 3x(1-x)^2]$$`
+--
+
+- Como resposta, encontramos o valor de `\(x = 1/4\)`.
+
+--
+
+- Poderíamos encontrar um valor próximo considerando uma sequência de valores `\(x\)` onde podemos calcular o valor da razão `\(\frac{f(x)}{g(x)}\)`.
+
+--
+
+
+```r
+x &lt;- seq(0, 1, length.out = 1e3 + 1)
+valores_razao &lt;- dbeta(x, 2, 4)/1
+ind_x_max &lt;- which(valores_razao == max(valores_razao))
+x[ind_x_max]
+```
+
+```
+## [1] 0.25
+```
+
+---
+
+class: inverse, middle, center
+
+# Método de Newton-Raphson
+
+
+---
+
+# Método de Newton-Raphson
+
+- Para descrever o método, precisamos lembrar do teorema do valor médio. 
+--
+De forma simplificada, podemos escrever que existe um `\(c\)`
+
+`$$f'(c) = \frac{f(b) - f(a)}{b - a}$$`
+para `\(f\)` contínua em `\([a,b]\)`, diferenciável em `\((a, b)\)`.
+
+--
+
+- Se estivermos interessados em encontrar o ponto `\(x_R\)`, em que `\(f(x_R) = 0\)`, logo `\(x_R\)` é uma raiz da equação, podemos utilizar o teorema para escrever
+
+`$$f(x_n) = f'(z)[x_n - x_R]$$`
+--
+
+- Reorganizando e considerando que não conhecemos `\(x_R\)` ou `\(z\)`, podemos fazer 
+
+`$$x_{n+1} =  x_n - \frac{f(x_n)}{f'(x_n)} = x_n - [f'(x_n)]^{-1}f(x_n)$$`
+---
+
+# Função de verossimilhança
+
+- Considerando um modelo estatístico, estamos sempre interessar em obter estimativas dos parâmetros associados a esse modelo.
+
+--
+
+- Caso Normal
+
+`$$X \sim N(\mu, \sigma^2), \quad \theta = (\mu, \sigma^2)$$`
+--
+
+- Caso Poisson
+
+`$$X \sim P(\lambda), \quad \theta = \lambda$$`
+
+--
+
+- Para ambos os casos, podemos escrever a função de verossimilhança
+
+`$$L(\theta) = f(x | \theta) \quad \mbox{ ou } \quad L(\theta) = P(X = x| \theta)$$`
+
+--
+
+- Se temos uma amostra aleatória, ou seja, as observações são independentes.
+
+`$$L(\theta) = f(x_1, \ldots, x_n | \theta) = \prod_{i=1}^n f(x_i | \theta)$$`
+---
+# Estimador de máxima verossimilhança
+
+- Podemos tentar encontrar `\(\theta\)` que maximiza a função de verossimilhança.
+
+--
+
+- Esse valor também chamado de Estimador de máxima verossimilhança (EMV):
+
+  - **é o valor do espaço paramétrico que maximiza a probabilidade de termos observado aquela amostra.**
+  
+--
+
+
+```r
+set.seed(3456); amostra &lt;- rpois(50, lambda = 5)
+vero &lt;- function(theta) sapply(theta, function(a) prod(dpois(amostra, lambda = a)))
+curve(vero(x), 3, 7); abline(v = 5, lty = 2)
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-3-1.png" width="25%" style="display: block; margin: auto;" /&gt;
+
+---
+# Obtenção do máximo
+
+- É comum considerarmos o logaritmo da função de verossimilhança.
+
+`$$l(\theta) = \log(L(\theta))$$`
+--
+
+- Porque é equivalente encontrar o máximo de `\(l(\theta)\)` ou `\(L(\theta)\)`.
+
+--
+
+- Dessa forma, podemos utilizar o método de Newton para encontrar o máximo de `\(l(\theta)\)`, que é encontrar a raiz de `\(l'(\theta)\)`.
+
+--
+
+- Reescrevendo o algoritmo, temos 
+
+`$$\theta_{n+1} = \theta_n - [l''(\theta_n)]^{-1}l'(\theta_n)$$`
+--
+
+- Dessa forma, podemos utilizar esse algoritmo de forma iterativa para encontrar o máximo do logaritmo da verossimilhança.
+
+--
+
+- Um cuidado especial deve ser considerado no caso multivariado, pois `\(l''(\theta)\)` vai ser uma matriz.
+
+---
+class: inverse, middle, center
+
+# Exemplo
+
+---
+# Exemplo: Poisson
+
+
+- A função de probabilidade de `\(X \sim P(\theta)\)`
+
+`$$P(X = x) = \frac{e^{-\theta} \theta^x}{x!}, \quad x = 0, 1, 2, \ldots$$`
+--
+
+- Se consideramos uma amostra aleatória `\(X_1,\ldots,X_n\)`
+
+`$$L(\theta) = \prod_{i=1}^n \frac{e^{-\theta} \theta^{x_i}}{x_i!} = \frac{1}{\prod_{i=1}^n x_i!} e^{-{n\theta}} \theta^{\sum_{i=1}^n x_i}$$`
+--
+
+- Podemos escrever o logaritmo dessa função como
+
+`$$l(\theta) = - \sum_{i=1}^n \log(x_i!) - n\theta + \sum_{i=1}^n x_i \log(\theta)$$`
+--
+
+- A primeira derivada de `\(l'(\theta)\)` também é fácil de ser obtida
+
+`$$l'(\theta) = \frac{\sum_{i=1}^n x_i}{\theta} - n$$`
+
+---
+
+### Método de Newton
+
+- Para utilizarmos o método de Newton precisamos também da segunda derivada
+
+`$$l''(\theta) = - \frac{\sum_{i=1}^n x_i}{\theta^2} = - \frac{n \bar{x}}{\theta^2}$$`
+--
+
+- Podemos fazer o gráfico de `\(l'(\theta)\)`
+
+
+```r
+escore &lt;- function(theta, amostra, n = length(amostra)) n * mean(amostra) / theta - n
+curve(escore(x, amostra), 1, 9, xlab = "theta", ylab = "escore(theta)"); abline(h = 0, lty = 2)
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-4-1.png" width="30%" style="display: block; margin: auto;" /&gt;
+
+---
+
+### Método de Newton (cont.)
+
+- Podemos escrever um algoritmo para atualizar os valores de `\(\theta\)` a partir de um valor inicial.
+
+--
+
+- O algoritmo deve considerar a seguinte relação
+
+`$$\begin{align*} \theta_{n+1} &amp;= \theta_n - \left[- \frac{n \bar{x}}{\theta^2} \right]^{-1} \left(\frac{n \bar{x}}{\theta} - n \right) \\ 
+&amp;= 2\theta_n - \frac{\theta_n^2}{\bar{x}} \end{align*}$$`
+
+--
+
+
+```r
+met_newton_poisson &lt;- function(x, ponto_inicial, tolerancia = 0.01){
+  seq_theta &lt;- ponto_inicial
+  seq_theta[2] &lt;- 2 * seq_theta[1] - seq_theta[1]^2/mean(x)
+  dif &lt;- abs(seq_theta[2] - seq_theta[1])
+  while(dif &gt; tolerancia){
+    n &lt;- length(seq_theta)
+    seq_theta[n + 1] &lt;- 2 * seq_theta[n] - seq_theta[n]^2/mean(x)
+    dif &lt;- abs(seq_theta[n + 1] - seq_theta[n])
+  }
+  seq_theta
+}
+```
+
+---
+
+# Testando a função
+
+- Sabemos que o estimador de `\(\theta\)` é igual a média amostral.
+--
+Então, podemos comparar o método quando começamos longe da média amostral e perto.
+
+--
+
+
+```r
+met_newton_poisson(x = amostra, ponto_inicial = 8)
+```
+
+```
+## [1] 8.000000 3.200000 4.352000 4.916019 4.998589 5.000000
+```
+
+
+```r
+met_newton_poisson(x = amostra, ponto_inicial = 9, tolerancia = 0.0001)
+```
+
+```
+## [1] 9.000000 1.800000 2.952000 4.161139 4.859263 4.996039 4.999997 5.000000
+```
+
+
+```r
+met_newton_poisson(x = amostra, ponto_inicial = 0.01, tolerancia = 0.0001)
+```
+
+```
+##  [1] 0.01000000 0.01998000 0.03988016 0.07944223 0.15762226 0.31027556
+##  [7] 0.60129693 1.13028225 2.00505691 3.20606318 4.35635814 4.91714503
+## [13] 4.99862701 4.99999962 5.00000000
+```
+
+---
+
+## Fazendo uma animação para mostrar os passos
+
+- Para mostrar os passos do algoritmo, podemos gerar um gif para poder comparar diferentes valores de amostra, valores iniciais
+
+
+```r
+library(gganimate)
+
+faz_gif &lt;- function(n, lambda, p_inic, tol = 0.0001, seed = 42, 
+                    min_fun = 0, max_fun = 10, nome_gif = "gif_newton.gif"){
+  set.seed(seed)
+  x &lt;- rpois(n, lambda)
+  palp &lt;- met_newton_poisson(x, p_inic, tol)
+  dados_alg &lt;- data.frame(val_p = palp, it = 1:length(palp))
+  g &lt;- ggplot() + theme_classic() + 
+    geom_function(fun = escore, args = list(amostra = x), 
+                  xlim = c(min_fun, max_fun)) + 
+    geom_vline(data = dados_alg, aes(xintercept = val_p), linetype = 2, size = 0.5, 
+               color = 'gray50') + 
+    geom_vline(aes(xintercept = mean(x)), color = 'darkviolet') +
+    transition_states(states = it, wrap = TRUE) + 
+    labs(title = paste0("Iteração = ", "{closest_state}"), x = "x", y = "")
+  anim_save(nome_gif, g)
+}
+```
+
+---
+
+
+```r
+faz_gif(50, 10, p_inic = 0.001, max_fun = 20)
+```
+
+.center[
+![](gif_newton.gif)]
+
+---
+
+
+```r
+faz_gif(20, 10, p_inic = 0.001, max_fun = 20, nome_gif = "gif2.gif")
+```
+
+.center[
+![](gif2.gif)]
+
+
+---
+class: inverse, middle, center
+
+# Método de Fisher
+
+
+---
+
+# Método de Fisher ou Método de Escore
+
+--
+
+- Lembre que no método de Newton, nós precisávamos calcular
+
+`$$l''(\theta)$$`
+para inserir no método:
+`$$\theta_{n+1} = \theta_n - [l''(\theta_n)]^{-1}l'(\theta_n)$$`
+--
+
+- Principalmente no caso em que `\(\theta\)` é um vetor, pode ser não tão simples obter a inversa da segunda derivada de `\(l(\theta)\)`. 
+
+--
+
+- Lembre que 
+
+$$I(\theta) = E\left(-\frac{\partial^2 \log f(x|\theta)}{\partial \theta}\right) = E(-l''(\theta)) $$
+--
+
+- Então, poderíamos reescrever o método Newton considerando esse valor esperado
+
+`$$\theta_{n+1} = \theta_n + [I(\theta)]^{-1}l'(\theta_n)$$`
+
+
+---
+class: middle, center, inverse
+
+# Fim!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
