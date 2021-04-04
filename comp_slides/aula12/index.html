@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Métodos de otimização - Parte II</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2021-04-04" />
+    <script src="libs/fabric/fabric.min.js"></script>
+    <link href="libs/xaringanExtra-scribble/scribble.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-scribble/scribble.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', function() { window.xeScribble = new Scribble({"pen_color":["#FF0000"],"pen_size":3,"eraser_size":30}) })</script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle
+
+## Métodos de otimização - Parte II
+
+*****
+
+### Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+
+
+
+
+
+
+
+---
+class: center, middle, inverse
+
+# Última aula
+
+
+---
+
+# Recordando
+
+- Considerando a função de verossimilhança, 
+
+`$$L(\theta) = f(x_1, \ldots, x_n | \theta) = \prod_{i=1}^n f(x_i | \theta)$$`
+--
+
+- Podemos utilizar um método iterativo para encontrar o máximo considerando o método de Newton. 
+
+`$$\theta_{n+1} = \theta_n - [l''(\theta_n)]^{-1}l'(\theta_n)$$`
+
+--
+
+- Vimos um exemplo considerando a distribuição Poisson.
+
+--
+
+- E podemos considerar também o método de escore de Fisher. 
+
+`$$\theta_{n+1} = \theta_n + [I(\theta)]^{-1}l'(\theta_n)$$`
+
+---
+class: inverse, middle, center
+
+# Métodos de otimização para o caso multivariado
+
+---
+
+# Método de Newton
+
+- Agora, temos que `\(l''(\theta_n)\)` é uma matriz também chamada de Hessiana
+
+`$$l''(\theta_n) = \begin{bmatrix} \frac{\partial^2 l(\theta)}{\partial \theta_1^2} &amp; \frac{\partial^2 l(\theta)}{\partial \theta_1\partial \theta_2} &amp; \cdots &amp; \frac{\partial^2 l(\theta)}{\partial \theta_1 \partial \theta_k} \\ 
+\frac{\partial^2 l(\theta)}{\partial \theta_2 \partial \theta_1} &amp; \frac{\partial^2 l(\theta)}{\partial \theta_2^2} &amp; \cdots &amp; \frac{\partial^2 l(\theta)}{\partial \theta_2 \partial \theta_k} \\ \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+\frac{\partial^2 l(\theta)}{\partial \theta_k \partial \theta_1} &amp; \frac{\partial^2 l(\theta)}{\partial \theta_k \partial \theta_2} &amp; \cdots &amp; \frac{\partial^2 l(\theta)}{\partial \theta_k^2}
+\end{bmatrix}$$`
+--
+
+- Ao invés de obter a inversa dessa matrix `\(k \times k\)`, é interessante resolver o sistema de equações:
+
+`$$[l''(\theta_n)] \theta_{n+1} = [l''(\theta_n)] \theta_n - l'(\theta_n)$$`
+
+--
+
+- Porém, ao final do algoritmo, é interessante considerar inverter a matriz para obter o valor da matrix de informação observada.
+
+---
+class: inverse, middle, center
+
+# Exemplo
+
+---
+
+# Caso binomial
+
+- Vamos considerar temos uma variável `\(Y\)` binária e uma amostra com `\(n\)` observações independentes.
+
+--
+
+- Logo, podemos assumir que `\(Y_i \sim \mbox{Bernoulli}(p_i)\)`, isto é, `\(P(Y_i = 1) = p_i\)`. 
+
+--
+
+- Considerando um modelo logístico para explicar essa probabilidade como função de uma variável `\(x\)`, temos o seguinte
+
+`$$\log \left( \frac{p_i}{1 - p_i}  \right) = \beta_0 + \beta_1 X_i$$`
+
+--
+
+- Situações em que isso poderia ser utilizado:
+
+  - `\(Y\)` é a morte ou não pela covid-19 e `\(X\)` é a idade da pessoa infectada.
+  - `\(Y\)` é a presença de efeitos colaterais depois de tomar um certo remédio e `\(X\)` é o gênero da pessoa.
+  
+--
+
+- O modelo logístico nos permite escrever as probabilidades `\(p_i\)` e `\(1-p_i\)` como
+
+`$$p_i = \frac{\exp(\beta_0 + \beta_1 X_i)}{1 + \exp(\beta_0 + \beta_1 X_i)}, \quad \quad 1-p_i = \frac{1}{1 + \exp(\beta_0 + \beta_1 X_i)}$$`
+--
+
+- Aqui `\(\theta = (\beta_0, \beta_1).\)`
+
+ 
+---
+
+# A verossimilhanca e seu logaritmo
+
+- Podemos escrever o logaritmo da verossimilhança como 
+
+`$$\begin{align*} \log[L(\theta)] &amp;= \log \left[ \prod_{i=1}^n p_i^{y_i} (1-p_i)^{1-y_i} \right] \\ 
+&amp;= \sum_{i=1}^n y_i \log(p_i) + (1-y_i)\log(1-p_i) \\
+&amp;= \sum_{i=1}^n y_i \log\left(\frac{p_i}{1-p_i}\right) + \log(1-p_i) \\
+&amp;= \sum_{i=1}^n y_i (\beta_0 + \beta_1 X_i) + \log\left(\frac{1}{1 + \exp(\beta_0 + \beta_1 X_i)}\right) \\
+&amp;= \sum_{i=1}^n y_i (\beta_0 + \beta_1 X_i) - \log\left(1 + \exp(\beta_0 + \beta_1 X_i)\right) \end{align*}$$`
+
+---
+# Logaritmo da verossimilhança
+
+- Podemos notar que podemos considerar os termos da verossimilhança de forma separada.
+
+`$$l_i(\theta) = y_i (\beta_0 + \beta_1 X_i) - \log\left(1 + \exp(\beta_0 + \beta_1 X_i)\right)$$`
+--
+
+- Podemos considerar a primeira e a segunda derivadas de `\(l(\theta)\)` como função desses termos unitários.
+
+--
+
+- Isto é, 
+
+`$$l'(\theta) = \sum_{i=1}^n l_i'(\theta)$$`
+--
+
+- E também para a segunda derivada
+
+`$$l''(\theta) = \sum_{i=1}^n l_i''(\theta)$$`
+
+---
+# Dados simulados
+
+- Vamos simular valores dessa distribuição Bernoulli para verificar se o algoritmo se aproxima dos valores desejados.
+
+--
+
+
+```r
+beta0 &lt;- -2; beta1 &lt;- 5; betas &lt;- c(beta0, beta1)
+fprob &lt;- function(x, b = betas) exp(b[1] + b[2] * x)/(1 + exp(b[1] + b[2] * x))
+curve(fprob, -4, 4, ylab = "prob")
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-1-1.png" width="35%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Gerando os valores
+
+- Vamos gerar valores de `\(X\)` de forma uniforme no intervalo `\([-4, 6]\)`.
+
+--
+
+
+```r
+set.seed(1234); n &lt;- 100
+x &lt;- runif(n, -4, 4)
+vetor_prob = exp(beta0 + beta1 * x)/(1 + exp(beta0 + beta1 * x))
+y &lt;- purrr::rbernoulli(n, vetor_prob) %&gt;% as.numeric()
+```
+
+--
+
+- Podemos escrever uma função para observar alguns possíveis valores de `\(l(\theta)\)`.
+
+--
+
+
+```r
+log_vero &lt;- function(beta){
+  pred_linear = beta[1] + beta[2] * x
+  sum(y * pred_linear - log(1 + exp(pred_linear)))
+}
+```
+
+--
+
+- E aplicar essa função para um grid de valores de `\(\beta_0\)` e `\(\beta_1\)`
+
+
+```r
+grid_beta0 &lt;- seq(-6, -1, length.out = 200)
+grid_beta1 &lt;- seq(2.5, 12.5, length.out = 200)
+valores_vero &lt;- expand.grid(grid_beta0, grid_beta1) %&gt;% apply(1, log_vero) %&gt;% 
+  exp()
+```
+---
+
+# Gráfico para observar os resultados
+
+- Juntando as combinações de valores com os valores calculados 
+
+
+```r
+valores_grafico &lt;- cbind(expand.grid(grid_beta0, grid_beta1), 
+                         valores_vero) %&gt;% 
+  as.data.frame()
+names(valores_grafico)
+```
+
+```
+## [1] "Var1"         "Var2"         "valores_vero"
+```
+--
+
+
+```r
+names(valores_grafico)[1:2] &lt;- c("beta0", "beta1")
+```
+
+--
+
+- Utilizando `ggplot2` para fazer o gráfico:
+
+
+```r
+ggplot(valores_grafico) + theme_minimal() +
+  geom_tile(aes(x = beta0, y = beta1, fill = valores_vero)) + 
+  scale_fill_viridis_c(option = "C")
+```
+---
+
+# Resultado
+
+&lt;img src="index_files/figure-html/unnamed-chunk-8-1.png" width="45%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# No R
+
+- Vamos considerar uma função apropriada para encontrar mínimos de função.
+
+
+```r
+?nlm
+```
+
+--
+
+- Precisamos definir alguns valores iniciais somente.
+
+--
+
+- Porém, é possível também passar o gradiente e a matriz Hessiana para melhorar a performance do algoritmo.
+
+--
+
+- Para isso, podemos inclusive considerar uma função `deriv()`, que calcula simbolicamente o valor do gradiente e da Hessiana.
+
+--
+
+
+```r
+lvn_uma_observacao &lt;- deriv(~ -(y * (b0 + x * b1) - log(1 + exp(b0 + b1 * x))),
+             namevec = c("b0", "b1"), 
+             function.arg = TRUE, 
+             hessian = TRUE)
+```
+
+
+---
+
+
+```r
+lvn_uma_observacao
+```
+
+```
+## function (b0, b1) 
+## {
+##     .expr6 &lt;- exp(b0 + b1 * x)
+##     .expr7 &lt;- 1 + .expr6
+##     .expr11 &lt;- .expr6/.expr7
+##     .expr15 &lt;- .expr7^2
+##     .expr18 &lt;- .expr6 * x
+##     .expr19 &lt;- .expr18/.expr7
+##     .value &lt;- -(y * (b0 + x * b1) - log(.expr7))
+##     .grad &lt;- array(0, c(length(.value), 2L), list(NULL, c("b0", 
+##         "b1")))
+##     .hessian &lt;- array(0, c(length(.value), 2L, 2L), list(NULL, 
+##         c("b0", "b1"), c("b0", "b1")))
+##     .grad[, "b0"] &lt;- -(y - .expr11)
+##     .hessian[, "b0", "b0"] &lt;- .expr11 - .expr6 * .expr6/.expr15
+##     .hessian[, "b0", "b1"] &lt;- .hessian[, "b1", "b0"] &lt;- .expr19 - 
+##         .expr6 * .expr18/.expr15
+##     .grad[, "b1"] &lt;- -(y * x - .expr19)
+##     .hessian[, "b1", "b1"] &lt;- .expr18 * x/.expr7 - .expr18 * 
+##         .expr18/.expr15
+##     attr(.value, "gradient") &lt;- .grad
+##     attr(.value, "hessian") &lt;- .hessian
+##     .value
+## }
+```
+
+---
+
+# Utilizando a função
+
+- Se aplicarmos a função em um vetor de valores
+
+
+
+```r
+str(lvn_uma_observacao(-2, 5))
+```
+
+```
+##  num [1:100] 2.63e-08 5.40e-02 8.93e-02 5.18e-02 3.97e-06 ...
+##  - attr(*, "gradient")= num [1:100, 1:2] 2.63e-08 -5.26e-02 -8.54e-02 -5.04e-02 -3.97e-06 ...
+##   ..- attr(*, "dimnames")=List of 2
+##   .. ..$ : NULL
+##   .. ..$ : chr [1:2] "b0" "b1"
+##  - attr(*, "hessian")= num [1:100, 1:2, 1:2] 2.63e-08 4.98e-02 7.81e-02 4.79e-02 3.97e-06 ...
+##   ..- attr(*, "dimnames")=List of 3
+##   .. ..$ : NULL
+##   .. ..$ : chr [1:2] "b0" "b1"
+##   .. ..$ : chr [1:2] "b0" "b1"
+```
+
+--
+
+- Precisamos alterar essa função para obtermos as somas em uma chamada somente dessa função.
+
+---
+
+# Criando uma nova função
+
+
+```r
+lvn &lt;- function(b) {
+  v &lt;- lvn_uma_observacao(b[1], b[2])
+  f &lt;- sum(v)                                     ## log-verossimilhança
+  gr &lt;- colSums(attr(v, "gradient"))              ## vetor de gradientes
+  hess &lt;- apply(attr(v, "hessian"), c(2, 3), sum) ## matrix Hessiana
+  attributes(f) &lt;- list(gradient = gr, hessian = hess)
+  f
+}
+```
+
+--
+
+
+```r
+lvn(c(-2, 5))
+```
+
+```
+## [1] 7.014445
+## attr(,"gradient")
+##        b0        b1 
+## 1.5691187 0.2178028 
+## attr(,"hessian")
+##           b0        b1
+## b0 2.7845414 0.8059911
+## b1 0.8059911 0.5269525
+```
+
+---
+
+# Encontrando os valores de máximo
+
+- Agora podemos chamar a função `nlm` para encontrar o mínimo do valor negativo do logaritmo da função de verossimilhança dos nossos dados.
+
+--
+
+
+```r
+nlm(lvn, p = c(0, 0))
+```
+
+```
+## $minimum
+## [1] 6.363132
+## 
+## $estimate
+## [1] -3.117321  6.306789
+## 
+## $gradient
+## [1] -5.268752e-10 -7.935520e-10
+## 
+## $code
+## [1] 1
+## 
+## $iterations
+## [1] 10
+```
+
+---
+
+# Outros valores iniciais
+
+- Podemos mudar os valores iniciais e verificar se o algoritmo também converge.
+
+
+```r
+nlm(lvn, p = c(50, -50))
+```
+
+```
+## $minimum
+## [1] 6.363132
+## 
+## $estimate
+## [1] -3.117321  6.306789
+## 
+## $gradient
+## [1] -3.251619e-12 -4.879705e-12
+## 
+## $code
+## [1] 1
+## 
+## $iterations
+## [1] 11
+```
+
+---
+
+# Simplificando o uso da função `nlm`
+
+- Vamos considerar o uso dessa função agora sem definir o valor do gradiente e da matriz Hessiana. 
+
+
+```r
+log_vero_n &lt;- function(b) -log_vero(b)
+```
+
+
+```r
+nlm(log_vero_n, c(0, 0))
+```
+
+```
+## $minimum
+## [1] 6.363132
+## 
+## $estimate
+## [1] -3.117322  6.306787
+## 
+## $gradient
+## [1] -6.490411e-07 -2.678567e-07
+## 
+## $code
+## [1] 1
+## 
+## $iterations
+## [1] 24
+```
+
+---
+class: inverse, middle, center
+
+# Exemplo com dados reais
+
+
+---
+
+# Considerando dados da covid-19
+
+- Considerando dados obtidos através do painel da covid-19 no Estado.
+
+
+```r
+caminho_arquivo &lt;- "https://bi.static.es.gov.br/covid19/MICRODADOS.csv"
+dados &lt;- readr::read_csv2(caminho_arquivo, 
+                          locale = readr::locale(encoding = "ISO-8859-1"))
+```
+
+
+
+--
+
+- Separando as informações de morte e gênero.
+
+
+```r
+dados_centro_vix &lt;- dados %&gt;%
+  janitor::clean_names() %&gt;%
+  filter(classificacao == "Confirmados") %&gt;% 
+  filter(municipio == "VITORIA") %&gt;% 
+  filter(bairro == "CENTRO") 
+
+y &lt;- ifelse(dados_centro_vix$evolucao == "Óbito pelo COVID-19", 1, 0)
+x &lt;- ifelse(dados_centro_vix$sexo == "M", 1, 0)
+```
+
+---
+# Maximição da verossimilhança
+
+- Obtendo os valores de máximo para a verossimilhança.
+
+--
+
+
+```r
+nlm(lvn, c(0, 0))
+```
+
+```
+## $minimum
+## [1] 167.6881
+## 
+## $estimate
+## [1] -3.6151762  0.2010992
+## 
+## $gradient
+## [1] 6.259657e-07 3.544677e-08
+## 
+## $code
+## [1] 1
+## 
+## $iterations
+## [1] 6
+```
+
+---
+
+# Equação obtida
+
+- Obteríamos a seguinte equação para explicar a probabilidade de morte por covid-19 no centro de Vitória
+
+`$$\log \left( \frac{p_i}{1 - p_i}\right) = -3.6151762 + 0.2010992 X_i$$`
+--
+
+- Para mulheres, `\(X = 0\)`, temos que 
+
+`$$P(Y = 1|X = 0) = \frac{\exp(-3.6151762)}{1 + \exp(-3.6151762)} = 0.0262069$$`
+--
+
+- Para homens, `\(X = 1\)`, temos que 
+
+`$$P(Y = 1|X = 1) = \frac{\exp(-3.6151762 + 0.2010992)}{1 + \exp(-3.6151762 + 0.2010992)} = 0.03185841$$`
+--
+
+- Comparando as duas probabilidades, obteríamos que 
+
+`$$\frac{P(Y = 1|X = 1)}{P(Y = 1|X = 0)} = \frac{0.03185841}{0.0262069} = 1.21565$$`
+--
+
+- O risco relativo de um homem no centro de Vitória vir a falecer é cerca de 22% maior com relação às mulheres no centro. 
+
+---
+class: middle, center, inverse
+
+# Fim!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
