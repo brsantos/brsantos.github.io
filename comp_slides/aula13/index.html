@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Métodos de otimização - Parte III</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2021-04-15" />
+    <script src="libs/fabric/fabric.min.js"></script>
+    <link href="libs/xaringanExtra-scribble/scribble.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-scribble/scribble.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', function() { window.xeScribble = new Scribble({"pen_color":["#FF0000"],"pen_size":3,"eraser_size":30}) })</script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle
+
+## Métodos de otimização - Parte III
+
+*****
+
+### Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+
+
+
+
+
+
+
+---
+class: center, middle, inverse
+
+# Última aula
+
+
+---
+
+# Caso multivariado
+
+- Função de verossimilhança, em que `\(\theta\)` é um vetor,
+
+`$$L(\theta) = f(x_1, \ldots, x_n | \theta) = \prod_{i=1}^n f(x_i | \theta)$$`
+
+--
+
+- `\(l''(\theta_n)\)` é uma matriz também chamada de Hessiana
+
+`$$l''(\theta_n) = \begin{bmatrix} \frac{\partial^2 l(\theta)}{\partial \theta_1^2} &amp; \frac{\partial^2 l(\theta)}{\partial \theta_1\partial \theta_2} &amp; \cdots &amp; \frac{\partial^2 l(\theta)}{\partial \theta_1 \partial \theta_k} \\ 
+\frac{\partial^2 l(\theta)}{\partial \theta_2 \partial \theta_1} &amp; \frac{\partial^2 l(\theta)}{\partial \theta_2^2} &amp; \cdots &amp; \frac{\partial^2 l(\theta)}{\partial \theta_2 \partial \theta_k} \\ \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+\frac{\partial^2 l(\theta)}{\partial \theta_k \partial \theta_1} &amp; \frac{\partial^2 l(\theta)}{\partial \theta_k \partial \theta_2} &amp; \cdots &amp; \frac{\partial^2 l(\theta)}{\partial \theta_k^2}
+\end{bmatrix}$$`
+
+--
+
+- Podemos resolver o sistema de equações:
+
+`$$[l''(\theta_n)] \theta_{n+1} = [l''(\theta_n)] \theta_n - l'(\theta_n)$$`
+
+---
+class: inverse, middle, center
+
+# Busca estocástica
+
+
+---
+# Solução simples
+
+- Suponha que gostaríamos de encontrar o valor máximo de `\(h(\theta)\)`, em que `\(\theta \in \Theta\)`.
+
+--
+
+- Considere que podemos gerar valores aleatórios conforme distribuição `\(f\)` no espaço paramétrico `\(\Theta\)`.
+
+--
+
+- Podemos usar esses valores aleatórios até encontrar o valor máximo de `\(h\)`.
+
+--
+
+- Essa proposta vai depender da escolha de `\(f\)`, mas se pudermos gerar um número infinito de valores e `\(\Theta\)` satisfazer algumas condições, então obteremos o valor de máximo.
+
+--
+
+- Por exemplo, se `\(\Theta\)` é limitado, então podemos gerar 
+
+`$$\theta_1, \ldots, \theta_m \sim U_\Theta$$`
+--
+
+- Podemos usar 
+
+`$$h^*_m = \max\{\theta_1, \ldots, \theta_m\}$$` 
+--
+
+para aproximar o valor de 
+
+`$$\max_{\theta \in \Theta} h(\theta)$$` 
+---
+
+# Exemplo
+
+- Considere a função 
+
+`$$h(x) = [\cos(50x) + \mbox{sen}(20x)]$$`
+
+
+```r
+h &lt;- function(x) (cos(50 * x) + sin(20 * x))^2
+curve(h(x))
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-1-1.png" width="30%" style="display: block; margin: auto;" /&gt;
+
+
+---
+# Avaliação do máximo
+
+
+```r
+set.seed(42); valores = h(matrix(runif(10^6), ncol = 10^3))
+maximos = apply(valores, 1, cummax)
+plot(maximos[, 1], type = "l", ylab = "Valores de máximo")
+h2 &lt;- function(x) -h(x)
+valor_max &lt;- -optim(h2, par = 0.5, lower = 0, upper = 1, method = "Brent")$value
+abline(h = valor_max, col = 2)
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-2-1.png" width="30%" style="display: block; margin: auto;" /&gt;
+
+---
+# Avaliação do máximo
+
+
+```r
+set.seed(42); valores = h(matrix(runif(10^6), ncol = 10^3))
+maximos = apply(valores, 1, cummax)
+plot(maximos[, 2], type = "l", ylab = "Valores de máximo")
+h2 &lt;- function(x) -h(x)
+valor_max &lt;- -optim(h2, par = 0.5, lower = 0, upper = 1, method = "Brent")$value
+abline(h = valor_max, col = 2)
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-3-1.png" width="30%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Comparação do erro
+
+- Poderíamos calcular para cada uma das simulações testadas, qual seria o erro observado
+
+
+```r
+erros &lt;- abs(valor_max - maximos[1000, ])
+summary(erros)
+```
+
+```
+##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+## 1.000e-09 2.980e-05 1.681e-04 7.600e-04 6.786e-04 2.532e-02
+```
+
+--
+
+
+```r
+valor_par &lt;- optim(h2, par = 0.5, lower = 0, upper = 1, method = "Brent")$par
+summary(valor_par)
+```
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##  0.3791  0.3791  0.3791  0.3791  0.3791  0.3791
+```
+
+--
+
+- Esse método é simples de ser calculado, porém pode ser problemático quando o número das dimensões aumentam. 
+
+---
+# Outro exemplo
+
+- Considere que tivéssemos interesse em obter o mínimo da seguinte função em `\(\mathbb{R}^2\)`.
+
+`$$h(x, y) = (x \cdot \mbox{sen}(20y) + y \cdot\mbox{sen}(20x))^2 \cosh(\mbox{sen}(10x)x) + (x \cdot\cos(10y) − y \cdot\mbox{sen}(10x))^2 \cosh(\cos(20y)y)$$`
+--
+
+- O mínimo global dessa função é 0, que é atingida no ponto `\((x, y) = 0\)`.
+
+
+```r
+h = function(x, y) {
+  (x * sin(20 * y) + y * sin(20 * x)) ^ 2 * cosh(sin(10 * x) * x) + 
+    (x * cos(10 * y) - y * sin(10 * x)) ^ 2 * cosh(cos(20 * y) * y)
+}
+
+x &lt;- y &lt;- seq(-3, 3, length.out = 435)
+z &lt;- outer(x, y, h)
+
+persp(x, y, z,
+  theta = 155, phi = 30, col = "royalblue", ltheta = -120, shade = .75, 
+  border = NA, box = FALSE)
+```
+
+
+---
+# Resultado
+
+&lt;img src="index_files/figure-html/unnamed-chunk-7-1.png" width="45%" style="display: block; margin: auto;" /&gt;
+
+---
+class: inverse, middle, center
+
+# Métodos gradiente estocásticos
+
+---
+
+# Alguns detalhes
+
+- O método de busca estocástica gerava valores de forma independente.
+
+--
+
+- Poderíamos pensar em atualizar o nosso algoritmo de uma maneira mais ordenada.
+
+--
+
+- Poderíamos considerar por exemplo
+
+`$$\theta_{j+1} = \theta_j + \epsilon_j$$`
+--
+
+- Por exemplo, poderíamos fazer a atualização considerando 
+
+`$$\epsilon_j \sim N(0, \sigma^2 I_p), \mbox{ se } \theta \in \mathbb{R}^p$$`
+--
+
+- Porém, ao fazer essa inovação não estou considerando nenhuma informação sobre `\(h(\theta)\)`.
+
+--
+
+- Poderíamos utilizar alguma informação da curvatura para atualizarmos os valores. 
+
+---
+
+# Método do gradiente
+
+- É um método determinístico relacionado ao método de Newton-Raphson.
+
+--
+
+- Os valores são atualizados considerando
+
+`$$\theta_{j+1} = \theta_j + \alpha_j \nabla h(\theta_j), \alpha_j &gt; 0,$$`
+escolhendo `\(\alpha_j\)` como uma função decrescente.
+
+--
+
+- **Métodos de gradiente estocásticos**: 
+
+  - aproveitam esse resultado adicionando uma perturbação.
+  
+--
+
+- Por exemplo, o método da diferença finita propõe aproximar o verdadeiro gradiente com
+
+`$$\nabla h(\theta_j) \approx \frac{h(\theta_j + \beta_j \zeta_j) - h(\theta_j - \beta_j \zeta_j)}{2\beta_j} \zeta_j = \frac{\nabla h(\theta_j, \beta_j \zeta_j)}{2\beta_j} \zeta_j$$`
+em que `\(\beta_j\)` é outra função decrescente e `\(\zeta_j\)`  é uniformemente distribuída na esfera unitária, `\(||\zeta|| = 1.\)`
+
+---
+
+# Método do gradiente (cont.)
+
+- A atualização do processo ficaria da seguinte forma:
+
+$$\theta_{j+1} = \theta_j + \frac{\alpha_j}{2\beta_j} \nabla h(\theta_j, \beta_j \zeta_j) \zeta_j, $$
+
+--
+
+- O algoritmo vai depender das escolhas das sequências de `\(\{\alpha_j\}\)` e `\(\{\beta_j\}\)`.
+
+--
+
+--
+
+- Uma sugestão é que `\(\alpha_j\)` decrescer lentamente para `\(0\)` para que a série `\(\sum_{j} \alpha_j\)` divirja.
+
+- Enquanto a série `\(\beta_j\)` deve decrescer ainda mais lentamente para a série `\(\sum_j \left( \frac{\alpha_j}{\beta_j} \right)^2\)`.
+
+--
+
+| Possibilidades    | 1 | 2 | 3 | 4 |
+| ----------- | ----------- |
+| `\(\alpha_j\)`  | `\(1/\log(j+1)\)` | `\(1/100\log(j+1)\)` | `\(1/(j+1)\)` | `\(1/(j+1)\)` |
+| `\(\beta_j\)`   | `\(1/\log(j+1)^{0.1}\)` | `\(1/\log(j+1)^{0.1}\)` | `\(1/(j+1)^{0.5}\)` | `\(1/(j+1)^{0.1}\)` |
+
+
+---
+class: inverse, middle, center
+
+
+# Simulated annealing
+
+---
+# Busca estocástica
+
+- Uma outra alternativa para construir a sequência
+
+`$$\theta_{j+1} = \theta_j + \epsilon_j$$`
+--
+
+- **Simulated annealing** define uma sequência de densidades `\(\{\pi_t\}\)`, em que os argumentos do máximo dessa densidade são confundidos com os argumentos do máximo de `\(h\)`.
+
+--
+
+  - Aumentando as concentrações em torno desses valores.
+  
+--
+
+- A construção da sequência de densidades `\(\pi_t\)` é a maior dificuldade do algoritmo.
+
+--
+
+- A escolha mais comum é dada por transformações do tipo *Boltzman-Gibbs* de `\(h\)`
+
+`$$\pi_t(\theta) \propto \exp\left(\frac{h(\theta)}{T_t}\right)$$`
+em que a sequência de temperaturas, `\(\{T_t\}\)`, é decrescente
+
+---
+# Como atualizar esse algoritmo
+
+- Uma das decisões desse algoritmo é como atualizar os valores da sequência `\(\{\pi_t\}\)`.
+
+--
+
+- Uma possível solução é relacionada ao algoritmo de Metropolis-Hastings.
+
+--
+
+- Primeiro, é gerado um valor `\(\zeta\)` de uma distribuição simétrica `\(g\)`. 
+
+--
+
+- E a nova posição é definida como 
+
+`$$\theta_{t+1} = \begin{cases} \theta_t + \zeta &amp; \mbox{com probabilidade } \rho =  \min\{1, \exp (\Delta h/T_t)\} \\ 
+\theta_t &amp; \mbox{com probabilidade } 1-\rho \end{cases}$$`
+em que `\(\Delta h = h(\theta_t + \zeta) - h(\theta_t)\)`
+
+--
+
+- Se a perturbação aumenta `\(h\)`, 
+
+--
+
+  - `\(h(\theta_t + \zeta) \geqslant h(\theta_t)\)`
+  
+--
+
+  - Eu aceito o novo passo com probabilidade 1.
+  
+--
+
+- Por aceitar que a função pode decrescer, isso permite que o algoritmo possa visitar outros máximos.
+
+
+---
+
+# Exemplo
+
+- Consideremos a mesma função que checamos anteriormente
+
+
+```r
+h = function(obj_xy) {
+  x &lt;- obj_xy[1]
+  y &lt;- obj_xy[2]
+  (x * sin(20 * y) + y * sin(20 * x)) ^ 2 * cosh(sin(10 * x) * x) + 
+    (x * cos(10 * y) - y * sin(10 * x)) ^ 2 * cosh(cos(20 * y) * y)
+}
+```
+
+--
+
+- Vamos utilizar a função `optim` que tem o algoritmo "Simulated annealing" como uma de suas opções:
+
+
+```r
+?optim
+```
+
+
+
+```r
+optim(h, par = c(0.65, 0.8), method = "SANN", 
+      control = list(maxit = 10000, temp = 10, tmax = 10))
+```
+
+
+---
+
+# Output
+
+
+
+```r
+optim(h, par = c(0.65, 0.8), method = "SANN", 
+      control = list(maxit = 100, temp = 5, tmax = 20))
+```
+
+```
+## $par
+## [1]  1.9736294 -0.1614907
+## 
+## $value
+## [1] 0.002068576
+## 
+## $counts
+## function gradient 
+##      100       NA 
+## 
+## $convergence
+## [1] 0
+## 
+## $message
+## NULL
+```
+
+
+---
+
+# Output
+
+
+
+```r
+optim(h, par = c(0.65, 0.8), method = "SANN", 
+      control = list(maxit = 1000, temp = 10, tmax = 10))
+```
+
+```
+## $par
+## [1] -6.291276e-05  1.723769e-01
+## 
+## $value
+## [1] 5.330279e-08
+## 
+## $counts
+## function gradient 
+##     1000       NA 
+## 
+## $convergence
+## [1] 0
+## 
+## $message
+## NULL
+```
+
+---
+
+
+```r
+resultado &lt;- optim(h, par = c(0.65, 0.8), method = "SANN", 
+      control = list(maxit = 10000, temp = 10, tmax = 10, trace = 1))
+```
+
+```
+## sann objective function values
+## initial       value 0.115442
+## iter     1000 value 0.000001
+## iter     2000 value 0.000001
+## iter     3000 value 0.000001
+## iter     4000 value 0.000001
+## iter     5000 value 0.000001
+## iter     6000 value 0.000001
+## iter     7000 value 0.000001
+## iter     8000 value 0.000001
+## iter     9000 value 0.000000
+## iter     9999 value 0.000000
+## final         value 0.000000
+## sann stopped after 9999 iterations
+```
+
+
+```r
+resultado$par
+```
+
+```
+## [1] -7.497505e-05  1.237160e-01
+```
+
+
+```r
+resultado$value
+```
+
+```
+## [1] 5.8456e-08
+```
+
+---
+class: middle, center, inverse
+
+# Fim!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
