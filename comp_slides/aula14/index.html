@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Aprendizado estatístico</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2021-04-18" />
+    <script src="libs/fabric/fabric.min.js"></script>
+    <link href="libs/xaringanExtra-scribble/scribble.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-scribble/scribble.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', function() { window.xeScribble = new Scribble({"pen_color":["#FF0000"],"pen_size":3,"eraser_size":30}) })</script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle
+
+## Aprendizado estatístico
+
+*****
+
+### Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+
+
+
+
+
+
+
+---
+class: center, middle, inverse
+
+# Introdução
+
+
+---
+
+# Definições
+
+- **Aprendizado estatístico** se refere a um vasto conjunto de técnicas utilizadas para *explicar os dados*:
+
+  - entender como uma variável pode ser explicada;
+  
+  - entender como diferentes distribuições de probabilidade podem explicar a variação nos dados ;
+  
+  - buscar melhores maneiras de diminuir os erros associados a um modelo estatístico;
+  
+  - compreender diferentes técnicas de classificação. 
+  
+--
+
+- Podemos dividir aprendizado estatístico em dois grupos:
+
+  - Supervisionado.
+  
+  - Não supervisionado.
+  
+---
+
+# Aprendizado estatístico supervisionado
+
+- Podemos falar nessa forma de aprendizado quando estamos interessados em modelos estatísticos para 
+
+  - **Previsão**.
+  
+--
+
+  - Estimação de uma **resposta** como função de outras variáveis. 
+  
+--
+
+  - Estimação de um **output** baseado em um ou mais **inputs**.
+  
+--
+
+- Esse tipo de problema é encontrado em todo tipo de área.
+
+  - Economia.
+  
+  - Medicina.
+  
+  - Ecologia.
+
+--
+
+- Exemplos de análise nesse sentido:
+
+  - Análise de regressão.
+  
+  - Modelo logístico.
+
+
+---
+
+# Aprendizado estatístico não supervisionado
+
+- Nesse tipo de aprendizado:
+
+  - Temos **inputs**.
+  
+  - Mas não há **outputs**.
+  
+--
+
+- O interesse aqui é entender estruturas dos dados.
+
+--
+
+- Por exemplo, observar quais observações são mais próximas das outras.
+
+--
+
+  - Análise de agrupamento ou cluster.
+  
+--
+
+- Sistemas de recomendação se baseiam nesse tipo de aprendizado.
+
+
+---
+class: inverse, middle, center
+
+# Alguns exemplos
+
+---
+
+# Dados da PNAD no Espírito Santo
+
+- Informação sobre renda:
+
+&lt;img src="index_files/figure-html/unnamed-chunk-1-1.png" width="40%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Relação com outras variáveis
+
+- Associação entre idade e renda
+
+&lt;img src="index_files/figure-html/unnamed-chunk-2-1.png" width="40%" style="display: block; margin: auto;" /&gt;
+
+---
+# Outros modelos
+
+&lt;img src="index_files/figure-html/unnamed-chunk-3-1.png" width="40%" style="display: block; margin: auto;" /&gt;
+
+---
+# Modelo estatístico
+
+- O que podemos chamar de modelo estatístico?
+
+--
+
+- Por exemplo, se `\(Y\)` é a renda das pessoas no estado do Espírito Santo, poderíamos supor os seguintes modelos:
+
+  - `\(Y \sim N(\mu, \sigma^2)\)`;
+  
+--
+
+  - `\(Y \sim \mbox{Gama}(\alpha, \beta)\)`.
+  
+--
+
+- Poderíamos fazer afirmações sobre distribuições condicionais também.
+
+--
+
+- Sendo `\(X_1\)`: idade e `\(X_2:\)` gênero.
+
+--
+
+  - `\(Y|X_1 = x_1 \sim N(f(x_1), \sigma^2)\)`
+  
+--
+
+  - `\(Y|X_1 = x_1, X_2 = M \sim N(f_M(x_1), \sigma^2)\)`
+  - `\(Y|X_1 = x_1, X_2 = F \sim N(f_F(x_1), \sigma^2)\)`
+
+--
+
+`$$f(x_1) = \beta_0 + \beta_1 x_1; \quad f(x_1) = \alpha + \beta_1 x_1 + \beta_1 x_1 + \beta_2 x_1^2 + \cdots + \beta_1 x_1^p;$$`
+
+---
+class: middle, center, inverse
+
+# Métodos de reamostragem
+
+---
+# Definição
+
+- Com o avanço de computadores, métodos de reamostragem se tornaram uma ferramenta fundamental na Estatística.
+
+--
+
+- Em geral, essas técnicas envolvem obter uma amostra dos dados e obter estimativas do modelo estatístico por diversas vezes.
+
+--
+
+- Essas repetições podem nos ajudar a obter estimativas da incerteza dos parâmetros.
+
+--
+
+- Podemos também verificar como o modelo se altera quando consideramos diferentes conjuntos de dados.
+
+--
+
+- É possível utilizar esses métodos para comparação entre diferentes modelos. 
+
+--
+
+- A depender do modelo, esses métodos podem ser bastante pesados computacionalmente. 
+
+--
+
+- Vamos falar sobre dois métodos de reamostragem:
+
+  - **Validação cruzada.**
+  
+  - **Bootstrap.**
+
+
+---
+class: center, middle, inverse 
+
+# Validação cruzada
+
+
+---
+
+# Introdução
+
+- Considere o modelo estatístico para a renda
+
+`$$Y \sim N(\mu, \sigma^2)$$`
+--
+
+- Dada uma amostra, `\(Y_1, \ldots, Y_n\)`, podemos utilizar como um preditor segundo esse modelo
+
+`$$\hat{Y_i} = \bar{Y} = \frac{1}{n} \sum_{i=1}^n Y_i$$`
+--
+
+- Nesse caso, podemos calcular o erro das previsões para cada um dos valores observados.
+
+--
+
+`$$\mbox{Erro} = Y_i - \hat{Y}_i$$`
+--
+
+- É mais interessante considerar o erro quadrático e o erro quadrático médio:
+
+`$$\mbox{Erro quadrático} = (Y_i - \hat{Y}_i)^2$$`
+--
+
+`$$\mbox{EQM} = \sum_{i=1}^n \frac{(Y_i - \hat{Y}_i)^2}{n}$$`
+
+---
+
+# Conjunto de validação
+
+- Considere novamente que `\(Y:\)` renda das pessoas no Espírito Santo.
+
+- Suponha que gostaríamos de tomar uma decisão entre:
+
+  - `\(Y \sim N(\mu, \sigma^2)\)`.
+  - `\(Y \sim \mbox{Gama}(\alpha, \beta)\)`.
+  
+--
+
+- Poderíamos fazer o seguinte:
+
+
+  - Separar os dados em duas partes iguais.
+
+--
+
+  - Usar metade para obter as estimativas de máxima verossimilhança dos parâmetros.
+  
+--
+
+  - Comparar o erro quadrático médio na outra metade.
+  
+--
+
+- Então, podemos escolher entre os dois que tiver o menor EQM.
+
+---
+# Exemplo:
+
+- Consideremos uma amostra dos dados da PNAD 2017.
+
+--
+
+  - Somente pessoas com renda entre 100 e 15000.
+  
+  - Uma amostra de 400 pessoas.
+  
+  - Dados disponíveis [aqui](dados_renda.csv).
+  
+--
+
+- Precisamos encontrar as estimativas de máxima verossimilhança para os dois modelos.
+
+  - `\(Y \sim N(\mu, \sigma^2)\)`.
+  - `\(Y \sim \mbox{Gama}(\alpha, \beta)\)`.
+
+--
+
+- Separando os dados em duas partes:
+
+
+```r
+dados &lt;- read.csv("dados_renda.csv")
+dados_treino &lt;- slice_head(dados, n = 200)
+dados_validacao &lt;- slice_tail(dados, n = 200)
+```
+
+
+---
+## Funções de verossimilhança
+
+- Verossimilhança do modelo normal
+
+
+```r
+log_vero_normal &lt;- function(theta, amostra){
+  mu &lt;- theta[1]
+  sigma &lt;- theta[2]
+  tam_theta &lt;- length(mu)
+  sapply(1:tam_theta, function(a){
+    -sum(dnorm(amostra, mu[a], sigma[a], log = TRUE))
+  })
+}
+```
+
+- Verossimilhança do modelo gama
+
+
+```r
+log_vero_gama &lt;- function(theta, amostra){
+  alpha &lt;- theta[1]
+  beta &lt;- theta[2]
+  tam_theta &lt;- length(alpha)
+  sapply(1:tam_theta, function(a){
+    -sum(dgamma(amostra, alpha[a], beta[a], log = TRUE))
+  })
+}
+```
+
+---
+# Obtenção dos EMV's
+
+- Dados
+
+
+```r
+y &lt;- dados_treino$renda
+```
+
+--
+
+- Utilizando a função `nlm` para obter os máximos.
+
+--
+
+- Utilizando como ponto inicial `\((\mu_0, \sigma_0) = (1500, 1400)\)`.
+
+
+```r
+emv_normal &lt;- nlm(log_vero_normal, p = c(1500, 1400), amostra = y)
+```
+
+--
+
+- Utilizando como ponto inicial `\((\alpha_0, \beta_0) = (10, 10)\)`
+
+
+```r
+emv_gama &lt;- nlm(log_vero_gama, p = c(10, 10), amostra = y)
+```
+
+
+---
+# Observando os resultados obtidos
+
+- Código R:
+
+
+```r
+ggplot(dados_treino) + theme_minimal() + 
+  geom_histogram(aes(x = renda, y = ..density..), fill = "royalblue", 
+                 color = 'grey75') +
+  labs(x = "Renda", y = "Densidade") + 
+  stat_function(fun = dnorm, 
+                args = list(mean = emv_normal$estimate[1], 
+                            sd = emv_normal$estimate[2]), color = "darkviolet") + 
+  geom_vline(aes(xintercept = emv_normal$estimate[1]), linetype = 2,
+              color = "darkviolet") +
+  stat_function(fun = dgamma, 
+                args = list(shape = emv_gama$estimate[1], 
+                            rate = emv_gama$estimate[2]), color = "red") +
+  geom_vline(aes(xintercept = emv_gama$estimate[1]/emv_gama$estimate[2]), 
+             linetype = 2, color = "red") + 
+  geom_vline(aes(xintercept = qgamma(0.5, emv_gama$estimate[1], emv_gama$estimate[2])), 
+             linetype = 3, color = "red") + 
+  geom_vline(aes(xintercept = (emv_gama$estimate[1] - 1)/emv_gama$estimate[2]), 
+             linetype = 1, color = "red")
+```
+
+
+---
+# Observando os resultados obtidos
+
+&lt;img src="index_files/figure-html/unnamed-chunk-12-1.png" width="40%" style="display: block; margin: auto;" /&gt;
+
+---
+# Utilizando nossa base de validação
+
+- Podemos comparar como os modelos explicam a variação na base de validação.
+
+--
+
+- No modelo normal, a predição é feita por `\(E(Y) = \hat{\mu}\)`.
+
+--
+
+
+```r
+y_validacao &lt;- dados_validacao$renda
+EQM_normal &lt;- mean((y_validacao - emv_normal$estimate[1])^2)
+```
+
+--
+
+No modelo gama, podemos utilizar como predição 
+
+  - `\(E(Y) = \hat{\alpha}/\hat{\beta}\)`.
+  - `\(\mbox{Mediana}(Y)\)`.
+  - `\(\mbox{Moda}(Y) = (\hat{\alpha}-1)/\hat{\beta}\)`.
+
+
+```r
+EQM_gama_media &lt;- mean((y_validacao - emv_gama$estimate[1]/emv_gama$estimate[2])^2)
+EQM_gama_mediana &lt;- mean((y_validacao - qgamma(0.5, emv_gama$estimate[1], emv_gama$estimate[2]))^2)
+EQM_gama_moda &lt;- mean((y_validacao - (emv_gama$estimate[1] - 1)/emv_gama$estimate[2])^2)
+```
+
+---
+# Comparação dos valores obtidos
+
+- Resultados obtidos:
+
+
+```r
+data.frame(metodo = c("Normal", "Gama - Media", "Gama - Mediana" , "Gama - Moda"), 
+            EQM = c(EQM_normal, EQM_gama_media, EQM_gama_mediana, EQM_gama_moda))
+```
+
+```
+##           metodo     EQM
+## 1         Normal 1710501
+## 2   Gama - Media 1710501
+## 3 Gama - Mediana 1776620
+## 4    Gama - Moda 2349893
+```
+
+--
+
+- A partir dos valores obtidos, poderíamos então dizer que:
+
+  - as médias obtidas tanto pelo modelo Gama quanto pelo modelo Normal são equivalentes nesse caso.
+  
+  - segundo o EQM, os estimadores sugeridos pela mediana e pela moda não foram satisfatórios.
+  
+---
+# Validação cruzada (LOOCV)
+
+- Vamos considerar primeiro o caso:
+
+  - *Leave-one-out Cross Validation*.
+  
+--
+
+- Ao invés de separarmos uma amostra de treino e outra de validação, podemos separar uma observação somente para validação e ajustar o modelo em todas outras observações.
+
+--
+
+- E depois repetimos o processo para todas observações presentes.
+
+--
+
+- Esse método pode ser muito demorado se o ajuste de cada modelo é custoso computacionalmente.
+
+  - Considere que devemos ajustar o mesmo modelo `\(n\)` vezes.
+  
+--
+
+- Nesse caso, podemos calcular o EQM para cada observação com `\(EQM_i = (Y_i - \hat{Y}_i)^2\)`.
+
+--
+
+- A estimativa LOOCV para a média desses erros é dada por 
+
+`$$VC_{(n)} = \frac{1}{n} \sum_{i=1}^n EQM_i$$`
+
+---
+
+# Exemplo
+
+- Vamos supor um modelo de regressão linear para explicar a renda `\((Y)\)` em função da idade `\((X)\)`.
+
+`$$Y|X = x \sim N(f(x), \sigma^2)$$`
+
+- Possíveis sugestões para a função `\(f(X)\)` são: 
+
+  - `\(f(x) = \beta_0 + \beta_1 x + \beta_2 x^2\)`
+  - `\(f(x) = \beta_0 + \beta_1 x + \beta_2 x^2 + \beta_3 x^3 + \beta_4 x^4\)`
+  - `\(f(x) = \beta_0 + \beta_1 x + \beta_2 x^2 + \cdots + \beta_{10} x^{10}\)`
+
+--
+
+- Podemos verificar isso graficamente, mas também podemos utilizar validação cruzada para escolher um modelo.
+
+---
+
+### No R com ggplot2
+
+
+```r
+ggplot(dados) + theme_minimal() +  aes(x = idade, y = renda) + geom_point() +
+  geom_smooth(method = lm, formula = y ~ poly(x, 2), color = "red",  se = FALSE) +
+  geom_smooth(method = lm, formula = y ~ poly(x, 4), color = "blue", se = FALSE) +
+  geom_smooth(method = lm, formula = y ~ poly(x, 10), color = "green", se = FALSE)
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-16-1.png" width="35%" style="display: block; margin: auto;" /&gt;
+
+---
+# Validação cruzada - LOOCV
+
+
+```r
+polinomios &lt;- 10
+EQMs &lt;- sapply(1:polinomios, function(a){
+  sapply(1:dim(dados)[1], function(bbb){
+    y_hat &lt;- lm(renda ~ poly(idade, a), data = dados[-bbb, ]) %&gt;% 
+      predict(newdata = dados[bbb, ])
+    (dados$renda[bbb] - y_hat)^2
+  }) %&gt;% mean()
+})
+
+plot(1:polinomios, EQMs, type = 'b', col = "blue", xlab = "Grau do polinômio")
+```
+
+---
+
+# Validação cruzada - LOOCV
+
+&lt;img src="index_files/figure-html/unnamed-chunk-18-1.png" width="45%" style="display: block; margin: auto;" /&gt;
+
+
+---
+# Validação cruzada (*k-fold*)
+
+- Uma alternativa ao método LOOCV.
+
+--
+
+- Ao invés de fazer a validação em todos os pontos, os dados são divididos em `\(k\)` grupos.
+
+--
+
+- Cada um dos grupos que são separados são considerados um conjunto de validação, enquanto que o modelo é estimado nos outros `\(k-1\)` grupos.
+
+--
+
+- O EQM é calculado então no grupo 1 e assim por diante.
+
+--
+
+- A cada etapa de estimação um grupo diferente é considerado como conjunto de validação.
+
+--
+
+- A estimativa *k-fold* para a média desses erros quadráticos é dada então por 
+
+`$$VC_{(k)} = \frac{1}{k} \sum_{i=1}^k EQM_i$$`
+
+--
+
+- É fácil ver que o método LOOCV é um caso especial quando `\(k = n\)`.
+
+---
+# Exemplo no R
+
+- Vamos considerar `\(k = 10\)`.
+
+--
+
+- E vamos utilizar o pacote `caret`.
+
+
+```r
+library(caret)
+set.seed(42) 
+controle_cv &lt;- trainControl(method = "cv", number = 10)
+
+EQMs_kfold &lt;- train(renda ~ poly(idade, 1), data = dados, method = "lm",
+               trControl = controle_cv)$results$RMSE
+
+EQMs_kfold[2] &lt;- train(renda ~ poly(idade, 2), data = dados, method = "lm",
+               trControl = controle_cv)$results$RMSE
+
+EQMs_kfold[10] &lt;- train(renda ~ poly(idade, 10), data = dados, method = "lm",
+               trControl = controle_cv)$results$RMSE
+
+plot(1:polinomios, EQMs_k,fold, type = 'b', col = "blue", 
+     ylab = "Raiz do EQM", xlab = "Grau do polinômio", main = "Validação k-fold")
+```
+
+---
+# Exemplo no R - Resultado
+
+&lt;img src="index_files/figure-html/unnamed-chunk-20-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+class: middle, center, inverse
+
+# Fim!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
