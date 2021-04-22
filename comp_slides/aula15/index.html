@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Aprendizado estatístico - Parte II</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2021-04-21" />
+    <script src="libs/fabric/fabric.min.js"></script>
+    <link href="libs/xaringanExtra-scribble/scribble.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-scribble/scribble.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', function() { window.xeScribble = new Scribble({"pen_color":["#FF0000"],"pen_size":3,"eraser_size":30}) })</script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle
+
+## Aprendizado estatístico - Parte II
+
+*****
+
+### Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+
+
+
+
+
+
+
+---
+class: center, middle, inverse
+
+# Última aula
+
+
+---
+
+# Recordando
+
+- Falamos sobre aprendizado estatístico:
+
+  - Supervisionado e não supervisionado.
+  
+--
+
+- Consideramos algumas técnicas de validação.
+
+--
+
+- **Conjunto de validação**:
+
+  - Separa os dados em dois grupos, em que uma parte é utilizada para estimar o modelo estatístico e a outra para validar.
+  
+--
+
+- **Validação cruzada (LOOCV)**:
+
+  - Uma observação é retirada para o modelo ser estimado e o EQM é calculado para cada observação que é deixada de lado.
+  
+  - O modelo é estimado `\(n\)` vezes.
+  
+--
+
+- **Validação cruzada k-fold**:
+  
+  - Os dados são separados em `\(k\)` grupos, que são utilizados para ser um grupo de validação, enquanto que o restante dos dados é utilizado para estimar o modelo.
+
+
+---
+
+class: inverse, middle, center
+
+# Bootstrap
+
+---
+# Motivação
+
+- Considere a seguinte situação:
+
+`$$X \sim N(\mu = 10, \sigma^2 = 4)$$`
+--
+
+- Vamos considerar que temos uma amostra, `\(X_1, \ldots, X_n\)`, com `\(n = 50\)`.
+
+--
+
+- Podemos criar uma particular amostra nesse caso fazendo
+
+
+```r
+set.seed(42)
+amostra &lt;- rnorm(50, 10, 2)
+```
+
+--
+
+- Podemos calcular a média amostral, por exemplo
+
+
+```r
+media_amostral &lt;- mean(amostra)
+```
+
+--
+
+- Qual é a incerteza sobre `\(\bar{X}\)`?
+
+---
+# Distribuição amostral
+
+- É possível mostrar que 
+
+`$$\bar{X} =  \frac{1}{n} \sum_{i=1}^n X_i \sim N(10, 4/50)$$`
+--
+
+- O que isso significa?
+
+--
+
+&lt;img src="index_files/figure-html/unnamed-chunk-3-1.png" width="30%" style="display: block; margin: auto;" /&gt;
+
+---
+# Testes
+
+- Vamos repetir esse processo algumas vezes
+
+--
+
+
+```r
+set.seed(42)
+mean(rnorm(50, 10, 2))
+```
+
+```
+## [1] 9.928656
+```
+
+--
+
+
+```r
+mean(rnorm(50, 10, 2))
+```
+
+```
+## [1] 10.2014
+```
+
+--
+
+
+```r
+mean(rnorm(50, 10, 2))
+```
+
+```
+## [1] 9.697498
+```
+
+--
+
+
+```r
+mean(rnorm(50, 10, 2))
+```
+
+```
+## [1] 9.952567
+```
+
+---
+
+# 1000 repetições
+
+
+```r
+set.seed(123); medias_1000 &lt;- replicate(1000, mean(rnorm(50, 10, 2)))
+```
+
+--
+
+
+```r
+ggplot() + theme_classic() + 
+  geom_histogram(aes(x = medias_1000, y = ..density..), fill = 'darkviolet') +
+  stat_function(fun = dnorm, args = list(mean = 10, sd = sqrt(4/50)))
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-9-1.png" width="30%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Realidade
+
+- Quando temos um banco de dados, não temos essa possibilidade de gerar novas amostras.
+
+--
+
+- No exemplo feito, podemos obter uma medida de incerteza como o desvio-padrão
+
+
+```r
+sd(medias_1000)
+```
+
+```
+## [1] 0.2668593
+```
+
+--
+
+- Enquanto que o verdadeiro valor é igual a `\(\sqrt{4/50} = 0,2828\)`.
+
+--
+
+- Podemos construir novas amostras "artificiais" com o método de **bootstrap**.
+
+--
+
+- Por exemplo, 
+
+
+```r
+amostra_artificial &lt;- sample(amostra, length(amostra), replace = TRUE)
+```
+
+---
+
+# Incerteza sobre essas estimativas
+
+- Podemos fazer o mesmo procedimento.
+
+--
+
+- Repetir essa seleção dessa amostra artificial por 1000 vezes.
+
+
+```r
+set.seed(42); medias_1000_art &lt;- replicate(1000, mean(sample(amostra, length(amostra), 
+                                                             replace = TRUE)))
+```
+
+--
+
+&lt;img src="index_files/figure-html/unnamed-chunk-13-1.png" width="30%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Comparação com o valor real
+
+- A média e o desvio-padrão
+
+
+```r
+mean(medias_1000_art)
+```
+
+```
+## [1] 9.908837
+```
+
+
+```r
+sd(medias_1000_art)
+```
+
+```
+## [1] 0.3217313
+```
+
+--
+
+- Notem como apenas fazendo reamostras daquela amostra original podemos obter uma boa aproximação da incerteza sobre a média amostral. 
+
+--
+
+- Isso é importante, pois nem sempre temos a informação sobre a distribuição amostral.
+
+  - Nem sempre é simples obter essa distribuição amostral. 
+
+---
+
+# Considere outro exemplo
+
+- Vamos supor que temos interesse em 
+
+`$$\alpha = \frac{1}{n} \sum_{i=1}^n \sqrt{X_i}$$`
+--
+
+- Qual é distribuição de probabilidade de `\(\alpha\)`?
+
+--
+
+- Podemos simular a distribuição gerando várias amostras.
+
+
+```r
+set.seed(123); alpha_sim &lt;- replicate(1000, mean(sqrt(rnorm(50, 10, 2))))
+```
+
+--
+
+- E podemos obter a aproximação com o método *bootstrap*.
+
+
+```r
+set.seed(123); alpha_boot &lt;- replicate(1000, mean(sqrt(sample(amostra, length(amostra), 
+                                                             replace = TRUE))))
+```
+
+---
+
+## Comparação das duas distribuições
+
+
+```r
+g1 &lt;- ggplot() + geom_histogram(aes(x = alpha_sim, y = ..density..), fill = 'grey75')
+g2 &lt;- ggplot() + geom_histogram(aes(x = alpha_boot, y = ..density..), fill = 'grey75')
+g1 | g2
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-18-1.png" width="35%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Definição mais ampla
+
+- Podemos utilizar esse método para qualquer estatística `\(\theta(x)\)`.
+
+--
+
+- Suponha que consideramos `\(B\)` reamostras e para cada uma delas calculamos a estatística de interesse: 
+  
+  - `\(\{\theta(x)^{(1)}, \theta(x)^{(2)}, \ldots, \theta(x)^{(B)}\}\)`
+
+--
+
+- Então, podemos definir o erro padrão bootstrap como
+
+`$$\mbox{Erro Padrão}_B(\theta(x)) = \sqrt{\frac{1}{B-1}\sum_{r=1}^B \left(\theta(x)^{(r)} - \frac{1}{B} \sum_{s=1}^B \theta(x)^{(s)} \right)^2}$$`
+
+--
+
+- Esse processo pode ser feito com qualquer estatística.
+
+---
+class: inverse, middle, center
+
+# Exemplo PNAD
+
+
+---
+
+# Dados PNAD
+
+- Considere os dados que foram utilizados na última aula.
+
+  - Dados sobre renda no Estado do Espírito Santo.
+
+--
+
+- Considere o índice de Gini que mede a desigualdade de renda.
+
+  - Quanto menor o valor, menor a desigualdade.
+
+  - Quanto maior o valor, maior a desigualdade.
+  
+--
+
+  - Varia entre 0 e 1.
+  
+--
+
+- Vamos utilizar o pacote `DescTools`:
+
+
+```r
+?DescTools::Gini
+```
+
+--
+
+- Qual é a distribuição de probabilidade do Gini?
+
+---
+
+# Resultados
+
+
+
+- Podemos calcular o Gini inicialmente:
+
+
+```r
+DescTools::Gini(dados$renda)
+```
+
+```
+## [1] 0.3719194
+```
+
+--
+
+- Em seguida, podemos considerar construir as amostras bootstrap para obter a incerteza sobre esse valor
+
+
+```r
+gini_bootstrap &lt;- replicate(1000, 
+                            DescTools::Gini(sample(dados$renda, replace = TRUE)))
+```
+
+--
+
+- Depois de obter as nossas amostras podemos fazer o histograma dos valores obtidos
+
+
+```r
+ggplot() + geom_histogram(aes(x = gini_bootstrap, y = ..density..), 
+                          colour = 'grey75', fill = "royalblue") + 
+  geom_vline(aes(xintercept = DescTools::Gini(dados$renda)), color = "red", 
+             linetype = 2)
+```
+
+---
+
+# Gráfico com a distribuição do Gini
+
+&lt;img src="index_files/figure-html/unnamed-chunk-24-1.png" width="45%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Intervalos de confiança
+
+- Podemos considerar o erro padrão estimado a partir das amostras bootstrap para criar um intervalo de confiança.
+
+--
+
+- Primeiramente obtendo o valor do erro padrão
+
+
+```r
+ep_gini &lt;- sd(gini_bootstrap)
+```
+
+--
+
+- Depois podemos utilizar uma aproximação da Normal para fazer o intervalo de confiança:
+
+
+
+```r
+DescTools::Gini(dados$renda) + qnorm(c(0.025, 0.975)) * ep_gini
+```
+
+```
+## [1] 0.3381616 0.4056772
+```
+
+--
+
+- A função `DescTools::Gini` também disponibiliza uma opção para construir intervalos de confiança utilizando bootstrap.
+
+
+```r
+DescTools::Gini(dados$renda, conf.level = 0.95, R = 1000)
+```
+
+```
+##      gini    lwr.ci    upr.ci 
+## 0.3719194 0.3407896 0.4094587
+```
+
+
+---
+class: middle, center, inverse
+
+# Fim!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
