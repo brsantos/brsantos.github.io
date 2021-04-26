@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Aprendizado estatístico - Parte III</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2021-04-26" />
+    <script src="libs/fabric/fabric.min.js"></script>
+    <link href="libs/xaringanExtra-scribble/scribble.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-scribble/scribble.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', function() { window.xeScribble = new Scribble({"pen_color":["#FF0000"],"pen_size":3,"eraser_size":30}) })</script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle
+
+## Aprendizado estatístico - Parte III
+
+*****
+
+### Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+
+
+
+
+
+
+
+---
+class: center, middle, inverse
+
+# Última aula
+
+
+---
+
+# Recordando
+
+- Discutimos o método boostrap.
+
+--
+
+- Mostramos o modo de obter incertezas para uma determinada estatística `\(\theta(x)\)`
+
+--
+
+`$$\mbox{Erro Padrão}_B(\theta(x)) = \sqrt{\frac{1}{B-1}\sum_{r=1}^B \left(\theta(x)^{(r)} - \frac{1}{B} \sum_{s=1}^B \theta(x)^{(s)} \right)^2}$$`
+--
+
+- Mostramos como podemos apresentar medidas de incerteza sobre essas estatísticas mesmo sem conhecer sua distribuição amostral.
+
+--
+
+- Tal método pode ser utilizado com diferentes técnicas estatísticas.
+
+---
+class: inverse, middle, center
+
+# Modelos lineares
+
+
+---
+# Definição
+
+- Modelos lineares expressam a relação entre duas ou mais variáveis através de uma transformação linear.
+
+--
+
+- Por exemplo, o seguinte modelo pode descrever como `\(Y\)` varia conforme mudamos os valores de `\(X\)` adicional a um erro aleatório
+
+`$$Y_i = \alpha + \beta X_i + \epsilon_i, \quad i = 1, \ldots, n$$`
+
+--
+
+- Em geral, assumimos que 
+
+  - `\(E(\epsilon) = 0\)`.
+  - `\(\mbox{Var}(\epsilon) = \sigma^2\)`.
+  - `\(\mbox{Cov}(\epsilon_i, \epsilon_j) = 0\)`.
+
+--
+
+- Isso implica que 
+
+  - `\(E(Y_i) = \alpha + \beta X_i\)`.
+  
+--
+
+- O parâmetro `\(\beta\)` controla como a variação da variável explicativa afeta a variável resposta, em média.
+
+---
+
+# Mais definições
+
+- Podemos considerar também que 
+
+  - `\(\epsilon_i \sim N(0, \sigma^2)\)`.
+  
+--
+
+- E podemos definir o modelo com mais variáveis
+
+`$$Y_i = \beta_0 + \beta_1 X_{i1} + \beta_2 X_{i2}  + \cdots + \beta_k X_{ik} + \epsilon_i, \quad i = 1, \ldots, n$$`
+--
+
+- Nesse caso, multivariado é comum escrever o modelo de forma matricial
+
+`$$Y = X\beta + \varepsilon,$$`
+
+em que `\(Y = (Y_1, \ldots, Y_n)^t\)`, `\(X\)` é uma matrix `\(n \times p\)` e `\(\varepsilon = (\epsilon_1, \ldots, \epsilon_n)\)`.
+
+--
+
+- Podemos encontrar o vetor `\(\beta = (\beta_0, \beta_1, \ldots, \beta_k)\)` que minimiza os erros ao quadrado do modelo
+
+`$$\sum_{i=1}^n (Y_i - \beta_0 - \beta_1 X_{i1} - \beta_2 X_{i2}  - \cdots - \beta_k X_{ik})^2$$`
+
+---
+
+# Estimador de mínimos quadrados
+
+- O estimador de mínimos quadrados é definido como
+
+`$$\hat{\beta} = \arg \min_{\beta \in \mathbb{R}^{k+1}} \sum_{i=1}^n (Y_i - \beta_0 - \beta_1 X_{i1} - \beta_2 X_{i2}  - \cdots - \beta_k X_{ik})^2$$`
+--
+
+- É possível mostrar que no caso multivariado,
+
+`$$\hat{\beta} = (X^t X)^{-1}X^tY$$`
+--
+
+- Esse estimador é não viciado, já que 
+
+`$$E(\hat{\beta}) = \beta$$`
+--
+
+- E sua variância pode ser calculada como
+
+`$$\mbox{Var}(\hat{\beta}) = (X^t X)^{-1} \sigma^2$$`
+
+--
+
+- Se os erros são normalmente distribuídos, então `\(\hat{\beta}\)` também tem distribuição normal.
+
+---
+
+# Exemplo hipotético
+
+&lt;img src="fig/anim9.gif" width="45%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# Exemplo hipotético
+
+&lt;img src="fig/anim10.gif" width="45%" style="display: block; margin: auto;" /&gt;
+
+
+---
+class: inverse, middle, center
+
+# Seleção de modelos lineares
+
+---
+
+# Como escolher as variáveis do modelo
+
+- Se temos um conjunto de `\(k\)` covariáveis, como podemos escolher o melhor modelo?
+
+--
+
+- Uma primeira tentativa é ajustar todos os modelos possíveis e depois escolher aquele com o melhor ajuste.
+
+--
+
+- Uma dificuldade porém é que o número de modelo cresce de acordo com `\(k\)` de forma bem rápida.
+
+--
+
+- De fato, o número de modelos possíveis é `\(2^k\)`.
+
+  - Porque para cada variável você pode definir que a variável está ou não está presente no modelo. 
+  
+--
+
+- Para escolher o melhor modelo, podemos comparar algumas medidas
+
+  - AIC
+  - BIC
+  - `\(R^2\)` ajustado
+  
+--
+
+- E podemos selecionar para cada possível número de variável o melhor subconjunto. 
+
+  - Método chamado de melhor subconjunto (*Best subset selection*).
+  
+---
+# Exemplo no R
+
+- Podemos utilizar o pacote `leaps` com a sua função `regsubsets`.
+
+- Vamos considerar um outro conjunto de dados sobre renda no ES, porém com mais algumas variáveis.
+
+
+```r
+dados &lt;- read.csv("dados_renda.csv")
+regfit_completo = leaps::regsubsets(renda ~ ., data = dados)
+resultados &lt;- summary(regfit_completo)
+resultados
+```
+
+--
+
+- Saída no próximo slide.
+
+---
+
+
+```
+## Subset selection object
+## Call: regsubsets.formula(log(renda) ~ ., data = dados)
+## 5 Variables  (and intercept)
+##              Forced in Forced out
+## idade            FALSE      FALSE
+## generoM          FALSE      FALSE
+## capitalS         FALSE      FALSE
+## raca_brancaS     FALSE      FALSE
+## anos_estudo      FALSE      FALSE
+## 1 subsets of each size up to 5
+## Selection Algorithm: exhaustive
+##          idade generoM capitalS raca_brancaS anos_estudo
+## 1  ( 1 ) " "   " "     " "      " "          "*"        
+## 2  ( 1 ) " "   "*"     " "      " "          "*"        
+## 3  ( 1 ) " "   "*"     " "      "*"          "*"        
+## 4  ( 1 ) " "   "*"     "*"      "*"          "*"        
+## 5  ( 1 ) "*"   "*"     "*"      "*"          "*"
+```
+
+--
+
+- Podemos ver nos resultados, qual seria o melhor modelo para cada número de variáveis.
+
+--
+
+
+```r
+data.frame(adjr2 = which.max(resultados$adjr2), 
+           bic = which.min(resultados$bic), 
+           cp = which.min(resultados$cp))
+```
+
+```
+##   adjr2 bic cp
+## 1     5   5  5
+```
+
+---
+
+# Método *stepwise*
+
+- Uma segunda forma mais leve computacionalmente é considerar um método sequencial de tirar ou adicionar variáveis no modelo.
+
+--
+
+- O método *stepwise* pode ser dividido:
+
+  - *Forward stepwise*
+  - *Backward stepwise*
+
+--
+
+- Ainda é possível considerar um método híbrido em que as duas ações podem ser feitas em sequência.
+
+--
+
+- Para adicionar/retirar é preciso considerar alguma medida de qualidade de ajuste do modelo.
+
+  - AIC;
+  - BIC;
+  - `\(R^2\)` ajustado;
+  
+---
+
+# Exemplo no R
+
+- Para utilizar esse método no R, podemos considerar a função `step` do pacote 
+
+
+```r
+modelo &lt;- lm(renda ~ ., data = dados)
+step_backwards &lt;- step(modelo, direction = "backward")
+```
+
+```
+## Start:  AIC=5769.52
+## renda ~ idade + genero + capital + raca_branca + anos_estudo
+## 
+##               Df Sum of Sq       RSS    AIC
+## &lt;none&gt;                     713189053 5769.5
+## - raca_branca  1  14774452 727963505 5775.7
+## - idade        1  22084585 735273638 5779.7
+## - capital      1  36440676 749629728 5787.5
+## - genero       1  40850489 754039542 5789.8
+## - anos_estudo  1 143840048 857029101 5841.0
+```
+
+---
+
+# Mais um exemplo no R
+
+- Vamos considerar outra base de dados
+
+
+```r
+?mtcars
+```
+
+--
+
+- Ajustando o modelo e utilizando o método stepwise (ver resultado completo no `R`)
+
+
+```r
+modelo_mtcars &lt;- lm(mpg ~ wt + drat + disp + qsec + cyl + hp, 
+                    data = mtcars)
+step_mtcars &lt;- step(modelo_mtcars, direction = "both")
+```
+
+```
+## Start:  AIC=66.19
+## mpg ~ wt + drat + disp + qsec + cyl + hp
+## 
+##        Df Sum of Sq    RSS    AIC
+## - qsec  1     3.949 167.43 64.954
+## - drat  1     5.209 168.69 65.194
+## - cyl   1     6.652 170.13 65.466
+## - disp  1     7.870 171.35 65.695
+## - hp    1     8.744 172.22 65.857
+## &lt;none&gt;              163.48 66.190
+## - wt    1    72.580 236.06 75.947
+## 
+## Step:  AIC=64.95
+## mpg ~ wt + drat + disp + cyl + hp
+## 
+##        Df Sum of Sq    RSS    AIC
+## - drat  1     3.018 170.44 63.526
+## - disp  1     6.949 174.38 64.255
+## &lt;none&gt;              167.43 64.954
+## - cyl   1    15.411 182.84 65.772
+## + qsec  1     3.949 163.48 66.190
+## - hp    1    21.066 188.49 66.746
+## - wt    1    77.476 244.90 75.124
+## 
+## Step:  AIC=63.53
+## mpg ~ wt + disp + cyl + hp
+## 
+##        Df Sum of Sq    RSS    AIC
+## - disp  1     6.176 176.62 62.665
+## &lt;none&gt;              170.44 63.526
+## - hp    1    18.048 188.49 64.746
+## + drat  1     3.018 167.43 64.954
+## + qsec  1     1.759 168.69 65.194
+## - cyl   1    24.546 194.99 65.831
+## - wt    1    90.925 261.37 75.206
+## 
+## Step:  AIC=62.66
+## mpg ~ wt + cyl + hp
+## 
+##        Df Sum of Sq    RSS    AIC
+## &lt;none&gt;              176.62 62.665
+## - hp    1    14.551 191.17 63.198
+## + disp  1     6.176 170.44 63.526
+## - cyl   1    18.427 195.05 63.840
+## + drat  1     2.245 174.38 64.255
+## + qsec  1     1.401 175.22 64.410
+## - wt    1   115.354 291.98 76.750
+```
+
+
+---
+class: inverse, middle, center
+
+# Regularização em modelos lineares
+
+---
+
+# Definição 
+
+- Esses métodos também são conhecidos como "métodos de encolhimento".
+
+--
+
+  - A ideia é "encolher" os parâmetros para zero.
+  
+--
+
+- O modo de fazer é penalizar os parâmetros maiores que zero.
+
+--
+
+- Dessa forma, somente variáveis que são importantes para explicar a variável resposta são deixados diferentes de zero.
+
+--
+
+- Lembre que definimos o EMQ como o valor que minimizava a SQE
+
+`$$SQE = \sum_{i=1}^n \left(Y_i - \beta_0 -  \sum_{j=1}^p \beta_j X_{ij}\right)^2$$`
+--
+
+- Um primeiro método é considerar o vetor `\(\hat{\beta}^R\)` que minimiza
+
+`$$\sum_{i=1}^n \left(Y_i - \beta_0 -  \sum_{j=1}^p \beta_j X_{ij}\right)^2 + \lambda \sum_{j = 1}^p \beta_j^2 = SQE + \lambda \sum_{j = 1}^p \beta_j^2$$`
+
+--
+
+- Esse primeiro método é chamado de *ridge regression*.
+
+---
+# Sobre `\(\lambda\)`
+
+- Agora estamos tentando minimizar a seguinte soma
+
+`$$SQE + \lambda \sum_{j = 1}^p \beta_j^2$$`
+
+- Note quando `\(\lambda = 0\)` obtemos o mesmo estimador de mínimos quadrados.
+
+--
+
+- E quando `\(\lambda \rightarrow \infty\)`, todos os coeficientes devem ser iguais a zero.
+
+--
+
+- Isso faz com que a escolha de `\(\lambda\)` seja muito importante nesse método.
+
+--
+
+- Uma maneira de se escolher esses parâmetros é utilizar métodos de validação cruzada.
+
+--
+
+- Uma dica para se utilizar esse método é padronizar as variáveis, ou seja, deixar todas na mesma escala.
+
+`$$\tilde{x}_{ij} = \frac{x_{ij}}{\sqrt{\frac{1}{n}\sum_{i=1}^n (x_{ij} - \bar{x}_j)^2}}$$`
+---
+
+# LASSO
+
+- Um problema do método "ridge regression" é que os parâmetros não são "encolhidos", a menos que `\(\lambda = \infty\)`.
+
+--
+
+- Isso pode dificultar a interpretação do modelo se tivermos o interesse em dizer quais variáveis são exatamente iguais a zero. 
+
+--
+
+- Um dos métodos mais utilizados atualmente para fazer essa regularização dos coeficientes é o LASSO.
+
+--
+
+- Agora ao invés de penalizar os coeficientes ao quadrado, a penalização é feita de maneira absoluta.
+
+--
+
+- Logo, o estimador da regressão considerando o método de regularização LASSO é 
+
+`$$\sum_{i=1}^n \left(Y_i - \beta_0 -  \sum_{j=1}^p \beta_j X_{ij}\right)^2 + \lambda \sum_{j = 1}^p |\beta_j| = SQE + \lambda \sum_{j = 1}^p |\beta_j|$$`
+
+--
+
+- A escolha de `\(\lambda\)` também pode ser feita via validação cruzada.
+
+---
+
+# Exemplo com dados simulados
+
+- Para ilustrar os dois métodos, vamos considerar dados simulados, onde sabemos quais coeficientes são diferente de zero.
+
+--
+
+- Primeiramente, gerando as variáveis explicativas
+
+
+```r
+set.seed(42)
+n &lt;- 200
+x1 &lt;- runif(n); x2 &lt;- runif(n); x3 &lt;- runif(n); x4 &lt;- runif(n); x5 &lt;- runif(n)
+x6 &lt;- runif(n); x7 &lt;- runif(n); x8 &lt;- runif(n); x9 &lt;- runif(n); x10 &lt;- runif(n)
+```
+
+--
+
+- Em seguida, o nosso vetor de `\(\beta\)`'s.
+
+
+```r
+betas &lt;- c(1, 3, -2, 4, 0, 0, 0, 0, 0, 0, 0)
+```
+
+--
+
+- E por último a nossa variável resposta é gerada a partir das variáveis explicativas.
+
+
+```r
+y &lt;- betas[1] + betas[2] * x1 + betas[3] * x2 + betas[4] * x3 + betas[5] * x4 +
+  betas[6] * x5 + betas[7] * x6 + betas[8] * x7 + betas[9] * x8 + betas[10] * x9 +
+  betas[11] * x10 + rnorm(n)
+```
+
+---
+# Estimação do modelo
+
+- Para testar, poderíamos obter as estimativas do modelo
+
+
+```r
+lm(y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10)
+```
+
+```
+## 
+## Call:
+## lm(formula = y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + 
+##     x10)
+## 
+## Coefficients:
+## (Intercept)           x1           x2           x3           x4           x5  
+##     0.52260      3.07205     -1.64597      3.56713     -0.08657      0.31375  
+##          x6           x7           x8           x9          x10  
+##     0.40731     -0.11543     -0.29113      0.17545      0.45812
+```
+
+--
+
+- Veja como alguns parâmetros são estimados diferentes de zero.
+
+--
+
+- Podemos considerar o uso da regularização para comparar o resultado.
+
+
+---
+# Ridge regression
+
+- Vamos utilizar o pacote `glmnet` e `caret` para nos ajudar a encontrar o melhor `\(\lambda\)`.
+
+--
+
+
+```r
+amostras_treinamento &lt;- y %&gt;% 
+  caret::createDataPartition(p = 0.7, list = FALSE)
+
+matriz_x &lt;- cbind(x1, x2, x3, x4, x5, x6, x7, x8, x9, x10)
+
+x_treinamento &lt;- matriz_x[amostras_treinamento, ]
+y_treinamento &lt;- y[amostras_treinamento]
+
+cv_model &lt;- glmnet::cv.glmnet(x_treinamento, y_treinamento, alpha = 0)
+cv_model$lambda.min
+```
+
+```
+## [1] 0.09880969
+```
+
+---
+# Modelo estimado
+
+- O modelo estimado ficaria escrito da seguinte forma:
+
+
+```r
+modelo_ridge &lt;- glmnet::glmnet(x_treinamento, y_treinamento, alpha = 0, lambda = cv_model$lambda.min)
+coef(modelo_ridge)
+```
+
+```
+## 11 x 1 sparse Matrix of class "dgCMatrix"
+##                      s0
+## (Intercept)  0.54160412
+## x1           2.98015901
+## x2          -1.33315281
+## x3           3.38350026
+## x4           0.01131776
+## x5           0.28141523
+## x6           0.50805270
+## x7          -0.10404837
+## x8          -0.16593744
+## x9          -0.01145762
+## x10          0.29672170
+```
+
+---
+
+# Diferentes valores de lambda
+
+
+```r
+lambdas &lt;- cv_model$lambda
+modelo_estimativas &lt;- sapply(lambdas, function(a){
+  modelo &lt;- glmnet(x_treinamento, y_treinamento, alpha = 0, lambda = a)
+  as.numeric(coef(modelo))
+}) %&gt;% t()
+
+colnames(modelo_estimativas) &lt;- rownames(coef(modelo_ridge))
+
+modelo_estimativas &lt;- cbind(lambdas, modelo_estimativas) %&gt;% 
+  as.data.frame()
+
+info_modelo &lt;- modelo_estimativas %&gt;%
+  tidyr::pivot_longer(!lambdas, names_to = "variaveis", values_to = "estimativas")
+
+ggplot(info_modelo) + 
+  theme_classic() + 
+  geom_line(aes(x = lambdas, y = estimativas, color = variaveis))
+```
+
+
+---
+
+# Resultado
+
+&lt;img src="index_files/figure-html/unnamed-chunk-16-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+# Resultado filtrado
+
+&lt;img src="index_files/figure-html/unnamed-chunk-17-1.png" style="display: block; margin: auto;" /&gt;
+
+
+---
+# LASSO
+
+- Primeiro, encontrando o melhor valor de `\(\lambda\)`.
+
+
+```r
+cv_model_lasso &lt;- glmnet::cv.glmnet(x_treinamento, y_treinamento, alpha = 1)
+cv_model_lasso$lambda.min
+```
+
+```
+## [1] 0.05524262
+```
+
+---
+# Modelo estimado
+
+- O modelo estimado ficaria escrito da seguinte forma:
+
+
+```r
+modelo_lasso &lt;- glmnet::glmnet(x_treinamento, y_treinamento, alpha = 1, lambda = cv_model_lasso$lambda.min)
+coef(modelo_lasso)
+```
+
+```
+## 11 x 1 sparse Matrix of class "dgCMatrix"
+##                     s0
+## (Intercept)  0.5673435
+## x1           2.9541473
+## x2          -1.2211910
+## x3           3.4392874
+## x4           .        
+## x5           0.1472101
+## x6           0.3803626
+## x7           .        
+## x8           .        
+## x9           .        
+## x10          0.1071889
+```
+
+---
+
+# Diferentes valores de lambda
+
+
+```r
+lambdas &lt;- cv_model_lasso$lambda
+modelo_estimativas &lt;- sapply(lambdas, function(a){
+  modelo &lt;- glmnet(x_treinamento, y_treinamento, alpha = 1, lambda = a)
+  as.numeric(coef(modelo))
+}) %&gt;% t()
+
+colnames(modelo_estimativas) &lt;- rownames(coef(modelo_lasso))
+
+modelo_estimativas &lt;- cbind(lambdas, modelo_estimativas) %&gt;% 
+  as.data.frame()
+
+info_modelo &lt;- modelo_estimativas %&gt;%
+  tidyr::pivot_longer(!lambdas, names_to = "variaveis", values_to = "estimativas")
+
+ggplot(info_modelo) + 
+  theme_classic() + 
+  geom_line(aes(x = lambdas, y = estimativas, color = variaveis))
+```
+
+
+---
+
+# Resultado
+
+&lt;img src="index_files/figure-html/unnamed-chunk-21-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Comparação dos ajustes
+
+
+```r
+modelo_usual &lt;- lm(y_treinamento ~ x_treinamento)
+```
+--
+
+- Obtendo os coeficientes de cada modelo
+
+
+```r
+coef_modelo_usual &lt;- as.numeric(coef(modelo_usual))
+coef_modelo_ridge &lt;- as.numeric(coef(modelo_ridge))
+coef_modelo_lasso &lt;- as.numeric(coef(modelo_lasso))
+```
+
+--
+
+- Obtendo as observações de teste
+
+
+```r
+x_teste &lt;- matriz_x[-amostras_treinamento, ]
+y_teste &lt;- y[-amostras_treinamento]
+```
+
+--
+
+- Podemos fazer as previsões segundo cada modelo
+
+
+```r
+prev_modelo_usual &lt;- cbind(1, x_teste) %*% coef_modelo_usual
+prev_modelo_ridge &lt;- cbind(1, x_teste) %*% coef_modelo_ridge
+prev_modelo_lasso &lt;- cbind(1, x_teste) %*% coef_modelo_lasso
+```
+
+---
+
+# Erro quadrático médio
+
+- Podemos calcular o erro quadrático médio para cada modelo
+
+
+```r
+mean((y_teste - prev_modelo_usual)^2)
+```
+
+```
+## [1] 0.8259971
+```
+
+```r
+mean((y_teste - prev_modelo_ridge)^2)
+```
+
+```
+## [1] 0.8263034
+```
+
+```r
+mean((y_teste - prev_modelo_lasso)^2)
+```
+
+```
+## [1] 0.8787729
+```
+
+---
+class: middle, center, inverse
+
+# Fim!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
