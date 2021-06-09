@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Tabelas de contingência</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2021-06-07" />
+    <script src="libs/fabric/fabric.min.js"></script>
+    <link href="libs/xaringanExtra-scribble/scribble.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-scribble/scribble.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', function() { window.xeScribble = new Scribble({"pen_color":["#FF0000"],"pen_size":3,"eraser_size":30}) })</script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle
+
+# Tabelas de contingência
+
+*****
+
+## Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+
+
+
+
+
+
+---
+class: center, middle, inverse
+
+# Exemplo
+
+
+---
+
+# Dados sobre covid-19
+
+- Dados do Espírito Santo
+
+- Fonte: [https://coronavirus.es.gov.br/painel-covid-19-es](https://coronavirus.es.gov.br/painel-covid-19-es).
+
+--
+
+&lt;img src="fig/tab1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+--
+
+- Duas variáveis categóricas:
+
+  - X: Profissional de Saúde = {Não, Sim}.
+  - Y: Óbito pela COVID-19 = {Não, Sim}.
+  
+--
+
+- Pergunta: **existe associação entre essas duas variáveis?**
+
+---
+class: middle, inverse, center
+
+# Definição
+
+
+---
+
+# Definição 
+
+
+
+- Para uma variável categórica, podemos contar o número de observações em cada categoria.
+
+--
+
+- A proporção amostral em cada categoria é então uma estimativa das probabilidades dessa categoria.
+
+--
+
+- Considere então duas variáveis categóricas, seja `\(X\)` e `\(Y\)`:
+--
+
+  - seja `\(I\)` o número de categorias de X;
+  - seja `\(J\)` o número de categorias de Y;
+  
+--
+&lt;br&gt;
+- ** Tabela de contingência**:
+
+  - `\(I\)` linhas e `\(J\)` colunas;
+--
+
+  - células mostram a contagem de cada uma das combinações.
+ 
+--
+
+- No exemplo anterior, tínhamos uma tabela de contingência 2x2.
+  
+
+---
+class: inverse, middle, center
+
+# Probabilidades conjuntas, marginais e condicionais
+
+---
+
+# Probabilidade conjunta
+
+- Sejam `\(X\)` e `\(Y\)` duas variáveis categóricas:
+  - `\(X\)` com `\(I\)` categorias e `\(Y\)` com `\(J\)` categorias.
+  
+--
+
+- Suponha uma unidade experimental escolhida aleatoriamente dessa população de interesse, que é classificada de acordo com `\(X\)` e `\(Y\)`.
+
+--
+
+- Seja 
+`$$\pi_{ij} = P(X = i, Y = j)$$`
+a probabilidade que `\((X, Y)\)` seja classificada na célula na linha `\(i\)` e na coluna `\(j\)`.
+
+--
+
+- As probabilidades `\(\{\pi_{ij}\}\)` formam a **distribuição conjunta** de `\(X\)` e `\(Y\)`.
+
+--
+
+- Elas devem satisfazer
+`$$\sum_{i=1}^I\sum_{j=1}^J \pi_{ij} = 1$$`
+
+---
+
+# Distribuição marginal
+
+--
+
+- São definidas como os totais das linhas e das colunas das distribuições conjuntas. 
+--
+
+- Denotamos como `\(\{\pi_{i+}\}\)` para a variável nas linhas.
+
+--
+
+- E como `\(\{\pi_{+j}\}\)` para a variável nas colunas.
+
+--
+
+- Numa tabela 2x2 teríamos, 
+
+`$$\{\pi_{1+}\} = \pi_{11} + \pi_{12}$$`
+e também
+
+`$$\{\pi_{+1}\} = \pi_{11} + \pi_{21}.$$`
+--
+
+- Cada distribuição marginal se refere a uma variável apenas.
+
+---
+
+# Valores amostrais
+
+- Para valores de uma amostra, consideramos a letra `\(p\)` no lugar de `\(\pi\)`.
+
+- Por exemplo, `\(\{p_{ij}\}\)` representa a célula `\((i,j)\)` da distribuição amostral conjunta. 
+
+--
+
+- As contagem das células são denotadas por `\(\{n_{ij}\}\)`.
+
+--
+
+- As frequências marginais são escritas como `\(\{n_{i+}\}\)` e `\(\{n_{+j}\}\)` respectivamente para a linha e coluna.
+
+--
+
+- O total da amostra é obtido a partir
+
+`$$\sum_{i=1}^I\sum_{j=1}^J n_{ij} = n.$$`
+--
+
+- As proporções amostrais são obtidas como
+`$$p_{ij} = \frac{n_{ij}}{n}.$$`
+---
+
+# Distribuição condicional
+
+- De forma geral, podemos considerar a seguinte notação:
+
+  - `\(P(Y = j|X = i) = p_{(i)j}\)`.
+  - `\(P(X = i|Y = j) = p_{i(j)}\)`.
+
+--
+
+- Temos então que `\(\displaystyle \sum_{j=1}^J p_{(i)j} = 1, \quad \sum_{i=1}^I p_{i(j)} = 1\)`
+--
+
+- Existem situações em `\(Y\)` pode ser vista como uma variável resposta e `\(X\)` uma variável explicativa.
+
+--
+
+- O interesse nessa situação estaria na distribuição condicional.
+
+   - Para cada valor de `\(X\)` então teríamos uma distribuição de probabilidade para `\(Y\)`.
+   
+--
+
+- Modelos de regressão logística tentam quantificar exatamente as diferenças nessas distribuições. 
+
+
+---
+
+# Exemplo: dados Covid-19
+
+### Tabela de contingência
+
+&lt;img src="fig/tab_exemplo.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+--
+
+### Distribuições conjunta e marginal
+
+&lt;img src="fig/tab_conjunta.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Exemplo: dados Covid-19
+
+### Distribuição condicional
+
+&lt;img src="fig/tab_condicional.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+--
+
+Perguntas:
+
+- Seriam diferentes essas distribuições condicionais?
+  
+- Como quantificar essa diferença?
+
+  - Risco relativo;
+  
+  - Razão de chances.
+  
+
+---
+class: inverse, middle, center
+
+# Sensibilidade e especificidade em testes diagósticos
+
+---
+
+# Testes diagnósticos
+
+Considere o caso específico das seguintes variáveis aleatórias:
+
+`$$D = \begin{cases} 1, \, \mbox{se uma pessoa está doente}, \\ 0, \, \mbox{caso contrário}. \end{cases}$$`
+e
+`$$T = \begin{cases} 1, \, \mbox{se o teste dá positivo para a doença}, \\ 0, \, \mbox{caso contrário}. \end{cases}$$` 
+
+--
+
+Então, podemos definir
+`$$s = \mbox{Sensibilidade} = P(T = 1|D = 1)$$`
+`$$e = \mbox{Especificidade} = P(T = 0|D = 0).$$`
+--
+
+Para ambas quantidades, quanto maiores os valores melhor o teste diagnóstico.
+
+---
+
+# Exemplo Covid-19
+
+- Segundo dados da [ANVISA](https://portalarquivos2.saude.gov.br/images/pdf/2020/June/02/AcuraciaDiagnostico-COVID19-atualizacaoC.pdf), um certo teste disponível para Covid-19 apresenta os seguintes valores:
+
+  - Sensibilidade = 70%
+  - Especificidade = 97%
+  
+--
+
+- Diante desses resultados, responda a seguinte pergunta: 
+
+  - Qual é a probabilidade de `\(P(D = 1| T = 1)\)`?
+  
+--
+
+- Essa pergunta pode ser resolvida utilizando **Teorema de Bayes**!
+
+  - Basta que tenhamos uma estimativa de `\(P(D = 1)\)`.
+  
+--
+
+  - Exemplo, se `\(P(D = 1) = 0,02\)` 
+  
+  - `\(P(D = 1| T = 1) = 0,32\)`!
+
+  - Fica como exercício!
+  
+---
+class: inverse, center, bottom
+
+background-image: url("fig/bayes-light.jpg")
+background-position: center
+background-size: cover
+
+# Aquela lembrança!
+
+---
+
+class: inverse, middle, center
+
+# Valores de predição
+
+---
+
+# Tipos de valores de predição
+
+- Sensibilidade e Especificidade são importantes!
+
+--
+
+- Porém, não ajudam na decisão a tomar quando o teste é positivo ou negativo.
+
+--
+
+- Para isso, outros dois índices são mais interessantes para informar esse tipo de decisão.
+
+--
+
+  - Valor de predição positiva ( `\(VPP\)` ou `\(VP+\)`).
+  
+  - Valor de predição negativa ( `\(VPN\)` ou `\(VP-\)`).
+  
+--
+
+- `\(VPP = P(D = 1|T = 1)\)`
+- `\(VPN = P(D = 0|T = 0)\)`
+  
+---
+
+# Cálculo do VPP e do VPN
+
+&lt;img src="fig/tab_vpp_vpn.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+- Valor de predição positiva (VPP)
+
+`$$VPP = \frac{ps}{ps + (1-p)(1-e)}$$`
+- Valor de predição negativa (VPN)
+
+`$$VPN = \frac{(1-p)e}{p(1-s) + (1-p)e}$$`
+
+---
+
+# Exemplo
+
+- Metástase de carcinoma hepático.
+
+--
+
+- 150 pacientes submetidos a dois testes:
+
+  - Tomografia computadorizada
+  - Laparatomia
+  
+--
+
+&lt;img src="fig/tab_exemplo_metastase.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+--
+
+Temos que 
+`$$s = \frac{52}{67} = 0,776 \mbox{, } e = \frac{74}{83} = 0,892$$`
+
+---
+
+# Continuação - exemplo
+
+- Podemos calcular os valores de VPP e VPN também. 
+
+--
+
+- Consideremos uma prevalência de 2% na população.
+
+--
+
+- Dessa forma, temos 
+
+`$$VPP = \frac{0,02 \times 0,776}{0,02 \times 0,776 + (1-0,02)(1-0,892)} = 0,128$$`
+`$$VPN = \frac{(1-0,02)0,892}{0,02(1-0,776) + (1-0,02)0,892} = 0,994$$`
+--
+
+- O VPP ainda é bastante baixo. Nesse caso, é interessante fazer o outro exame se a tomografia computadorizada der positivo.
+
+--
+
+- Se a tomografia der negativo, então a probabilidade de ter a doença passa de 2% a 1%.
+
+
+---
+class: inverse, middle, center
+
+# Decisões incorretas
+
+---
+
+# Decisões incorretas
+
+- Após o resultado do teste podemos ter as situações de:
+
+  - **Falso-positivo**
+  - **Falso-negativo**
+  
+--
+
+Estas podem ser medidas pelas probabilidades: 
+
+`$$PFP = P(D = 0 | T = 1) = 1 - P(D = 1|T = 1) = 1 - VPP$$`
+
+`$$PFN = P(D = 1 | T = 0) = 1 - P(D = 0|T = 0) = 1 - VPN$$`
+--
+
+- Frequentemente, essas probabilidades são confundidas com `\(1-s\)` e `\(1-e\)`.
+
+--
+
+- Outro problema é confundir as probabilidades no estudo feito com a prevalência na população. 
+
+
+---
+
+# Algumas considerações
+
+--
+
+- Considere o caso em que um teste para uma certa doença apresenta os seguintes valores
+para sensibilidade e especificidade:
+
+  - `\(s = 0,95\)`  
+  - `\(e = 0,998\)`
+
+--
+
+- Com essas quantidades, teríamos o seguinte resultado:
+
+&lt;img src="fig/tab_resumo.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+--
+
+- É bastante importante então ter uma ideia exatamente da prevalência da doença.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
