@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>LaTeX - Introdução</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2021-06-22" />
+    <script src="libs/fabric/fabric.min.js"></script>
+    <link href="libs/xaringanExtra-scribble/scribble.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-scribble/scribble.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', function() { window.xeScribble = new Scribble({"pen_color":["#FF0000"],"pen_size":3,"eraser_size":30}) })</script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle
+
+## LaTeX - Introdução
+
+*****
+
+### Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+
+
+
+
+
+
+
+---
+class: center, middle, inverse
+
+# Introdução
+
+
+---
+
+# Por quê?
+
+- Por que a necessidade de utilizarmos uma linguagem de programação para escrever um texto?
+
+  - Considerando as opções como LibreOffice Writer ou Microsoft Word.
+
+--
+
+- Essas opções são conhecidas como editores de texto do tipo WYSIWYG.
+
+  - What You See Is What You Get.
+  
+--
+
+- Apesar de fáceis de serem utilizados, o resultado nem sempre é agradável.
+
+--
+
+- Principalmente com equações e fórmulas matemáticas.
+
+--
+
+- Por esse motivo, a escrita científica, na área de Exatas principalmente, migrou para `\(\LaTeX\)`.
+
+--
+
+  - Você pode escrever artigos científicos, livros, apresentações. 
+  
+---
+
+# O que é `\(\LaTeX\)`?
+
+- Linguagem de programação criada para gerar documentos escritos de alta qualidade.
+
+--
+
+- Todas as configurações do arquivo são controladas por comandos específicos.
+
+--
+
+- De certa forma, sua preocupação deve estar somente com o que você escreve.
+
+--
+
+  - E não com as configurações do arquivo.
+  
+--
+
+- Eventualmente, é possível utilizar diferentes comandos para fazer as mesmas operações.
+
+--
+
+- É comum considerar *templates* e alterar algumas partes para obter o resultado final. 
+
+
+
+---
+class: inverse, middle, center
+
+
+# `\(\LaTeX\)`
+
+
+---
+
+# Como funciona
+
+- Quando utilizamos o `\(\LaTeX\)`, utilizamos comandos e ao compilar o arquivo `.tex`, é gerado um arquivo com o texto de interesse.
+
+--
+
+- Por exemplo, podemos escrever o seguinte texto em `\(\LaTeX\)`,
+
+  - `Texto em {\bf negrito}.`
+  
+--
+
+- E a saída no arquivo vai ser
+
+  - Texto em **negrito**.
+  
+--
+
+- Se quisermos escrever algo em itálico, podemos fazer:
+
+  - `Texto em \emph{itálico}.`
+  
+--
+
+- E a saída no arquivo vai ser
+
+  - Texto em *itálico*.
+
+---
+
+# Um exemplo
+
+- Um primeiro exemplo poderia ser
+
+
+```latex
+\documentclass{article}
+
+\begin{document}
+  Hello World! % comentários aqui
+\end{document}
+```
+
+--
+
+- Comandos começam sempre com `\`.
+
+--
+
+- Todos documentos começam com `\documentclass{}`.
+
+  - Nesse caso, estamos utilizando a classe de `article`.
+  
+--
+
+  - Mas é possível inclusive criar a sua própria classe dentro do `\(\LaTeX\)`.
+  
+--
+
+- Comentários são identificados sempre pelo símbolo `%`.
+
+  - Tudo o que estiver escrito depois desse símbolo será desconsiderado.
+  
+---
+
+# Como escrever
+
+- O texto deve estar sempre `\begin{document}` e `\end{document}`.
+
+--
+
+- Antes de `begin{document}` é chamado de preambulo. Nessa parte, podemos:
+
+  - definir pacotes que serão utilizados;
+  - definir novos comandos;
+  - definir algumas variáveis, como título, data, autor.
+  
+--
+
+- Por exemplo, poderíamos fazer o seguinte no arquivo anterior.
+
+
+```latex
+\documentclass{article}
+
+\author{Bruno Santos}
+
+\title{Meu primeiro arquivo Latex}
+
+\begin{document}
+  \maketitle
+  Hello World! % comentários aqui
+\end{document}
+```
+
+
+---
+
+# Alguns comentários
+
+- Os espaços não são considerados todos como parte do texto.
+
+--
+
+- Se escrevermos o seguinte no `\(\LaTeX\)`:
+
+
+```latex
+\documentclass{article}
+\begin{document}
+  Texto com      muitos      espaços.          Por quê         ?
+\end{document}
+```
+
+--
+
+- O resultado no arquivo final será o seguinte:
+
+--
+
+  - texto com muitos espaços. Por quê ?
+  
+---
+
+# Caracteres especiais
+
+- É preciso tomar cuidado com alguns caracteres especiais.
+
+--
+
+- Em especial, os seguintes:
+
+  - `$`
+  - `#`
+  - `%`
+  - `&amp;`
+  
+--
+
+- Devem sempre ser utilizados junto de `\`
+
+--
+
+- Também para escrever acentos e cedilhas, devemos utilizar pacotes específicos para isso ou escrevê-los de maneira especial.
+
+  - Por exemplo, o acento em "Não" pode ser obtido com 
+  
+
+```latex
+N\~ao
+```
+
+---
+
+# Caractereres especiais (cont.)
+
+- Um pacote bastante útil para escrever em português:
+
+  - `inputenc`
+  
+--
+
+- O modo de uso do pacote é carregar o seguinte no preambulo.
+
+  - `\usepackage[utf8]{inputenc}`
+  
+--
+
+- No Windows, outra opção é considerar `latin1`.
+
+--
+
+- Ao utilizar este pacote, não é necessário escrever acentos e caracteres especiais de maneira diferente.
+
+--
+
+- Porém, é importante saber que é possível obter esses caracteres utilizando funções base do `\(\LaTeX\)`.
+
+---
+# Erros no `\(\LaTeX\)`
+
+- Algo bastante comum quando estamos trabalhando com `\(\LaTeX\)` é se deparar com erros.
+
+--
+
+- Um erro comum é escrever o nome de funções de uma maneira errada.
+
+  - Por exemplo, usar `\fb` ao invés de `\bf`.
+  
+--
+
+- Uma estratégia simples é comentar partes do código até encontrar o erro.
+
+  - No RStudio podemos considerar atalhos do tipo `Ctrl + Shift + C`, ao selecionar algumas linhas.
+  
+--
+
+- Outros editores costumam ter atalhos para comentar linhas também.
+
+--
+
+- De modo geral, é importante não perder a calma.
+
+
+---
+class: inverse, middle, center
+
+# Ambientes 
+
+---
+
+# O que seriam ambientes?
+
+- A maioria das ações dentro do `\(\LaTeX\)` são feitas através de ambientes. 
+
+  - No inglês: *environment*.
+  
+--
+
+- Sempre quando utilizar `\begin{}` e `\end{}` estamos considerando um ambiente.
+
+--
+
+- Um erro bastante comum é abrir um ambiente e não fechar esse ambiente. 
+
+--
+
+- Alguns ambientes comuns:
+
+  - `itemize` para construir listas.
+  - `enumerate` para construir listas enumeradas.
+  - `description` para construir listas com destaque e identadas. 
+  - `tabular` para tabular dados.
+  - `table` para construir tabelas.
+  - `figure` para colocar figuras no texto.
+  - ...
+
+---
+# Exemplo
+
+- Podemos comparar o output dos ambientes `itemize` e `enumerate`.
+
+
+```latex
+\documentclass{article}
+\author{Bruno Santos}
+\title{Comparando listas}
+\date{}
+\begin{document}
+  \maketitle
+  
+  \begin{itemize}  
+    \item Primeiro item
+    \item Segundo item
+  \end{itemize}  
+  
+  \begin{enumerate}  
+    \item Primeiro item
+    \item Segundo item
+  \end{itemize}  
+\end{document}
+```
+
+---
+class: inverse, middle, center
+
+# Objetos matemáticos
+
+---
+
+# Matemática no `\(\LaTeX\)`
+
+- Um dos grandes interesses em utilizar `\(\LaTeX\)` é exatamente por causa de equações matemáticas.
+
+  - A qualidade da sua formatação é muito superior a outros editores de texto.
+
+--
+
+- Existem algumas maneiras diferentes de adicionar uma fórmula ou equação no texto.
+
+--
+
+- A mais simples é utilizando o operador $.
+
+--
+
+- Sempre que quisermos colocar uma equação no texto, devemos fazer
+
+  - `$x^2 + y^2 = z^2$`.
+  
+--
+
+- E o resultado será
+
+  - `\(x^2 + y^2 = z^2\)`
+
+--
+
+- Vejam como essa formatação é mais interessante do que simplesmente escrever
+
+  - x^2 + y^2 = z^2
+
+
+---
+
+# Outros exemplos
+
+- Podemos também adicionar uma fórmula numa linha separada fazendo
+
+
+```latex
+\[
+  x^2 + y^2 = z^2
+\]
+```
+
+--
+
+- Que o resultado será 
+
+`$$x^2 + y^2 = z^2$$`
+
+--
+
+- O mesmo resultado é obtido fazendo
+
+
+```latex
+$$x^2 + y^2 = z^2$$
+```
+
+--
+
+- Também podemos utilizar o ambiente `equation`.
+
+---
+
+# Ambiente `equation`
+
+- O ambiente `equation` do pacote `amsmath` permite numerar as equações ao longo do texto.
+
+  - E retirar essa numeração quando ela não é necessária.
+  
+--
+
+
+```latex
+\begin{equation}
+  x^2 + y^2 = z^2
+\end{equation}
+```
+
+--
+
+- O resultado será 
+
+`\begin{equation}
+  x^2 + y^2 = z^2
+\end{equation}`
+
+--
+
+- Para nos referenciar a uma equação numerada devemos utilizar um `label{}` dentro do ambiente.
+
+
+```latex
+\begin{equation}
+  \label{minha_equacao}
+  x^2 + y^2 = z^2
+\end{equation}
+```
+
+---
+
+# Lista de símbolos
+
+- É possível encontrar de forma online diversos materiais de ajuda, com listas de possíveis símbolos.
+
+  - A referência mais completa: [http://tug.ctan.org/info/symbols/comprehensive/symbols-a4.pdf](http://tug.ctan.org/info/symbols/comprehensive/symbols-a4.pdf)
+  - Um link mais direto com boas referências: [ https://pt.overleaf.com/learn/latex/Mathematical_expressions](https://pt.overleaf.com/learn/latex/Mathematical_expressions)
+
+
+- Uma referência para encontrar símbolos é: 
+
+  - [https://detexify.kirelabs.org/classify.html](https://detexify.kirelabs.org/classify.html)
+  
+--
+
+- Na Estatística, utilizamos uma gama de símbolos menor:
+
+--
+
+  - Letras gregas.
+  - Integrais e somas.
+  - Frações e equações
+  - Matrizes e definição de casos.
+  
+--
+
+- Exemplo: `\(X \sim N(\mu, \sigma^2)\)` é dado pelo código: 
+
+
+```latex
+X \sim N(\mu, \sigma^2)
+```
+
+---
+
+# Alguns exemplos
+
+- Uma equação pode aparecer de forma diferente a depender se é colocada numa linha ou num ambiente.
+
+--
+
+- Por exemplo se escrevermos `\sum_{i=1}^n X_i` dentro do ambiente `equation` obteremos o seguinte 
+
+`$$\sum_{i=1}^n X_i$$`
+
+--
+
+- Enquanto se colocarmos dentro uma linha teremos `\(\sum_{i=1}^n X_i\)`.
+
+--
+
+- Podemos obter um resultado melhor utilizando a função `\displaystyle` dentro do `$`.
+
+  - `$\displaystyle \sum_{i=1}^n X_i$`
+  - `\(\displaystyle \sum_{i=1}^n X_i\)`.
+  
+  
+---
+# Algumas funções básicas
+
+- Para potências devemos utilizar o operador `^`.
+
+  - Deve-se tomar cuidado quando existem diversos itens nessa potência
+  
+--
+
+- Caso queiramos escrever `\(x^{\alpha-1}e^{2x}\)`, devemos fazer
+
+  - `$x^{\alpha-1}e^{2x}$`.
+  - Notem o uso da chave.
+  - Caso tivéssemos esquecido a chave, obteríamos `\(x^\alpha-1e^2x\)`.
+  
+--
+
+- Para índices subescritos, devemos utilizar o `_`.
+
+--
+
+  - Ou seja `$x_{n-1} + 2 \cdot x_{n-2}$` 
+--
+ `\(\Rightarrow\)` 
+--
+ `\(x_{n-1} + 2 \cdot x_{n-2}\)`
+ 
+--
+ 
+- Para frações utilizamos a função `\frac{}{}`.
+ 
+--
+
+  - `$\frac{\exp\{\alpha + \beta x\}}{1 + \exp\{\alpha + \beta x\}}$`
+
+--
+
+  - `\(\frac{\exp\{\alpha + \beta x\}}{1 + \exp\{\alpha + \beta x\}}\)`
+
+---
+# Algumas dicas
+
+- Existem algumas funções dentro do pacote `amsmath` que facilitam a escrita de algumas funções básicas na matemática.
+
+--
+
+- Por exemplo, se queremos falar sobre um limite, poderíamos fazer
+
+  - `$lim_{x \rightarrow \infty} \frac{1}{x}$`
+  
+--
+
+  - `\(lim_{x \rightarrow \infty} \frac{1}{x}\)`
+
+--
+
+- Notem como o índice fica ao lado da função limite. 
+
+--
+
+- Uma melhor opção é fazer
+
+  - `$\displaystyle \lim_{x \rightarrow \infty} \frac{1}{x}$`
+  
+--
+
+  - `\(\displaystyle \lim_{x \rightarrow \infty} \frac{1}{x}\)`.
+  
+--
+
+- Funções similares podem ser utilizadas para `\(\min\)`, `\(\max\)`, `\(\exp\)`, `\(\log\)`, ...
+
+
+---
+
+# Algumas dicas (cont.)
+
+- Para várias linhas de equações, podemos utilizar o ambiente `align` do pacote `amsmath`.
+
+--
+
+- Sua utilização é feita da seguinte forma.
+
+
+```latex
+\begin{align*}
+  (x - 1)^3 &amp;= (x - 1)(x - 1)(x - 1) \\
+            &amp;= (x - 1)(x^2 - 2x + 1) \\
+            &amp;= (x^3 - 2x^2 + x - x^2 + 2x - 1) \\
+            &amp;= (x^3 - 3x^2 + 3x - 1) \\
+\end{align*}
+```
+
+--
+
+- O que resultaria em 
+
+`\begin{align*}
+  (x - 1)^3 &amp;= (x - 1)(x - 1)(x - 1) \\
+            &amp;= (x - 1)(x^2 - 2x + 1) \\
+            &amp;= (x^3 - 2x^2 + x - x^2 + 2x - 1) \\
+            &amp;= (x^3 - 3x^2 + 3x - 1) \\
+\end{align*}`
+
+---
+
+# Algumas dicas (cont.)
+
+- Uma utilização bastante comum na Estatística se refere quando queremos considerar diferentes casos.
+
+--
+
+- Considere uma variável aleatória definida da seguinte forma:
+
+`$$Y = \begin{cases}
+        0, &amp; \mbox{se o time perde a partida} \\
+        1, &amp; \mbox{se o time empata a partida} \\
+        3, &amp; \mbox{se o time vence a partida} \\
+      \end{cases}$$`
+      
+--
+
+- Esse resultado pode ser obtido utilizando o ambiente `cases`.
+
+
+```latex
+\[
+  Y = \begin{cases}
+        0, &amp; \mbox{se o time perde a partida} \\
+        1, &amp; \mbox{se o time empata a partida} \\
+        3, &amp; \mbox{se o time vence a partida} \\
+      \end{cases}
+\]      
+```
+
+---
+
+# Algumas dicas (cont.)
+
+- Matrizes podem ser obtidas com os ambientes `pmatrix` ou `bmatrix`.
+
+--
+
+
+```latex
+$$
+  \begin{pmatrix}
+    a &amp; b \\
+    c &amp; d \\
+  \end{pmatrix}
+$$      
+```
+
+--
+
+- Com parêntesis:
+`\begin{pmatrix}
+  a &amp; b \\
+  c &amp; d \\
+\end{pmatrix}`
+
+- Com colchetes:
+`\begin{bmatrix}
+  a &amp; b \\
+  c &amp; d \\
+\end{bmatrix}`
+
+
+---
+class: inverse, middle, center
+
+# Exercícios
+
+---
+# Para praticar
+
+- Item 1:
+
+`$$\Omega \times K = \begin{bmatrix} 
+                            \omega_i &amp; \cdots &amp; \omega_n
+                         \end{bmatrix} 
+                    \begin{bmatrix} 
+                            k_{11} &amp; \cdots &amp; k_{1p} \\
+                            k_{21} &amp; \cdots &amp; k_{2p} \\
+                            \vdots &amp; \ddots &amp; \vdots \\
+                            k_{n1} &amp; \cdots &amp; k_{np} 
+                         \end{bmatrix}$$`
+
+
+- Item 2
+
+`$$f(x|\mu, \sigma, \tau) = \frac{\tau(1-\tau)}{\sigma} \exp \left\{-\frac{\rho_\tau(x - \mu)}{\sigma}\right\}$$`
+
+- Item 3
+
+`$$\min_{(\alpha, \beta) \in \mathbb{R}^2} \sum_{i=1}^n (Y_i - \alpha - \beta X_i)^2$$`
+
+
+---
+class: middle, center, inverse
+
+# Fim!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
