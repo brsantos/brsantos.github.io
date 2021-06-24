@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>LaTeX - Escrita científica</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2021-06-23" />
+    <script src="libs/fabric/fabric.min.js"></script>
+    <link href="libs/xaringanExtra-scribble/scribble.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-scribble/scribble.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', function() { window.xeScribble = new Scribble({"pen_color":["#FF0000"],"pen_size":3,"eraser_size":30}) })</script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle
+
+## LaTeX - Escrita científica
+
+*****
+
+### Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+
+
+
+
+
+
+
+---
+class: center, middle, inverse
+
+# Motivação
+
+
+---
+# Trabalhos científicos
+
+- `\(\LaTeX\)` é utilizado para escrita de trabalhos científicos, principalmente.
+
+--
+
+- É importante apresentar como fazer certas tarefas que são comuns em um trabalho científico:
+
+--
+
+  - Seções e capítulos.
+  - Referências dentro do texto
+  - Tabelas
+  - Figuras
+  - Bibliografias
+  - ...
+
+--
+
+- Além disso, podemos mencionar também como fazer apresentações utilizando `\(\LaTeX\)`.
+
+--
+
+- Quando consideramos trabalhos científicos, é importante considerar alguns exemplos (*templates*).
+
+  - [https://estatistica.ufes.br/matriz-curricular-ppc-2019](https://estatistica.ufes.br/matriz-curricular-ppc-2019)
+  - [https://analytics.ufes.br/](https://analytics.ufes.br/)
+
+---
+class: inverse, middle, center
+
+# Organização e separações
+
+---
+# Separações
+
+- Considerando um artigo científico, podemos pensar em diferentes partes:
+
+  - resumo;
+  - seções;
+  - subseções;
+  - referências;
+  - apêndices.
+  - etc.
+
+--
+
+- Para gerar novas seções, basta utilizar o comando `\section`.
+
+  - Esse não é o caso de um ambiente.
+
+--
+
+- Também é possível criar subseções com `\subsection`.
+
+--
+
+- É possível marcar quando começa o apêndice, usando `\appendix`.
+
+--
+
+- Vejamos um exemplo.
+
+---
+
+# Referências de rótulos
+
+- Quando estamos escrevendo um texto científico, é comum fazermos referências a diferentes partes do texto.
+
+--
+
+  - Por exemplo, na introdução podemos comentar o que vai ser feito na seção de metodologia.
+  
+--
+
+  - Em textos matemáticos, é comum fazer referência a uma equação ou teorema.
+  
+--
+
+- Por esse motivo, é importante fazer essa ligação entre as diferentes partes do texto de forma automática.
+
+  - Utilizando a função `\label{}`.
+  
+--
+
+- Para fazer a referência, podemos utilizar tanto `\ref{}` ou `eqref{}` do pacote `amsmath`.
+
+--
+
+- É importante criar as referências desse modo, pois quando atualizamos o texto, adicionando novas seções por exemplo, as referências se atualizam de forma automática.
+
+--
+
+- Vejamos um exemplo disso.
+
+---
+class: inverse, middle, center
+
+# Tabelas e figuras
+
+---
+# Tabelas
+
+- Para adicionar tabelas no `\(\LaTeX\)`, devemos considerar o ambiente `tabular`.
+
+--
+
+  - E também possivelmente o ambiente `table`.
+  
+--
+
+
+```latex
+\begin{tabular}{lcr}
+Item            &amp; Marca   &amp; Valor (R\$) \\
+Relógio         &amp; Garmin  &amp; 799,99      \\
+Celular         &amp; Samsung &amp; 999,99      \\
+Fone de Ouvido  &amp; JBL     &amp; 299,99      \\
+\end{tabular}
+```
+
+--
+
+- O resultado pode ser visto no `\(\LaTeX\)`.
+
+--
+
+- Podemos adicionar linhas horizontais com a função `\hline`
+
+--
+
+- E podemos criar linhas verticais entre os alinhamentos das colunas
+
+  - `{|l|c|r|}` ou `{|lcr|}` ou `{l|c|r}` ou `{l|cr}` ou `\(\cdots\)`
+  
+---
+
+# Ambiente `table`
+
+- Em geral, colocamos uma tabela dentro de um ambiente `table`.
+
+--
+
+  - Título da tabela
+  - Referência para tabela
+  - Posicionar a tabela de diferentes formas.
+  
+--
+
+- Exemplo
+
+
+```latex
+\begin{table}
+  \centering
+  \caption{Título da minha tabela}
+  \label{tabela}
+  \begin{tabular}{lcr}
+  \hline
+  Item            &amp; Marca   &amp; Valor (R\$) \\ \hline
+  Relógio         &amp; Garmin  &amp; 799,99      \\
+  Celular         &amp; Samsung &amp; 999,99      \\
+  Fone de Ouvido  &amp; JBL     &amp; 299,99      \\ \hline
+  \end{tabular}
+\end{table}
+```
+
+
+---
+# Figuras
+
+- Para adicionar uma figura no texto, podemos utilizar a função `\includegraphics` do pacote `graphicx`.
+
+--
+
+  - Essa função tem algumas opções: `scale`, `width`, etc.
+  
+--
+
+  - As opções são passadas antes do nome do arquivo.
+  
+--
+
+  - Uma dica é deixar as figuras todas numa mesma pasta: `fig/`
+  
+
+```latex
+\includegraphics{fig/cat}
+```
+
+--
+
+- É normal utilizar essa função dentro de um ambiente `figure`.
+--
+Por exemplo
+
+
+```latex
+\begin{figure}
+  \centering
+  \includegraphics[width = 0.7\textwidth]{fig/cat}
+  \caption{Um gatinho} 
+  \label{minha_figura}
+\end{figure}
+```
+
+---
+# Objeto do tipo Floats
+
+- Ambientes como `table` e `figure` podem "flutuar" no seu documento, para tentar encontrar uma melhor posição possível.
+
+--
+
+- Isso pode ser colocado como uma opção quando criamos o ambiente.
+
+--
+
+- Algumas informações podem ser encontradas no seguinte link:
+
+  - [https://en.wikibooks.org/wiki/LaTeX/Floats,_Figures_and_Captions](https://en.wikibooks.org/wiki/LaTeX/Floats,_Figures_and_Captions)
+
+--
+
+
+```latex
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width = 0.7\textwidth]{fig/cat}
+  \caption{Um gatinho} 
+  \label{minha_figura}
+\end{figure}
+```
+
+--
+
+- `h` = *here*, `t` = *top*, `b` = *bottom*, `p` = *page*
+
+---
+class: middle, center, inverse
+
+# Referências bibliográficas
+
+
+---
+# Como adicionar referências?
+
+- O `\(\LaTeX\)` tem uma maneira automática e inteligente para adicionar referências bibliográficas.
+
+--
+
+- Para isso, é necessário criar um arquivo do tipo `bibtex`, ou seja, `.bib`.
+
+--
+
+- Para tipo de bibliografia, precisamos criar uma entrada na nossa base de dados `bibtex`.
+
+
+```latex
+@article{sarnaglia:2010,
+	author = {Sarnaglia, A. and Reisen, V. A. and L\'evy{-L}educ, C.},
+	title = {Robust estimation of periodic autoregressive processes 
+	          in the presence of additives outliers},
+	journal = {Journal of Multivariate analysis},
+	volume = {2},
+	pages = {2168--2183},
+	year = {2010}
+}
+```
+
+--
+
+- Nesse caso a chave para utilizar essa referência é `sarnaglia:2010`.
+
+---
+# Criação das referências
+
+- Ao utilizar essas chaves ao longo do texto, o `\(\LaTeX\)` cria a lista de referências de forma automática.
+
+  - Considerando o estilo de referência de interesse.
+  
+--
+
+- Precisamos definir o nome do arquivo que contém todas as referências.
+
+  - `\bibliography{references}`.
+  
+--
+
+- E o estilo da bibliografia é definido pelo comando:
+
+  - `\bibliographystyle{abbrv}`
+  
+--
+
+- Podemos considerar outros estilos, que podem ser encontrados na internet ou disponibilizados por diferentes organizações.
+
+
+---
+class: center, middle, inverse
+
+# Apresentações
+
+---
+# Como fazer apresentações
+
+- Para apresentações, devemos utilizar a classe `beamer`.
+
+  - `\documentclass{beamer}`.
+  
+--
+
+- Tirando a classe, as outras regras para `\(\LaTeX\)` funcionam aqui também.
+
+
+```latex
+\documentclass{beamer}
+\title{Minha apresentação}
+\author{Bruno Santos}
+\institute{UFES}
+\date{Data da apresentação}
+  
+\begin{document}
+  \begin{frame}
+    \maketitle
+  \end{frame}
+
+\end{document}
+```
+
+--
+
+- Por exemplo, é necessário carregar pacotes que estejamos interessados em utilizar na apresentação.
+
+---
+# Criando os slides
+
+- Os slides são criados com o ambiente `frame`.
+
+--
+
+- O título do slide pode ser informado como um argumento logo após o `\begin{frame}`.
+
+--
+
+
+```latex
+\begin{frame}{Titulo do slide}
+
+  Texto do slide
+  
+\end{frame}
+```
+
+--
+
+- É possível criar seções para organizar a apresentação, com `\section{}`.
+
+--
+
+- Também podemos considerar diferentes estilos para apresentação, com o comando `\usetheme{}`.
+
+  - As opções podem ser encontradas no [link](https://deic-web.uab.cat/~iblanes/beamer_gallery/index_by_theme.html).
+
+--
+
+  - Opções: `default`, `CambridgeUS`, `Berlin`, ...
+  
+- Vejamos um exemplo.  
+
+
+---
+# Mais recursos
+
+- Existem muitos detalhes que podem ser considerados quando fazemos apresentações.
+
+  - `pause`
+  - `\tableofcontents` quando consideramos `\section`
+  - ...
+  
+--
+
+- Ainda no `\LaTeX`, alguns recursos são interessantes como
+
+  - Pacote `Tikz` para fazer ilustrações. 
+--
+Ver exemplo. 
+
+--
+
+  - [https://texample.net/tikz/examples/](https://texample.net/tikz/examples/)
+  
+--
+
+  - Pacote `animate` para fazer animações. 
+--
+Ver exemplos. 
+
+  - [https://texblog.org/2018/03/05/the-animate-package/](https://texblog.org/2018/03/05/the-animate-package/)
+
+---
+class: middle, center, inverse
+
+# Fim!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
