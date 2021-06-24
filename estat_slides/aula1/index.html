@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Estatística Aplicada às Ciências Sociais</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2021-06-24" />
+    <script src="libs/fabric/fabric.min.js"></script>
+    <link href="libs/xaringanExtra-scribble/scribble.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-scribble/scribble.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', function() { window.xeScribble = new Scribble({"pen_color":["#FF0000"],"pen_size":3,"eraser_size":30}) })</script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle
+
+## Pesquisas amostrais
+
+*****
+
+### Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+
+
+
+
+
+
+
+---
+class: center, middle, inverse
+
+# Introdução
+
+
+---
+# Estatística
+
+- Estatística é a ciência dos dados. Responsável por:
+
+  - coletar;
+  - classificar;
+  - organizar;
+  - resumir;
+  - analisar, e
+  - interpretar
+
+informações numéricas e não numéricas.
+
+--
+
+- Essa coleta de dados é muitas vezes feita a partir de pesquisas.
+
+--
+
+  - É preciso ter alguns cuidados na coleta dessas informações.
+  
+--
+
+  - Tanto com relação ao processo de amostragem.
+  
+--
+
+  - Quanto com relação à forma como essas informações são coletadas.
+
+
+---
+class: inverse, middle, center
+
+# Planejamento de uma pesquisa
+
+
+---
+# Papel da Estatística
+
+- A Estatística pode se envolver em várias etapas de uma pesquisa.
+
+  - Especificação do problema: população e parâmetros de interesse;
+  - Amostragem;
+  - Observação e organização dos dados;
+  - Análise descritiva;
+  - Análise exploratória;
+  - Inferências;
+  - Interpretação dos resultados.
+
+--
+
+- Ao longo dessa aula e do curso, iremos discutir muitos desses pontos.
+
+---
+# Especificação do problema
+
+- Primeira etapa do delineamento de uma pesquisa.
+
+--
+
+- Em geral, nessa etapa, responde-se:
+
+  - Quem ou o que será observado? Especifica a **população** ou universo de interesse;
+  
+  - O que medir, contar ou classificar com respeito aos elementos a serem observados? Determina as **variáveis**;
+
+  - É possível separar os indivíduos em grupos homogêneos? Se sim, podemos melhorar o processo de amostragem.
+ 
+--
+
+- Estatístico e especialista trabalham em conjunto.
+
+--
+
+- Problema bem especificado evita ambiguidades e vícios no estudo.
+
+
+---
+# Definições importantes
+
+
+- ### Universo ou população
+Conjunto de elementos para os quais as conclusões serão válidas.
+
+--
+
+- ### Variáveis
+Características a serem observadas dos elementos da população.
+
+--
+
+- ### Parâmetro
+Medida que descreve um comportamento de uma variável na população.
+
+
+
+---
+# Definições importantes
+
+
+- ### Amostra 
+Uma parcela dos elementos da população.
+
+--
+
+- ### Estimador
+Medida que descreve um comportamento de uma variável na amostra.
+
+--
+
+- ### Estimativa
+Valor fornecido pelo estimador após a coleta da amostra.
+
+
+---
+# Sobre a definição da população
+
+- Considere o exemplo em que gostaríamos de fazer uma pesquisa na UFES.
+
+--
+
+- Quem deve ser nossa população?
+
+--
+
+  - Estudantes? 
+  
+--
+
+  - Servidores?
+  
+--
+
+  - Prestadores de serviços?
+  
+--
+
+  - Todos os anteriores?
+  
+--
+
+- A definição da **população** da nossa pesquisa depende do **objetivo** da nossa pesquisa!
+
+--
+
+- Por isso, antes de iniciar a pesquisa devemos definir isso exatamente.
+
+---
+# Sobre população
+
+- Considere as seguintes pesquisas, com suas respectivas populações:
+
+  - **Estudar a renda total dos domicílios de Vitória**. 
+--
+População: todos os domicílios de Vitória.
+
+--
+
+  - **Estudar a satisfação com o atendimento de uma loja.** 
+--
+População: todos(as) clientes daquela loja.
+
+--
+
+  - **Estudar o estresse associado à pós-graduação.**  
+--
+População: todos(as) estudantes da pós-graduação.
+
+--
+
+  - **Estudar a qualidade das refeições do Restaurante Universitário.**  
+--
+População: todos(as) usuários(as) do RU.
+
+--
+
+&lt;br&gt;
+
+- Note que para esses exemplos, nem sempre é **possível** ou **viável** ter acesso a toda a população.
+
+
+---
+# Cuidados com viés
+
+- Podemos definir **viés** com um afastamento do valor do parâmetro que gostaríamos de medir.
+
+--
+
+- Suponha que tenhamos o interesse em medir o índice de desemprego em Vitória.
+
+--
+
+  - Suponha que o percentual verdadeiro é 15%.
+  
+--
+
+  - E minha pesquisa encontra um valor igual a 5%.
+  
+--
+
+  - O que pode ter ocorrido?
+  
+--
+
+- Tipos de viés:
+
+  - **viés de seleção**: Resulta quando um subgrupo da população não tem
+a mesma chance de ser selecionado para a amostra;
+
+--
+
+  - **viés de não-resposta**: Resulta da incapacidade de se obter os dados
+desejados de todas as unidades experimentais;
+
+--
+
+  - **viés de erro de medição**: Resulta da falta de exatidão dos dados registrados, provocada por ambiguidade de perguntas ou pelo efeito do entrevistador no entrevistado.
+  
+---
+class: inverse, middle, center
+
+# Tipos de variáveis
+
+---
+# Variáveis
+
+- **Definição: ** São características numéricas ou não das unidades experimentais.
+
+--
+
+- Suponha que a unidade experimental é um(a) estudante na UFES.
+
+--
+
+- Nesse caso, poderíamos observar as seguintes características:
+
+  - Gênero.
+  
+  - Idade.
+  
+  - Se tem emprego ou não.
+  
+  - Horário de estudo.
+  
+  - Usa transporte público ou não.
+  
+  - ...
+  
+---
+# Classificação de variáveis
+
+- A depender do tipo da variável, podemos utilizar diferentes métodos para analisá-la.
+
+--
+
+- Por exemplo, podemos calcular a **média** de idades das pessoas que participaram de uma certa pesquisa.
+
+--
+
+- Porém, não somos capazes de calcular a **média** do gênero das pessoas. 
+--
+Podemos obter, nesse caso, a **proporção** de pessoas em cada um dos gêneros.
+
+--
+
+- Classificamos as variáveis em dois tipos:
+
+  - **Qualitativa:** não-numérica.
+  
+  - **Quantitativa:** numérica.
+  
+--
+
+- Uma variável **qualitativa** pode ser *nominal* ou *ordinal*.
+
+--
+
+- Uma variável **quantitativa** pode ser *discreta* ou *contínua*.
+
+
+---
+
+# Exemplos de variáveis qualitativas
+
+--
+
+- **Gênero: **
+
+  - Possíveis valores: {Masculino, Feminino}.
+  
+  - Os valores não podem ser ordenados.
+  
+  - Classificação: **qualitativa nominal**.
+  
+--
+
+- **Grau de instrução: **
+
+  - Possíveis valores: {Nenhum, Ens. Fundamental, Ens. Médio, Ens. Superior}.
+  
+  - Os valores podem ser ordenados: Nenhum &lt; Ens. Fundamental &lt; Ens. Médio &lt; Ens. Superior.
+  
+  - Classificação: **qualitativa ordinal**.
+  
+---
+
+# Exemplos de variáveis quantitativas
+
+--
+
+- **Idade (em anos): **
+
+  - Possíveis valores: {0, 1, 2, ...}.
+  
+  - Os valores podem ser descritos pelo conjunto dos números naturais ( `\(\mathbb{N}\)` ).
+  
+  - Classificação: **quantitativa discreta**.
+  
+--
+
+- **Tempo de espera para o ônibus chegar: **
+
+  - Possíveis valores: `\([0, \infty)\)`, qualquer tempo maior que 0.
+  
+  - Os valores são descritos numa escala contínua.
+  
+  - Classificação: **quantitativa contínua**.
+  
+---
+class: inverse, middle, center
+
+# Amostragem
+
+---
+# Noções básicas
+
+- **Motivação:** Inviabilidade ou até mesmo impossibilidade de se observar
+toda a população.
+
+--
+
+- **Alternativa:** coletar uma amostra. Alternativa mais barata e rápida ao
+censo.
+
+--
+
+- **Vantagens:**
+
+  - Reduz custos;
+  
+  - Reduz tempo de coleta;
+  
+  - Se for representativa, reproduz satisfatoriamente a realidade.
+  
+--
+
+- **Desvantagem:** pode carregar vícios quando feita sem os devidos cuidados.
+
+--
+
+- **Amostragem:** conjunto de técnicas apropriadas para selecionar amostras
+representativas da população de interesse.
+
+
+---
+# Amostragem aleatória simples
+
+- Forma mais básica de se construir uma amostra aleatória.
+
+--
+
+- Assume que são conhecidos todos os elementos da população.
+
+--
+
+  - Pode-se então selecionar uma amostra dessa população.
+  
+--
+
+  - Em sua forma mais geral, considera-se que todos os elementos tem a mesma probabilidade de seleção.
+  
+--
+
+### Exemplo
+
+- Considere o caso que a UFES deseja fazer uma pesquisa para avaliar o período EARTE.
+
+--
+
+- A administração central tem acesso a lista de todos os alunos.
+
+--
+
+- A reitoria poderia, por exemplo, sortear um número de alunos e fazer perguntas referentes a esse período.
+
+--
+
+- Essa abordagem é mais simples do que fazer essa pesquisa com todos(as) estudantes.
+
+
+---
+# Amostragem probabilística
+
+- A amostragem aleatória simples é um exemplo de amostragem probabilística.
+
+--
+
+  - Consideramos as probabilidades de seleção para calcular incertezas sobre as estimativas.
+  
+--
+
+- De forma geral, para amostragem é importante ter controle sobre a variabilidade da informação.
+
+--
+
+  - Via de regra é que quanto maior a variabilidade, maior deve ser o tamanho da amostra.
+  
+--
+
+- Considere a seguinte situação: 
+
+  - estamos interessados em obter a estimativa de renda média de uma certa população.
+  
+--
+
+- Temos a população disposta em dois grupos:
+
+  - Grupo 1: R$ 800, R$ 800, R$ 810, R$ 805, R$ 810.
+  - Grupo 2: R$ 200, R$ 1500, R$ 500, R$ 2000, R$ 300.
+  
+--
+
+- Devido a variabilidade diferente dos dois grupos, poderíamos pensar em obter amostras em cada um dos grupos de forma separada.
+
+---
+# Outros tipos de amostragem probabilística
+
+- Uma outra forma é chamada de amostragem estratificada.
+
+--
+
+  - Para essa abordagem, precisamos definir estratos dentro da população.
+  
+--
+
+  - Por exemplo, poderíamos pensar em estratos definidos pelo gênero.
+  
+--
+
+  - De forma geral, gostaríamos de definir estratos homogêneos com relação a informação de interesse.
+  
+--
+
+  - Esses estratos homogêneos ajudariam a diminuir o tamanho da amostra.
+  
+--
+
+- Outras propostas:
+
+  - Amostragem por conglomerado.
+  
+  - Amostragem em dois estágios.
+  
+  - Amostragem sistemática.
+
+
+
+---
+# Métodos de amostragem não probabilística
+
+- Métodos de amostragem probabilística podem ter um custo alto.
+
+--
+
+  - E podem ser prejudicados por problemas de não-resposta.
+  
+--
+
+  - Suponha que uma certa pessoa que foi selecionada na amostra não responde à pesquisa ou não é encontrada.
+  
+--
+
+- Por esse motivo, muitos institutos de pesquisa preferem métodos de amostragem não probabilístico.
+
+--
+
+  - Diminuem o custo.
+  
+--
+  
+  - Porém, não há resultados teóricos que comprovam a eficácia do método.
+
+--
+
+- O método mais conhecido é definido como amostragem por cotas.
+
+--
+
+  - É interessante, pois tenta construir uma amostra significativa da população.
+  
+---
+# Amostragem por cotas
+
+- Primeiramente, devem ser escolhidas um conjunto de variáveis que serão responsáveis por gerar as cotas.
+
+--
+
+  - Gênero
+  - Idade 
+  - Grau de instrução
+  - ...
+
+--
+
+- Essas variáveis devem ser tais que a sua distribuição seja conhecida na população.
+
+--
+
+  - Isso também ser válido para todas as suas possíveis combinações.
+  
+--
+
+- Considere o seguinte subgrupo da população:
+
+  - Mulheres com idade maior que 40 anos e com ensino superior.
+  
+--
+
+  - Suponha que na população o seu percentual de participação seja igual a 2%.
+  
+--
+
+  - Nesse caso, se o tamanho da minha amostra é igual a 100, eu devo entrevistas 2 mulheres nessa faixa etária com esse perfil de educação.
+  
+  
+
+---
+class: middle, center, inverse
+
+# Fim!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
