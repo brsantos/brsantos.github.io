@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>R - Introdução</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2021-06-27" />
+    <script src="libs/fabric/fabric.min.js"></script>
+    <link href="libs/xaringanExtra-scribble/scribble.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-scribble/scribble.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', function() { window.xeScribble = new Scribble({"pen_color":["#FF0000"],"pen_size":3,"eraser_size":30}) })</script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle
+
+## R - Introdução
+
+*****
+
+### Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+
+
+
+
+
+
+
+---
+class: center, middle, inverse
+
+# A verdade, a luz e a vida
+
+---
+class: center, middle, inverse
+
+# Introdução
+
+---
+# o `R`
+
+- Software livre com comunidade muito ativa.
+
+--
+
+  - 5-9 de julho: [useR! 2021 - The R Conference](https://user2021.r-project.org/)
+
+--
+
+- Brincadeiras a parte, o R é uma ferramenta importante para um estatístico.
+
+--
+
+  - Permite observar diversos resultados teóricos utilizando programação.
+  
+--
+
+  - Permite estimar os mais diversos modelos estatísticos.
+  
+--
+
+  - Consegue exportar todo tipo de dados, inclusive de outros softwares estatísticos.
+
+--
+
+  - Tem ótimas ferramentas para visualização de dados.
+  
+--
+
+  - Está a sempre a ser atualizado.
+  
+---
+# mas o que é o R?
+
+--
+
+- Por que se chama R?
+
+--
+
+  - Os seus criadores se chamam **R**obert Gentleman e **R**oss Ihaka.
+  
+--
+
+- `R` é um software desenvolvido para manipulação de dados, cálculos e visualização gráfica.
+
+--
+
+  - Baseado em uma linguagem de programação eficiente, que se chama `S`.
+  
+--
+
+  - S-Plus é a uma versão comercial da linguagem.
+  
+--
+
+- Tem sido utilizada amplamente nessa nova era de ciência de dados.
+
+--
+
+  - Embora existam outras linguagens interessantes, como `python`.
+  
+--
+
+- Entre estatísticos, foi adotada como a principal linguagem de programação.
+
+--
+
+  - Novos desenvolvimentos estatísticos são, em geral, disponibilizados primeiramente em R.
+  
+---
+# introdução ao R
+
+- Uma introdução ao R foi feita pela Flavia de Jesus, do projeto ensinaR.
+
+.center[
+
+&lt;iframe width="560" height="315" src="https://www.youtube.com/embed/AqQ2nyzyOIc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen&gt;&lt;/iframe&gt;
+]
+
+--
+
+- Importância de projetos no RStudio e outras informações interessantes.
+
+
+---
+# R e RStudio
+
+- `R` pode ser utilizado através de scripts, sem a necessidade de uma janela gráfica.
+
+--
+
+  - Por exemplo, usando um terminal.
+  
+--
+
+- Porém, dada a variedade de tarefas que podem ser executadas:
+
+  - importação de dados;
+  - geração de gráficos;
+  - geração de relatórios, utilizando outras linguagens como acessório;
+  - ...
+  
+--
+
+- É interessante considerar uma ferramenta que nos ajude nesse processo:
+
+--
+
+  - RStudio!
+
+--
+
+- RStudio: IDE (*Integrated Development Environment*)
+
+  - Permite gerar scripts;
+  - Visualizar objetos e gráficos gerados;
+  - Muito mais;
+  
+---
+# Algumas fontes interessantes
+
+- Para obter mais informações sobre o R:
+
+  - [https://cran.r-project.org/doc/FAQ/R-FAQ.html](https://cran.r-project.org/doc/FAQ/R-FAQ.html)
+  
+--
+
+- Introdução ao R, mantido pela **R Foundation**:
+
+  - [https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf](https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf)
+  
+  
+--
+
+- Livro da Curso-R:
+
+  - [https://livro.curso-r.com/](https://livro.curso-r.com/)
+  
+--
+
+- R for Data Science:
+
+  - [https://r4ds.had.co.nz/](https://r4ds.had.co.nz/)
+  
+--
+
+- DaSLab - UFES
+
+  - [https://daslab-ufes.github.io/](https://daslab-ufes.github.io/)
+
+
+
+
+---
+class: inverse, middle, center
+
+# Primeiros passos
+
+---
+# Ajuda
+
+- Parece óbvio, porém uma das coisas mais importantes dentro do R é saber como obter ajuda.
+
+--
+
+  - É bastante comum se deparar com erros ao longo do caminho.
+  
+--
+
+  - Sejam erros no seu programa.
+  
+--
+
+  - Sejam erros na forma de como você está uma determinada função, por exemplo.
+  
+--
+
+- É importante sempre manter a calma! 
+--
+E tentar entender o que pode estar acontecendo.
+
+
+```r
+?plot
+```
+
+--
+
+
+```r
+help(plot)
+```
+
+--
+
+- Quando queremos encontrar alguma função, podemos fazer
+
+
+```r
+??plot
+```
+
+---
+# Comandos no R
+
+- `R` é uma linguagem *case sensitive*:
+
+--
+
+  - `A` e `a` são símbolos diferentes e se referem a variáveis diferentes.
+  
+--
+
+  - Muitos erros inicialmente se devem a problemas desse tipo.
+  
+--
+
+- Quase todos símbolos ou caracteres podem ser utilizados para nomear objetos.
+
+--
+
+  - Porém, alguma parsimônia deve ser utilizada: [https://daslab-ufes.github.io/boas-praticas/](https://daslab-ufes.github.io/boas-praticas/).
+
+  - Guia de estilo: [https://style.tidyverse.org/](https://style.tidyverse.org/).
+  
+--
+
+- Comandos elementares consistem em **expressões** ou **atribuições**.
+
+--
+
+  - Expressões são avaliadas e impressas no console, quando colocadas como comandos.
+  
+--
+
+  - Uma atribuição avalia uma expressão e passa o valor para uma variável, mas o resultado não é impresso.
+  
+---
+# Ainda sobre comandos
+
+- Na maioria dos sistemas operacionais, o R permite que você reutilize comandos anteriores.
+
+--
+
+  - Isso pode ser interessante para deixar o seu trabalho mais eficiente.
+  
+--
+
+- As setas para cima e para baixo podem ser utilizadas no console para encontrar um comando já utilizado.
+
+--
+
+  - Após encontrado, o comando pode ser alterado.
+  
+--
+  
+  - Isso pode ser feito inclusive quando temos um comando com muitas linhas.
+  
+--
+
+- No RStudio, isso pode ser visto na aba de comandos dentro do painel de ambiente. 
+
+--
+
+- É possível também utilizar comandos que estão salvos num arquivo externo.
+
+
+```r
+source("nome_arquivo.R")
+```
+
+--
+
+- Isso pode ser feito inclusive de arquivos salvos na internet.
+
+
+```r
+source("https://www.ime.usp.br/~giapaula/rv.gama")
+```
+
+---
+# objetos
+
+- Os elementos que o R cria e manipula são chamados de objetos.
+
+--
+
+  - Um vetor de números
+  
+  - Uma lista de textos.
+  
+  - Funções.
+  
+  - Estruturas mais gerais.
+  
+--
+
+- É possível listar durante uma sessão do R quais objetos foram criados fazendo
+
+
+```r
+objects()
+```
+
+- Também é possível fazer
+
+
+```r
+ls()
+```
+
+---
+# área de trabalho
+
+- A coleção de objetos armazenados numa sessão é chamada de *workspace* ou área de trabalho.
+
+--
+
+- Para apagar objetos da área de trabalho, podemos fazer
+
+
+```r
+rm(x)
+```
+
+--
+
+- É possível salvar a área de trabalho ao final de uma sessão.
+
+
+```r
+save.image()
+```
+
+- Porém, isso não é recomendado. 
+
+--
+
+- É mais interessante que você salve objetos em específico que você queira usar posteriormente. 
+
+
+```r
+saveRDS(objeto)
+```
+
+--
+
+- Áreas de trabalho podem conter objetos que você não queira utilizar, ou precisam ser atualizados.
+
+  - Isso pode causar problemas.
+
+---
+class: inverse, middle, center
+
+# Manipulações mais simples
+
+---
+# Vetores e atribuição
+
+- `R` opera em diferentes estrutura de dados.
+
+--
+
+- A estrutura mais simples é um **vetor**.
+
+--
+
+  - Sequência de objetos do mesmo tipo.
+  
+--
+
+- Para atribuir um vetor de valores para um objeto utilizamos a função `c()`, que concatena valores num vetor.
+
+  - E o operador de atribuição "`&lt;-`".
+  
+
+```r
+x &lt;- c(1.2, 3.4, 10, 2.1, 13.2)
+```
+
+--
+
+- Atalhos podem ser importantes: [https://appsilon.com/rstudio-shortcuts-and-tips/](https://appsilon.com/rstudio-shortcuts-and-tips/)
+
+--
+
+- Podemos reutilizar objetos em um comando
+
+
+```r
+y &lt;- c(x, 0, x)
+```
+
+---
+# Aritmética de vetores
+
+- Esse é um ponto do `R` que é bastante distinto de outras linguagens de programação. 
+
+--
+
+- Quando utilizamos operadores básicos de aritmética, essa operação é feita elemento a elemento.
+
+  - `+`, `-`, `*`, `/`, `^`
+  
+--
+
+- Isso é importante de ser notado, porque nem sempre esse tipo de operação retorna erro.
+
+
+```r
+v1 &lt;- c(1, 2, 3, 4, 5)
+v2 &lt;- c(1.1, 1.2)
+2 * v1 + v2 + 3
+```
+
+```
+## Warning in 2 * v1 + v2: longer object length is not a multiple of shorter object
+## length
+```
+
+```
+## [1]  6.1  8.2 10.1 12.2 14.1
+```
+
+--
+
+- Nesse caso, o objeto `v2` é reciclado até ficar do mesmo tamanho de `v1`. 
+
+--
+
+- O número `3` também é repetido 5 vezes.
+
+---
+# Gerando sequências
+
+- Para diversos tipos de análise é importante criar sequências de valores a serem utilizadas.
+
+--
+
+- A forma mais simples é utilizar o operador `:`. 
+
+
+```r
+1:10
+```
+
+```
+##  [1]  1  2  3  4  5  6  7  8  9 10
+```
+
+--
+
+- Não é necessário nem começar no 1. Podemos começar em qualquer algarismo.
+
+
+```r
+7:13
+```
+
+```
+## [1]  7  8  9 10 11 12 13
+```
+
+--
+
+- Outra função importante é `seq`, com algumas possibilidades de uso.
+--
+A mais simples sendo
+
+
+```r
+seq(2, 19, by = 3)
+```
+
+```
+## [1]  2  5  8 11 14 17
+```
+
+---
+# Gerando sequências (cont.)
+
+- Podemos utilizar outros argumentos dentro de `seq` também.
+
+
+```r
+seq(2, 19, length.out = 6)
+```
+
+```
+## [1]  2.0  5.4  8.8 12.2 15.6 19.0
+```
+
+--
+
+- Uma outra função interessante é `rep`.
+
+
+```r
+rep(v1, times = 2)
+```
+
+```
+##  [1] 1 2 3 4 5 1 2 3 4 5
+```
+
+
+
+```r
+rep(v2, each = 2)
+```
+
+```
+## [1] 1.1 1.1 1.2 1.2
+```
+
+--
+
+
+```r
+rep(v1, each = 3, times = 2)
+```
+
+```
+##  [1] 1 1 1 2 2 2 3 3 3 4 4 4 5 5 5 1 1 1 2 2 2 3 3 3 4 4 4 5 5 5
+```
+
+
+---
+# Vetores lógicos
+
+- Os argumentos de um vetor lógico podem ser 
+
+  - `TRUE`, `FALSE` e `NA` (*not available*).
+  
+--
+
+- É possível utilizar também somente `T` e `F`, porém é preferível utilizar a versão com a palavra inteira.
+
+--
+
+- Vetores lógicos são gerados por **condições**.
+
+
+```r
+(comp &lt;- v1 &gt; 3)
+```
+
+```
+## [1] FALSE FALSE FALSE  TRUE  TRUE
+```
+
+--
+
+- Os operadores lógicos são dados por `&lt;`, `&lt;=`,  `&gt;`, `&gt;=`, `==`, `!=`.
+
+--
+
+- Temos também `&amp;`, operador "E" e `|` operador "OU".
+
+--
+
+- Funções interessantes para trabalhar com vetores lógicos são dadas por `any`, `all`.
+
+
+```r
+any(comp)
+```
+
+```
+## [1] TRUE
+```
+
+---
+# Valores faltantes
+
+- Quando uma parte da informação é desconhecida, devemos fazer uma marcação especial no vetor: `NA`.
+
+--
+
+- Qualquer operação num valor `NA`, retorna valor `NA`.
+
+--
+
+  - Inclusive operações matemáticas, como soma, média. 
+  
+--
+
+
+```r
+v_mis &lt;- c(v1, NA)
+sum(v1)
+```
+
+```
+## [1] 15
+```
+
+```r
+sum(v_mis)
+```
+
+```
+## [1] NA
+```
+
+--
+
+- Para diversas funções matemáticas, podemos utilizar o argumento `na.rm = TRUE`
+
+
+```r
+sum(v_mis, na.rm = TRUE)
+```
+
+```
+## [1] 15
+```
+
+---
+# Valores faltantes (cont.)
+
+- Uma função importante para trabalhar com `NA`'s é `is.na()`, que verifica quais dos valores estão faltantes.
+
+--
+
+
+```r
+is.na(v_mis)
+```
+
+```
+## [1] FALSE FALSE FALSE FALSE FALSE  TRUE
+```
+
+--
+
+- Para operações numéricas, também podemos obter um resultado chamado de `NaN` (*Not  a number*).
+
+--
+
+
+```r
+log(-2)
+```
+
+```
+## [1] NaN
+```
+
+--
+
+- A função `is.na()` retorna `TRUE` tanto para `NA` quanto para `NaN`. 
+--
+Porém, se quisermos isolar os casos de  `NaN`, temos `is.nan()`
+
+
+```r
+is.nan(c(v_mis, log(-2)))
+```
+
+```
+## [1] FALSE FALSE FALSE FALSE FALSE FALSE  TRUE
+```
+
+---
+# Vetores de caracteres
+
+- Um objeto do tipo de caracter é sempre definido por uma sequência de caracteres delimitada por aspas.
+
+
+```r
+texto &lt;- "Qualquer coisa"
+```
+
+--
+
+- Alguns caracteres especiais (`?Quotes`: para ter uma lista completa):
+
+  - "`\n`": quebra de linha
+  
+--
+
+- Na presença de caracteres, números são transformados em caracteres
+
+
+```r
+c('Teste', "Por quê?", 42, 'A resposta')
+```
+
+```
+## [1] "Teste"      "Por quê?"   "42"         "A resposta"
+```
+
+--
+
+- Uma função bastante utilizada com caracteres é `paste` e `paste0`.
+
+
+```r
+paste(v1, v2, sep = " - ")
+```
+
+```
+## [1] "1 - 1.1" "2 - 1.2" "3 - 1.1" "4 - 1.2" "5 - 1.1"
+```
+
+---
+# Índices de vetores e seleção
+
+- Diferentemente de outras linguagens de programação, vetores começam na posição 1.
+
+--
+
+- Podemos utilizar essas posições para obter partes do vetor elemento a elemento.
+
+
+```r
+v1[2]
+```
+
+```
+## [1] 2
+```
+
+
+```r
+v2[1]
+```
+
+```
+## [1] 1.1
+```
+
+--
+
+- Mas é possível também acessar esses valores de outras formas.
+
+---
+## Acesso - Vetor lógico
+
+- Podemos acessar e selecionar uma parte do vetor considerando um vetor lógico.
+
+
+```r
+v_mis[!is.na(v_mis)]
+```
+
+```
+## [1] 1 2 3 4 5
+```
+
+--
+
+- Note que não é necessário que o vetor lógico utilizado tenha alguma relação com o objeto sendo selecionado.
+
+--
+
+  - E que as regras de reciclagem de vetor continuam valendo
+
+
+```r
+v_mis[v1 &lt; 3]
+```
+
+```
+## [1]  1  2 NA
+```
+
+--
+
+- Isso pode ser percebido de forma mais simples com o seguinte exemplo
+
+
+```r
+v1[c(TRUE, FALSE)]
+```
+
+```
+## [1] 1 3 5
+```
+
+---
+# Acesso - Vetor de inteiros
+
+- Podemos fazer a mesma tarefa anterior passando um vetor de inteiros.
+
+
+```r
+v_mis[c(1:3, 6)]
+```
+
+```
+## [1]  1  2  3 NA
+```
+
+--
+
+- Esse vetor de índices também pode ser utilizado para repetir valores do vetor
+
+
+```r
+v2[rep(c(1, 1, 2), times = 2)]
+```
+
+```
+## [1] 1.1 1.1 1.2 1.1 1.1 1.2
+```
+
+--
+
+- Nesse caso, a reciclagem de valores não é utilizada. 
+
+---
+
+## Acesso - Vetor de inteiros negativos
+
+- Quando consideramos valores negativos, podemos excluir valores de um vetor.
+
+--
+
+
+```r
+v1[-3]
+```
+
+```
+## [1] 1 2 4 5
+```
+
+--
+
+- Podemos utilizar também um vetor de valores
+
+
+```r
+v_mis[-c(3, 5)]
+```
+
+```
+## [1]  1  2  4 NA
+```
+
+--
+
+- A seleção também pode ser feita de forma consecutiva
+
+
+```r
+v_mis[-(2:4)][c(1, 3)]
+```
+
+```
+## [1]  1 NA
+```
+
+---
+# Acesso - A partir de nomes
+
+- Podemos associar cada posição do vetor a nomes.
+
+
+```r
+v1
+```
+
+```
+## [1] 1 2 3 4 5
+```
+
+--
+
+
+```r
+names(v1) &lt;- paste0("dig", v1)
+v1
+```
+
+```
+## dig1 dig2 dig3 dig4 dig5 
+##    1    2    3    4    5
+```
+
+--
+
+
+```r
+v1[c("dig1", "dig3")]
+```
+
+```
+## dig1 dig3 
+##    1    3
+```
+
+
+---
+class: middle, center
+
+![](https://media.giphy.com/media/3o8dFn5CXJlCV9ZEsg/source.gif)
+
+# Fim!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
