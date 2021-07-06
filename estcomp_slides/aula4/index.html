@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>R - Uso de pacotes e gráficos</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2021-07-05" />
+    <script src="libs/fabric/fabric.min.js"></script>
+    <link href="libs/xaringanExtra-scribble/scribble.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-scribble/scribble.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', function() { window.xeScribble = new Scribble({"pen_color":["#FF0000"],"pen_size":3,"eraser_size":30}) })</script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle
+
+## R - Uso de pacotes e gráficos
+
+*****
+
+### Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+
+
+
+
+
+
+
+---
+class: center, middle, inverse
+
+# Última aula
+
+---
+# introdução ao `R`
+
+- Falamos sobre RStudio.
+
+- Como obter ajuda.
+
+- Algumas informações básicas sobre comandos.
+
+- Também apresentamos como acessar informação em vetores.
+
+- Vetores lógicos e informações faltantes.
+
+- Diferentes formas de gerar sequências.
+
+- Uma diferença importante com relação a outras linguagens de programação:
+
+  - aritmética com vetores.
+  
+---
+class: inverse, middle, center
+
+# Pacotes
+
+---
+# A base do R
+
+- Podemos dizer que o R é formado em grande parte por seus pacotes.
+
+--
+
+- É possível encontrar pacotes que fazem tarefas similares.
+
+  - Isso é devido a forma como o R é organizado.
+  
+--
+
+- A depender do interesse da análise dos dados devemos encontrar o pacote mais adequado.
+
+--
+
+  - Conforme o maior uso dessa ferramenta, mais fácil acaba se tornando essa tarefa.
+  
+--
+
+- Em geral, pacotes podem ser apresentados de forma conjunta a um trabalho científico.
+
+--
+
+  - Ou também numa conferência do R.
+  
+--
+
+- Em geral, a praticidade e a solução oferecida por um pacote estão relacionados com o seu maior uso.
+
+
+---
+# Grupo de pacotes
+
+- É possível também encontrar grupos de pacotes.
+
+--
+
+- Tidyverse: [https://www.tidyverse.org/](https://www.tidyverse.org/).
+
+--
+
+  - `dplyr`
+  - `ggplot2`
+  - `forcats`
+  - `tibble`
+  - `readr`
+  - `stringr`
+  - `tidyr`
+  - `purrr`
+  
+--
+
+- Muitas vezes quando carregamos um pacote, outros também são carregados.
+
+  - Isso acontece porque os pacotes podem depender entre si.
+  
+---
+# Como utilizar
+
+- Devemos carregar pacotes com a função `library()`.
+
+
+```r
+library(ggplot2)
+```
+
+--
+
+- É recomendável usar `library()` ao invés de `require()`.
+
+--
+
+- Ao fazermos isso, estejamos deixando disponíveis todas as funções exportadas para uso na sessão corrente.
+
+--
+
+- É possível acessar funções de todo pacote instalado sem carregá-lo de forma explícita.
+
+--
+
+- Para isso basta usar o operador "`::`".
+
+--
+
+- Por exemplo, se quisermos ler o help da função `mutate` sem carregar o pacote `dplyr`, podemos fazer
+
+
+```r
+?dplyr::mutate
+```
+
+---
+# Funções exportadas
+
+- As funções mais importantes de um pacote são exportadas para uso sempre que o pacote é carregado.
+
+--
+
+  - Toda função exportada deve ter um arquivo de `help`.
+  
+--
+
+- Porém, existem funções que a pessoa que desenvolve o pacote pode preferir não exportar.
+
+--
+
+- Vejamos um exemplo com o pacote `haven` e a função `read_sas`.
+
+--
+
+- Imprima o código da função
+
+
+```r
+haven::read_sas
+```
+
+--
+
+- Note como existe uma função chamada `validade_n_max`.
+
+--
+
+- Para acessar o seu código devemos fazer
+
+
+```r
+haven:::validate_n_max
+```
+
+---
+class: inverse, middle, center
+
+# Gráficos estatísticos com R
+
+---
+# Gráficos
+
+- Tendo em vista a possibilidade de usar diferentes pacotes para fazer cada tarefa no R, uma pergunta possível é:
+
+  - Qual melhor pacote para gráficos no R?
+
+--
+
+- Um pacote bastante atrativo para fazer gráficos se chama `ggplot2`.
+
+  - Parte do `tidyverse`.
+  
+--
+
+- Porém, esse pacote usa alguns artifícios um pouco mais avançados.
+
+--
+
+- Por esse motivo, vamos comentar um pouco do pacote `base` para falar de gráficos.
+
+--
+
+- Na verdade, essa discussão inclusive pode ser interessante para aprender detalhes importantes sobre fazer um gráfico.
+
+
+---
+# Função `plot`
+
+- A primeira função que podemos utilizar para criar gráficos é a função `plot`.
+
+--
+
+
+```r
+?plot
+```
+
+--
+
+- Para cada ponto que queremos desenhar numa tela, precisamos de coordenadas `x` e `y`.
+
+--
+
+  - Isso é independente se vamos desenhar um ponto ou uma linha.
+  
+--
+
+- Um primeiro gráfico não muito informativo, mas apenas para ilustrar essa ideia poderia ser
+
+
+```r
+plot(x = 1, y = 1)
+```
+
+--
+
+- Ou ainda
+
+
+```r
+plot(x = c(1, 2), y = c(1, 2))
+```
+
+---
+# Resultado
+
+
+```r
+plot(x = 1, y = 1)
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-8-1.png" width="40%" style="display: block; margin: auto;" /&gt;
+
+---
+# Resultado
+
+
+```r
+plot(x = c(1, 2), y = c(1, 2))
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-9-1.png" width="40%" style="display: block; margin: auto;" /&gt;
+
+---
+# Gráficos com objetos
+
+
+```r
+x &lt;- c(1, 2, 3)
+y &lt;- c(2, 4, 6)
+plot(x = x, y = y)
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-10-1.png" width="35%" style="display: block; margin: auto;" /&gt;
+
+---
+# Gráficos com objetos
+
+
+```r
+x2 &lt;- c(1, 2, 3)
+y2 &lt;- c(2, 4, 6)
+plot(x = x2, y = y2)
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-11-1.png" width="35%" style="display: block; margin: auto;" /&gt;
+
+---
+# outros argumentos de `plot`
+
+- Podemos ainda utilizar outros argumentos da função `plot`.
+
+--
+
+- Alguns mais utilizados: 
+
+--
+
+  - `main` = título do gráfico;
+
+--
+
+  - `xlab` = rótulo do eixo x;
+  
+--
+
+  - `ylab` = rótulo do eixo x;
+  
+--
+
+  - `xlim` = limites numéricos do eixo x;
+  
+--
+
+  - `ylim` = limites numéricos do eixo y;
+  
+--
+
+  - `type` = tipo do gráfico: pontos, linhas, barras horizontais, ...;
+  
+--
+
+  - `lty` = tipo da linha;
+  
+--
+
+  - `col` = cor do objetos plotados;
+  
+--
+
+  - ...
+  
+---
+# Exemplificando
+
+
+```r
+plot(x = x, y = y, main = "Meu primeiro gráfico", xlab = "Nome do eixo X", 
+     ylab = "Nome do eixo Y", col = 2, type = 'l', xlim = c(1.5, 3))
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-12-1.png" width="35%" style="display: block; margin: auto;" /&gt;
+
+
+---
+# Exemplificando 2
+
+
+```r
+plot(x = x, y = y, main = "Gráfico com barras horizontais", 
+     xlab = "Nome do eixo X", ylab = "Nome do eixo Y", col = "blue", type = 'h')
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-13-1.png" width="35%" style="display: block; margin: auto;" /&gt;
+
+---
+## Exemplo: função de probabilidade
+
+- Lembrem que para variáveis aleatórias discretas, podemos estar interessados em observar a função de probabilidade.
+
+--
+
+- A função de probabilidade define unicamente a variável aleatória discreta.
+
+--
+
+- Por exemplo, para a distribuição Poisson, a função de probabilidade para `\(X \sim P(\lambda)\)` é dada por
+
+`$$P(X = x) = \frac{e^{-\lambda}\lambda^x}{x!}, \quad x = 0, 1, 2, ..., \quad \lambda &gt; 0$$`
+
+--
+
+- No R, para a maioria das distribuições de probabilidade conhecidas, temos funções prontas para calcular tanto a função de probabilidade como outras quantidades importantes.
+
+--
+
+- Para o cálculo da função de probabilidade no caso Poisson, podemos utilizar
+
+
+```r
+?dpois
+```
+
+
+---
+# Checando 
+
+- Considere `\(\lambda = 3\)`, então a função de probabilidade para `\(x = 2\)` seria calculada como
+
+`$$P(X = 2) = \frac{e^{-3}3^2}{2!}$$`
+
+--
+
+- No R, podemos fazer o cálculo da seguinte forma
+
+
+```r
+(exp(-3) * 3 ^2) / 2
+```
+
+```
+## [1] 0.2240418
+```
+
+--
+
+- Usando a função `dpois`, podemos fazer 
+
+
+```r
+dpois(x = 2, lambda = 3)
+```
+
+```
+## [1] 0.2240418
+```
+
+---
+# Uso mais interessante
+
+- Considerando que estamos interessados possivelmente em vetores, podemos fazer o seguinte:
+
+
+```r
+x &lt;- 0:10
+dpois(x = x, lambda = 3)
+```
+
+```
+##  [1] 0.0497870684 0.1493612051 0.2240418077 0.2240418077 0.1680313557
+##  [6] 0.1008188134 0.0504094067 0.0216040315 0.0081015118 0.0027005039
+## [11] 0.0008101512
+```
+
+--
+
+- E podemos utilizar a função `plot` para ver os resultados.
+
+--
+
+- Para isso, podemos guardar os valores das probabilidades em um objeto:
+
+
+```r
+valores_prob &lt;- dpois(x = x, lambda = 3)
+```
+
+--
+
+
+```r
+plot(x, valores_prob, type = 'h', 
+     main = "Função de probabilidade \n Variável aleatória com distribuição Poisson", 
+     ylab = expression("P(X = x)"))
+```
+
+---
+# Resultado 
+
+
+&lt;img src="index_files/figure-html/unnamed-chunk-20-1.png" style="display: block; margin: auto;" /&gt;
+
+
+---
+# Variando `\(\lambda = 10\)`
+
+
+&lt;img src="index_files/figure-html/unnamed-chunk-21-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+# Exercícios
+
+- Tente fazer gráficos semelhantes para a distribuições:
+
+- Binomial Negativa
+  - `\(X \sim \mbox{BinNeg}(n, p)\)`
+
+`$$P(X = x) = \frac{\Gamma(x + n)}{\Gamma(n) x!} p^n (1-p)^x, \quad x=0,1,2..., \quad n &gt; 0, \quad 0 &lt; p \leqslant 1.$$`
+
+--
+
+- Binomial
+  - `\(X \sim \mbox{Bin}(n, p)\)`
+  
+`$$P(X = x) = {n \choose x} p^x (1-p)^{n-x}, \quad x=0,1,2...,n, \quad n &gt; 0, \quad 0 &lt; p \leqslant 1.$$`
+
+---
+class: inverse, middle, center
+
+# outras funções interessantes
+
+---
+# Funções `lines` e `points`
+
+- Após ter feito um gráfico, é necessário eventualmente adicionar linhas ou pontos ao seu gráfico.
+
+--
+
+- Para isso, podemos utilizar essas funções de forma bem simples.
+
+--
+
+- As duas funções precisam de coordenadas x e y.
+
+--
+
+- Considere o exemplo anterior da distribuição Poisson. 
+--
+Suponha que gostaríamos de fazer uma linha para mostrar quais probabilidades são maiores que 0,09.
+
+--
+
+- Podemos desenhar essa linha da seguinte forma
+
+
+```r
+x &lt;- 0:20
+plot(x, dpois(0:20, 10), type = 'h', 
+     main = "Função de probabilidade \n Variável aleatória com distribuição Poisson", 
+     ylab = expression("P(X = x)"))
+lines(x, rep(0.09, length(x)), col = 'violet')
+```
+
+---
+# Resultado
+
+&lt;img src="index_files/figure-html/unnamed-chunk-23-1.png" style="display: block; margin: auto;" /&gt;
+
+
+---
+# Adicionando mais linhas
+
+
+```r
+lines(x, rep(0.05, length(x)), col = 'red', lty = 2, lwd = 3)
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-25-1.png" width="40%" style="display: block; margin: auto;" /&gt;
+
+---
+# Outros exemplos
+
+
+```r
+x &lt;- 0:20
+plot(x, dpois(x, 10), type = 'h', ylab = expression("P(X = x)"))
+lines(x, dpois(x, 9), col = 'red', lty = 2, lwd = 3)
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-26-1.png" width="35%" style="display: block; margin: auto;" /&gt;
+
+---
+# Linhas retas
+
+- Função `abline`
+
+
+```r
+plot(x, dpois(x, 10), type = 'h', ylab = expression("P(X = x)"))
+abline(h = c(0.05, 0.075, 0.1), lty = 2, col = 4, lwd = 2)
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-27-1.png" width="35%" style="display: block; margin: auto;" /&gt;
+   
+   
+---
+# Linhas retas
+
+- Linhas verticais
+
+
+```r
+plot(x, dpois(x, 10), type = 'h', ylab = expression("P(X = x)"))
+abline(v = c(3.5, 7.5, 12.5), lty = 3, col = 2, lwd = 3)
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-28-1.png" width="35%" style="display: block; margin: auto;" /&gt;
+
+---
+# Gráficos para v.a. contínuas
+
+- Quando consideramos variáveis aleatórias contínuas estamos interessados em fazer o gráfico da densidade. 
+
+--
+
+- Nesse caso, podemos fazer de duas formas diferentes.
+
+--
+
+  - Utilizando a função `plot` e o argumento `type = 'l'`.
+  
+--
+
+- A utilização desse método vai depender da quantidade de pontos que utilizarmos para fazer o gráfico da linha.
+
+--
+
+- Considere um exemplo utilizando a distribuição normal.
+
+
+```r
+?dnorm
+```
+
+--
+
+- Sabemos que a distribuição normal padrão tem a maior parte da sua massa de probabilidade entre -3 e 3.
+
+--
+
+- Então, podemos criar uma sequência nesse intervalo e calcular a densidade para esses pontos.
+
+
+```r
+x &lt;- seq(-3, 3, length.out = 20)
+val_densidade &lt;- dnorm(x)
+```
+
+
+---
+# Gráfico
+
+
+```r
+plot(x, val_densidade, type = 'l', ylab = "Densidade", main = "Densidade da Normal")
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-31-1.png" width="40%" style="display: block; margin: auto;" /&gt;
+
+---
+# Função `curve`
+
+- Existe uma função pronta para lidar com gráficos de funções em um certo intervalo.
+
+--
+
+- Como *default* a função sempre faz o gráfico no intervalo (0, 1).
+
+--
+
+  - Mas podemos mudar isso facilmente.
+  
+--
+
+- Essa solução é melhor do que usar a função `plot` porque não precisamos nos preocupar com criar os valores no eixo `x`.
+
+  - O que é necessário também no caso da função `lines`.
+  
+--
+
+- Podemos inclusive comparar os dois resultados nesse exemplo da distribuição normal.
+
+
+```r
+rm(x)
+curve(dnorm(x), -3, 3)
+lines(seq(-3, 3, length.out = 15), 
+      dnorm(seq(-3, 3, length.out = 15)),
+      col = 2, lty = 2)
+```
+
+---
+# Resultado
+
+&lt;img src="index_files/figure-html/unnamed-chunk-33-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+# Função não linear
+
+- Considere a função 
+
+`$$h(x) = [\cos(50x) + \mbox{sen}(20x)]^2$$`
+
+
+```r
+h &lt;- function(x) (cos(50 * x) + sin(20 * x))^2
+curve(h(x))
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-34-1.png" width="30%" style="display: block; margin: auto;" /&gt;
+
+---
+# Utilizando a outra opção
+
+
+```r
+x &lt;- 0:15/15
+plot(x, h(x), type = 'l', col = 2, lwd = 2)
+curve(h(x), add = TRUE, col = 'blue', lwd = 2)
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-35-1.png" width="40%" style="display: block; margin: auto;" /&gt;
+
+
+---
+# Exercícios 
+
+- Façam gráficos da função densidade das seguintes distribuições de probabilidade.
+
+  - Distribuição gama (`dgamma`).
+  
+  - Distribuição exponencial (`dexp`).
+
+
+  
+---
+class: middle, center
+
+![](https://media.giphy.com/media/cMTeiF3BlaqyY4nwbK/giphy.gif)
+
+# Fim!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
