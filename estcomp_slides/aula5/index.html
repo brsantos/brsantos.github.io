@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>R - Funções</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2021-07-07" />
+    <script src="libs/fabric/fabric.min.js"></script>
+    <link href="libs/xaringanExtra-scribble/scribble.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-scribble/scribble.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', function() { window.xeScribble = new Scribble({"pen_color":["#FF0000"],"pen_size":3,"eraser_size":30}) })</script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle
+
+## R - Funções
+
+*****
+
+### Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+
+
+
+
+
+
+
+---
+class: center, middle, inverse
+
+# Última aula
+
+---
+# algumas funcionalidades no `R`
+
+- Discutimos alguns detalhes sobre pacotes.
+
+  - Funções exportadas e não exportadas.
+  
+- Como utilizar algumas funções para fazer gráficos.
+
+  - Função `plot` e alguns de seus detalhes.
+  
+  - Função `lines` para adição de linhas no gráfico.
+  
+  - Função `curve` para gráficos de funções.
+
+
+---
+class: inverse, middle, center
+
+# Listas
+
+---
+# Definições 
+
+- Primeiramente, relembremos vetores e matrizes.
+
+--
+
+- Vetores são uma coleção de valores de mesma classe. 
+
+
+```r
+vetor_n &lt;- c(1, 1, 2, 3, 4)
+```
+
+--
+
+
+```r
+vetor_c &lt;- c("A", "B", "B", "CC")
+```
+
+--
+
+
+```r
+vetor_i &lt;- c("A", "B", 2, "CC")
+```
+
+--
+
+- Matrizes são uma coleção de vetores. 
+--
+Logo, só podem ter a mesma classe de valores.
+  
+--
+
+
+```r
+matriz_a &lt;- matrix(c(1, 1, "C", NA), nrow = 2)
+matriz_a
+```
+
+```
+##      [,1] [,2]
+## [1,] "1"  "C" 
+## [2,] "1"  NA
+```
+
+
+---
+# Listas
+
+- São objetos dentro do R, que podem guardar armazenar diferentes classes.
+
+--
+
+- No exemplo, matrizes também precisam ter o mesmo comprimento para todos os vetores.
+
+--
+
+- Listas também podem armazenar objetos de diferentes tamanhos.
+
+--
+
+- Por essa flexibilidade, listas são muitas vezes escolhidas como saídas padrão de uma função.
+
+--
+
+- Muitas vezes numa função diversas operações são feitas e o usuário pode ter interesse nessas diferentes partes.
+
+--
+
+- Por esse motivo, listas são muito úteis para esse tipo de tarefa.
+
+---
+# Exemplos
+
+- Vejamos alguns exemplos de listas utilizando a função `list`.
+
+--
+
+- Primeiro caso, sem nomear os objetos.
+
+
+```r
+lista &lt;- list(c(1, 2, 3), 
+              matrix(c("C", "A", "B", "D"), ncol = 2))
+lista
+```
+
+```
+## [[1]]
+## [1] 1 2 3
+## 
+## [[2]]
+##      [,1] [,2]
+## [1,] "C"  "B" 
+## [2,] "A"  "D"
+```
+
+--
+
+- Para acessar os valores da lista, utilizamos o operador `[[]]`.
+
+
+```r
+lista[[1]]
+```
+
+```
+## [1] 1 2 3
+```
+
+---
+# Exemplos 2
+
+- Segundo caso, com objetos nomeados de antemão.
+
+
+```r
+vetor_1 &lt;- c(1, 2, 3)
+matriz_1 &lt;- matrix(c("C", "A", "B", "D"), ncol = 2)
+lista &lt;- list(vetor_1, matriz_1)
+lista
+```
+
+```
+## [[1]]
+## [1] 1 2 3
+## 
+## [[2]]
+##      [,1] [,2]
+## [1,] "C"  "B" 
+## [2,] "A"  "D"
+```
+
+--
+
+- Acessamos os valores da mesma forma.
+
+
+```r
+lista[[1]]
+```
+
+```
+## [1] 1 2 3
+```
+
+
+---
+# Exemplo 3
+
+---
+# Exemplos 2
+
+- Terceiro caso, nomeando os objetos dentro da lista.
+
+
+```r
+lista &lt;- list(vetor = vetor_1, 
+              matriz = matriz_1)
+lista
+```
+
+```
+## $vetor
+## [1] 1 2 3
+## 
+## $matriz
+##      [,1] [,2]
+## [1,] "C"  "B" 
+## [2,] "A"  "D"
+```
+
+--
+
+- Podemos acessar os valores da lista por seus nomes agora.
+
+
+```r
+lista$vetor
+```
+
+```
+## [1] 1 2 3
+```
+
+---
+# Lista de listas
+
+- Listas são tão flexíveis, que podemos colocar uma lista como um dos seus elementos.
+
+--
+
+
+```r
+lista_aninhada &lt;- list(minha_lista = lista, 
+                       vetor_qualquer = c(1, 2, 3))
+lista_aninhada
+```
+
+```
+## $minha_lista
+## $minha_lista$vetor
+## [1] 1 2 3
+## 
+## $minha_lista$matriz
+##      [,1] [,2]
+## [1,] "C"  "B" 
+## [2,] "A"  "D" 
+## 
+## 
+## $vetor_qualquer
+## [1] 1 2 3
+```
+
+---
+# Lista de listas (cont.)
+
+- Podemos acessar os valores das listas nomeadas também com o operador `[[]]`.
+
+--
+
+
+```r
+lista_aninhada[[2]]
+```
+
+```
+## [1] 1 2 3
+```
+
+--
+
+- E também os objetos da lista dentro da lista.
+
+
+```r
+lista_aninhada[[1]][[2]]
+```
+
+```
+##      [,1] [,2]
+## [1,] "C"  "B" 
+## [2,] "A"  "D"
+```
+
+--
+
+- Nesse segundo exemplo, estamos acessando a primeira posição da `lista_aninhada`. Em seguida, acessamos a segunda posição dessa lista.
+
+---
+# Exemplo prático
+
+- Vamos considerar os dados `mtcars` do pacote `datasets`.
+
+
+```r
+?mtcars
+```
+
+--
+
+- E as variáveis:
+
+  - `mpg`: consumo do carro, em milhas por galão.
+  - `hp`: potência do veículo.
+  - `cyl`: cilindros {4, 6, 8}.
+  
+--
+
+- Podemos fazer um gráfico de dispersão para saber a relação entre as variáveis.
+
+
+```r
+plot(mtcars$mpg, mtcars$hp, main = "Gráfico de dispersão", ylab = "Potência", 
+     xlab = "Consumo")
+vetor_logicos_4 &lt;-  mtcars$cyl == 4
+vetor_logicos_8 &lt;-  mtcars$cyl == 8
+points(mtcars$mpg[vetor_logicos_4], mtcars$hp[vetor_logicos_4], col = 2)
+points(mtcars$mpg[vetor_logicos_8], mtcars$hp[vetor_logicos_8], col = 3)
+```
+
+
+---
+# Resultado
+
+&lt;img src="index_files/figure-html/unnamed-chunk-16-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+### Regressão entre duas variáveis
+
+- Poderíamos ajustar um modelo de regressão entre o consumo e potência.
+
+--
+
+
+```r
+modelo_regressao &lt;- lm(mpg ~ hp, data = mtcars)
+names(modelo_regressao)
+```
+
+```
+##  [1] "coefficients"  "residuals"     "effects"       "rank"         
+##  [5] "fitted.values" "assign"        "qr"            "df.residual"  
+##  [9] "xlevels"       "call"          "terms"         "model"
+```
+
+--
+
+
+```r
+modelo_regressao$coefficients
+```
+
+```
+## (Intercept)          hp 
+## 30.09886054 -0.06822828
+```
+
+--
+
+
+```r
+modelo_regressao$call
+```
+
+```
+## lm(formula = mpg ~ hp, data = mtcars)
+```
+
+--
+
+
+```r
+paste(class(modelo_regressao$residuals), length(modelo_regressao$residuals), sep = " - ")
+```
+
+```
+## [1] "numeric - 32"
+```
+
+---
+class: inverse, middle, center
+
+# Funções
+
+---
+# Uso de funções
+
+- Funções nos permitem fazer ações mais pontuais com os objetos de interesse. 
+
+--
+
+- São principalmente interessantes quando precisamos repetir o mesmo conjunto de ações.
+
+--
+
+
+```r
+primeira_funcao &lt;- function() {
+  print("Mensagem aqui")
+}
+primeira_funcao()
+```
+
+```
+## [1] "Mensagem aqui"
+```
+
+--
+
+
+```r
+segunda_funcao &lt;- function(argumento) {
+  print(argumento)
+}
+segunda_funcao("Nova mensagem aqui.")
+```
+
+```
+## [1] "Nova mensagem aqui."
+```
+
+---
+
+# Ordem dos argumentos
+
+- A ordem dos argumentos é importante se não escrevermos o nome do argumento ao chamar a função.
+
+
+```r
+f1 &lt;- function(arg1, arg2) {
+  print(paste0("1º argumento: ", arg1, "; 2º argumento: ", arg2, "."))
+}
+f1(1, 2)
+```
+
+```
+## [1] "1º argumento: 1; 2º argumento: 2."
+```
+
+--
+
+- Nomeando os argumentos, podemos colocar na ordem que desejarmos.
+
+
+```r
+f1(arg2 = 2, arg1 = 1)
+```
+
+```
+## [1] "1º argumento: 1; 2º argumento: 2."
+```
+
+--
+
+- Sem valores _default_, a função dá erro se não passarmos todos argumentos.
+
+--
+
+
+```r
+f1(arg1 = 2)
+```
+
+---
+
+# Argumentos especiais
+
+- Podemos utilizar um argumento especial `...` para utilizarmos em chamadas de função dentro da nossa função.
+
+--
+
+
+```r
+f2 &lt;- function(vetor_numeros, ...){
+  matrix(vetor_numeros, ...)
+}
+
+f2(c(1:6), ncol = 2)
+```
+
+```
+##      [,1] [,2]
+## [1,]    1    4
+## [2,]    2    5
+## [3,]    3    6
+```
+
+--
+
+
+```r
+f2(c(1:6), nrow = 2)
+```
+
+```
+##      [,1] [,2] [,3]
+## [1,]    1    3    5
+## [2,]    2    4    6
+```
+
+---
+
+# Argumentos especiais (cont.)
+
+- Podemos inclusive considerar diversos argumentos
+
+
+```r
+f2(c(1:6), nrow = 2, byrow = TRUE)
+```
+
+```
+##      [,1] [,2] [,3]
+## [1,]    1    2    3
+## [2,]    4    5    6
+```
+
+- Em geral, esse tipo de operador é utilizado como último argumento para facilitar.
+
+--
+
+- É uma ferramenta bastante utilizada quando consideramos diversas funções espalhadas pelo R.
+
+
+```r
+args(summary.lm)
+```
+
+```
+## function (object, correlation = FALSE, symbolic.cor = FALSE, 
+##     ...) 
+## NULL
+```
+
+---
+# objetos dentro de funções
+
+- É importante mencionar que objetos criados dentro de funções não são criados na sua área de trabalho.
+
+--
+
+  - Essas tarefas são feitas em um espaço temporário.
+  
+--
+
+  - Logo, objetos precisam ser salvos de forma explícita.
+  
+--
+
+  - Isso vale também para gráficos dentro de funções.
+  
+--
+
+
+```r
+funcao_teste &lt;- function(){
+  obj_dentro_funcao &lt;- 2
+  print(paste("Valor do objeto = ", obj_dentro_funcao))
+}
+```
+
+--
+
+
+```r
+funcao_teste()
+```
+
+```
+## [1] "Valor do objeto =  2"
+```
+
+--
+
+
+```r
+obj_dentro_funcao
+```
+
+```
+## Error in eval(expr, envir, enclos): object 'obj_dentro_funcao' not found
+```
+
+---
+# Estilo
+
+- Para retornar um valor dentro uma função, podemos utilizar a função `return`.
+
+--
+
+  - Ou simplesmente deixar o objeto a ser retornado na última linha da função.
+  
+--
+
+- Funções de uma linha não precisam de chaves para serem definidas.
+
+
+```r
+funcao_curta &lt;- function() print("Curta")
+funcao_curta()
+```
+
+```
+## [1] "Curta"
+```
+
+--
+
+- Porém, é uma boa prática colocar sempre o conteúdo da função dentro de chaves para facilitar a sua visualização.
+
+
+```r
+funcao_nao_tao_curta &lt;- function(){
+  print("Curta")
+} 
+funcao_nao_tao_curta()
+```
+
+```
+## [1] "Curta"
+```
+
+---
+# Exemplo de lista de saída
+
+- Vamos considerar o exemplo do problema do aniversário. 
+
+--
+
+- O problema discute qual é a probabilidade de duas pessoas terem o mesmo dia de aniversário num grupo de `\(n\)` pessoas.
+
+--
+
+- A probabilidade de observar pelo menos um par igual é dada por 
+
+`$$P(n) = 1 - \frac{365!}{365^n(365-n)!} = \frac{365 \cdot 364 \cdots (365-n+1)}{365^n}.$$`
+
+--
+
+- Podemos fazer esse cálculo no R, de forma bem simples
+
+
+```r
+n &lt;- 23
+1 - prod(365:(365-n+1))/(365^n)
+```
+
+```
+## [1] 0.5072972
+```
+
+--
+
+- Podemos fazer uma função para fazer esse cálculo para diferentes valores e fazer o gráfico.
+
+---
+## Função - Problema do aniversário
+
+- Primeira versão:
+
+
+```r
+prob_aniversario &lt;- function(valor_inicial, valor_final){
+  seq_valores &lt;- valor_inicial:valor_final
+  val_prob &lt;- sapply(seq_valores, function(n) 1 - prod(365:(365-n+1))/(365^n))
+  plot(seq_valores, val_prob, type = "l", ylab = "Probabilidades", xlab = "# Pessoas")  
+}
+```
+
+--
+
+- Note que essa versão não verifica se os valores inicial e final são razoáveis ou não.
+
+--
+
+- Também é gerado o gráfico de forma automática.
+
+--
+
+- Para valores entre 10 e 60, podemos chamar a função assim
+
+
+```r
+prob_aniversario(10, 60)
+```
+
+--
+
+
+```r
+prob_aniversario(60, 10)
+```
+
+---
+### Resultado 
+
+
+```r
+prob_aniversario(10, 60)
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-39-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+### Resultado 
+
+
+```r
+prob_aniversario(60, 10)
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-40-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+# Alterações na função
+
+--
+
+
+```r
+prob_aniversario &lt;- function(valor_inicial, valor_final, 
+                             faz_grafico = TRUE){
+  seq_valores &lt;- valor_inicial:valor_final
+  val_prob &lt;- sapply(seq_valores, function(n){
+    1 - prod(365:(365-n+1))/(365^n)
+  }) 
+  if (faz_grafico){
+    plot(seq_valores, val_prob, type = "l", ylab = "Probabilidades", xlab = "# Pessoas")  
+  }
+  val_prob
+}
+```
+
+--
+
+
+```r
+probs &lt;- prob_aniversario(10, 30, faz_grafico = FALSE)
+```
+
+--
+
+
+```r
+head(probs)
+```
+
+```
+## [1] 0.1169482 0.1411414 0.1670248 0.1944103 0.2231025 0.2529013
+```
+
+---
+### Plotando o gráfico
+
+
+```r
+probs &lt;- prob_aniversario(10, 30)
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-44-1.png" width="35%" style="display: block; margin: auto;" /&gt;
+
+```r
+head(probs)
+```
+
+```
+## [1] 0.1169482 0.1411414 0.1670248 0.1944103 0.2231025 0.2529013
+```
+
+---
+### Alterando a função novamente
+
+
+```r
+prob_aniversario &lt;- function(n_escolhido, valor_inicial, valor_final, 
+                             faz_grafico = TRUE){
+  seq_valores &lt;- valor_inicial:valor_final
+  val_prob &lt;- sapply(seq_valores, function(n){
+    1 - prod(365:(365-n+1))/(365^n)
+  }) 
+  if (faz_grafico){
+    plot(seq_valores, val_prob, type = "l", ylab = "Probabilidades", xlab = "# Pessoas")  
+  }
+  prob_escolhida &lt;- val_prob[n_escolhido == seq_valores]
+  print(paste0("A probabilidade para n =  ", n_escolhido, 
+               " é igual a ", round(100 * prob_escolhida, 3), "%"))
+  val_prob
+}
+```
+
+--
+
+
+```r
+prob_novo &lt;- prob_aniversario(23, 10, 30, faz_grafico = FALSE)
+```
+
+```
+## [1] "A probabilidade para n =  23 é igual a 50.73%"
+```
+
+--
+
+
+```r
+head(prob_novo)
+```
+
+```
+## [1] 0.1169482 0.1411414 0.1670248 0.1944103 0.2231025 0.2529013
+```
+
+---
+# Última versão
+
+
+```r
+prob_aniversario &lt;- function(n_escolhido, valor_inicial, valor_final, 
+                             faz_grafico = FALSE){
+  seq_valores &lt;- valor_inicial:valor_final
+  val_prob &lt;- sapply(seq_valores, function(n){
+    1 - prod(365:(365-n+1))/(365^n)
+  }) 
+  if (faz_grafico){
+    plot(seq_valores, val_prob, type = "l", ylab = "Probabilidades", xlab = "# Pessoas") 
+    grafico &lt;- recordPlot()   
+  }
+  else {
+    grafico &lt;- NULL
+  }
+  prob_escolhida &lt;- val_prob[n_escolhido == seq_valores]
+  list(sequencia_valores = seq_valores, 
+       grafico_probabilidades = grafico,
+       n_escolhido = n_escolhido,
+       probabilidade_escolhida = prob_escolhida, 
+       valores_probabilidade = val_prob)
+}
+```
+
+---
+# Usando a função
+
+
+```r
+lista_probabilidade &lt;- prob_aniversario(42, 10, 60, faz_grafico = FALSE)
+```
+
+--
+
+
+```r
+lista_probabilidade$n_escolhido
+```
+
+```
+## [1] 42
+```
+
+--
+
+
+```r
+lista_probabilidade$probabilidade_escolhida
+```
+
+```
+## [1] 0.9140305
+```
+
+--
+
+
+```r
+head(lista_probabilidade$valores_probabilidade)
+```
+
+```
+## [1] 0.1169482 0.1411414 0.1670248 0.1944103 0.2231025 0.2529013
+```
+
+---
+# Usando a função novamente
+
+
+```r
+lista_probabilidade &lt;- prob_aniversario(42, 10, 60, faz_grafico = TRUE)
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-53-1.png" width="40%" style="display: block; margin: auto;" /&gt;
+
+---
+# Reutilizando o gráfico
+
+--
+
+.pull-left[
+
+```r
+x &lt;- lista_probabilidade$n_escolhido
+y &lt;- lista_probabilidade$probabilidade_escolhida
+lista_probabilidade$grafico_probabilidades
+abline(v = x, lty = 2)
+abline(h = y, lty = 2)
+text(x, y, adj = c(0, 1), 
+     labels =  paste0("n = ", x, "\n ", 
+             "Prob = ", round(y, 3)))
+```
+]
+
+--
+
+.pull-right[
+&lt;img src="index_files/figure-html/unnamed-chunk-54-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+]
+
+
+---
+class: middle, center
+
+![](https://media.giphy.com/media/Q6gPyUYrCk76g/giphy-downsized.gif)
+
+# Fim!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
