@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>R - Funções do tipo apply</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2021-07-15" />
+    <script src="libs/fabric/fabric.min.js"></script>
+    <link href="libs/xaringanExtra-scribble/scribble.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-scribble/scribble.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', function() { window.xeScribble = new Scribble({"pen_color":["#FF0000"],"pen_size":3,"eraser_size":30}) })</script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle
+
+## R - Funções do tipo apply
+
+*****
+
+### Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+
+
+
+
+
+
+
+---
+class: center, middle, inverse
+
+# Última aula
+
+---
+# Laços no `R`
+
+- Introdução a ideia de laços no R. estrutura de dados, com listas:
+
+  - `for`
+  
+  - `while`
+  
+  - `replicate`
+  
+- Exemplos de utilização.
+
+- Preocupação importante com `while` e laços infinitos.
+
+
+
+---
+class: inverse, middle, center
+
+# Família apply de funções
+
+
+---
+# Introdução
+
+--
+
+- Considere o seguinte `data.frame`.
+
+
+```r
+dados &lt;- data.frame(row.names = c("Maria", "João", "José"), 
+                    nota_p1 = c(9.0, 7.5, 6.0), 
+                    nota_p2 = c(8.5, 8.0, 6.0))
+```
+
+--
+
+- Eu poderia estar interessado em saber a média de cada pessoa, mas também a média de cada prova.
+
+--
+
+
+```r
+media_p1 &lt;- mean(dados[, 1])
+media_p2 &lt;- mean(dados[, 2])
+c(media_p1, media_p2)
+```
+
+```
+## [1] 7.5 7.5
+```
+
+--
+
+
+```r
+media_a1 &lt;- mean(as.numeric(dados[1, ]))
+```
+
+
+
+
+```r
+c(media_a1, media_a2, media_a3)
+```
+
+```
+## [1] 8.75 7.75 6.00
+```
+
+---
+# `apply`
+
+- Como o nome já diz, essa função aplica uma ação/função em um objeto ou parte dele.
+
+--
+
+  - No caso de uma matriz ou `data.frame` pode ser na linha ou na coluna.
+  
+--
+
+- No exemplo anterior poderíamos fazer o seguinte para obter a média por provas.
+
+
+```r
+apply(dados, 2, mean)
+```
+
+```
+## nota_p1 nota_p2 
+##     7.5     7.5
+```
+
+--
+
+- E também poderíamos obter a média por alunos de maneira mais rápida e fácil.
+
+
+```r
+apply(dados, 1, mean)
+```
+
+```
+## Maria  João  José 
+##  8.75  7.75  6.00
+```
+
+---
+# Outras possibilidades
+
+--
+
+
+```r
+apply(dados, 1, max)
+```
+
+```
+## Maria  João  José 
+##     9     8     6
+```
+
+--
+
+
+```r
+apply(dados, 1, min)
+```
+
+```
+## Maria  João  José 
+##   8.5   7.5   6.0
+```
+
+--
+
+- Podemos criar nossas próprias funções.
+
+
+```r
+funcao_qtde_maior_8 &lt;- function(x) sum(x &gt;= 8)
+```
+
+--
+
+
+```r
+apply(dados, 2, funcao_qtde_maior_8)
+```
+
+```
+## nota_p1 nota_p2 
+##       1       2
+```
+
+---
+# Algumas funções mais básicas
+
+- Para algumas operações mais básicas, podemos utilizar funções prontas para obter esse resumo de linhas e colunas.
+
+--
+
+  - `rowMeans`
+  
+  - `colMeans`
+  
+  - `rowSums`
+  
+  - `colSums`
+
+--
+
+
+```r
+rowMeans(dados)
+```
+
+```
+## Maria  João  José 
+##  8.75  7.75  6.00
+```
+
+
+```r
+colMeans(dados)
+```
+
+```
+## nota_p1 nota_p2 
+##     7.5     7.5
+```
+
+---
+class: inverse, middle, center
+
+# Família lapply
+
+---
+# `lapply`
+
+- Muitas vezes, estamos interessados em aplicar uma função numa lista de objetos.
+
+--
+
+- Um vetor também pode ser considerado como uma lista.
+
+--
+
+
+```r
+funcao_cria_sequencia &lt;- function(x) 1:x
+```
+
+--
+
+
+```r
+lapply(2:5, funcao_cria_sequencia)
+```
+
+```
+## [[1]]
+## [1] 1 2
+## 
+## [[2]]
+## [1] 1 2 3
+## 
+## [[3]]
+## [1] 1 2 3 4
+## 
+## [[4]]
+## [1] 1 2 3 4 5
+```
+
+---
+# Um exemplo
+
+- Vamos considerar uma lista com nomes de pessoas e valores associados a cada uma delas.
+
+--
+
+
+```r
+set.seed(42)
+nomes &lt;- sample(babynames::babynames$name, 5)
+```
+
+--
+
+- Uma função para gerar valores aleatórios:
+
+
+```r
+gera_valores &lt;- function(...){
+  n &lt;- sample(3:6, 1) 
+  round(runif(n, 0, 10), 2) # gera n valores aleatórios uniformes entre 0 e 10.
+}
+```
+
+--
+
+- Vamos criar nossa lista utilizando o `lapply`.
+
+
+```r
+lista &lt;- lapply(nomes, gera_valores)
+```
+
+---
+# Um exemplo (cont.)
+
+- Podemos verificar os valores da nossa lista:
+
+
+```r
+lista
+```
+
+```
+## [[1]]
+## [1] 7.19 9.35 2.55 4.62 9.40
+## 
+## [[2]]
+## [1] 1.17 4.75 5.60 9.04
+## 
+## [[3]]
+## [1] 9.89 9.47 0.82 5.14 3.90
+## 
+## [[4]]
+## [1] 4.47 8.36 7.38 8.11 3.88
+## 
+## [[5]]
+## [1] 0.04 8.33 0.07 2.08 9.07 6.12
+```
+
+---
+# Um exemplo (cont.)
+
+- Podemos fazer operações em cada um dos elementos da lista.
+
+--
+
+
+```r
+lapply(lista, mean)
+```
+
+```
+## [[1]]
+## [1] 6.622
+## 
+## [[2]]
+## [1] 5.14
+## 
+## [[3]]
+## [1] 5.844
+## 
+## [[4]]
+## [1] 6.44
+## 
+## [[5]]
+## [1] 4.285
+```
+
+---
+# Um exemplo (cont.)
+
+- Se o *output* da chamada for um escalar ou vetor, podemos utilizar a funçao `sapply`, para obtermos um vetor ou uma matriz, respectivamente.
+
+
+```r
+sapply(lista, mean)
+```
+
+```
+## [1] 6.622 5.140 5.844 6.440 4.285
+```
+
+--
+
+- Por exemplo, a função `range` nos retorna o mínimo e máximo de cada elemento da lista.
+
+
+```r
+sapply(lista, range)
+```
+
+```
+##      [,1] [,2] [,3] [,4] [,5]
+## [1,] 2.55 1.17 0.82 3.88 0.04
+## [2,] 9.40 9.04 9.89 8.36 9.07
+```
+
+--
+
+- Quando consideramos o pacote `ggplot2` é possível salvar também objetos de tipo gráfico em cada uma das posições da lista.
+
+
+---
+class: center, middle, inverse
+
+# Função do tidyverse: map
+
+---
+# map
+
+- Conforme mencionado anteriormente, existe uma coleção de pacotes conhecido como `tidyverse`.
+
+--
+
+- Dentro desse grupo de pacote, temos o pacote `purrr` com sua função `map` com funcionalidade muito parecida ao `lapply`.
+
+--
+
+- O pacote ainda tem outras opções que retornam opções específicas:
+
+  - `map_dbl`
+  
+  - `map_chr`
+  
+--
+
+- O uso é similar
+
+
+```r
+set.seed(42); lista_map &lt;- purrr::map(nomes, gera_valores)
+```
+
+
+```r
+set.seed(42); lista_lapply &lt;- lapply(nomes, gera_valores)
+all.equal(lista_map, lista_lapply)
+```
+
+```
+## [1] TRUE
+```
+
+
+---
+# Exercícios
+
+- Utilize a função `lapply` ou `map` para filtrar os nomes da base de dados `babynames::babynames` por ano e obter os cinco nomes mais comuns.
+
+  - Para filtrar a base considere a função `subset` ou `dplyr::filter`.
+  
+  - Para encontrar os nomes mais comuns, verifique se a base está ordenada pela frequência ou utilize as funções `sort` ou `dplyr::arrange`.
+  
+  - Para mais informações das funções do `dplyr`, veja o post da Flavia de Jesus do projeto "ensinaR" em [https://daslab-ufes.github.io/dplyr/](https://daslab-ufes.github.io/dplyr/).
+
+--
+
+- Utilize a função `lapply` ou `map` para filtrar a base `mtcars` pelo número de cilindros (`cyl`). Para cada um dos casos, faça um gráfico de dispersão entre as 
+variáveis `hp` e `mpg`.
+
+  - Utilize a função `split` para gerar uma lista com os diferentes `data.frame`'s em função do número de cilindros.
+  
+  - Utilize a função plot em cada um dos elementos da lista.
+
+---
+class: middle, center
+
+![](https://media.giphy.com/media/UV4myTYYZW0kMRpLFI/giphy-downsized.gif)
+
+# Fim!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>R - Manipulação de variável do tipo texto</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2021-07-14" />
+    <script src="libs/fabric/fabric.min.js"></script>
+    <link href="libs/xaringanExtra-scribble/scribble.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-scribble/scribble.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', function() { window.xeScribble = new Scribble({"pen_color":["#FF0000"],"pen_size":3,"eraser_size":30}) })</script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class: middle
+
+## R - Manipulação de variável do tipo texto
+
+*****
+
+### Prof. Bruno Santos
+
+
+- email: bruno.santos.31@ufes.br
+
+
+
+
+
+
+
+
+---
+class: center, middle, inverse
+
+# Manipulação de variáveis de texto
+
+
+---
+# Ementa
+
+- Segundo a ementa do curso, devemos estudar as seguintes funções: 
+
+  - `grep`
+  - `nchar` 
+  - `paste` 
+  - `sprintf` 
+  - `substr` 
+  - `regexpr` 
+  - `gregexpr`
+  
+--
+
+- Porém, existem algumas funções um pouco mais intuitivas do pacote `stringr`.
+
+--
+
+- Aula baseada no post do aluno Pedro de Brito Neto, do projeto "ensinaR":
+
+  - [https://daslab-ufes.github.io/stringr/](https://daslab-ufes.github.io/stringr/).
+
+---
+class: inverse, middle, center
+
+# Pacote do tidyverse: stringr
+
+---
+# Função: `str_length` e `str_sub`
+
+- `str_length`
+
+  - Equivalente à função `nchar`.
+
+--
+
+  - Seu uso é bem elementar. 
+
+
+```r
+stringr::str_length("Texto")
+```
+
+```
+## [1] 5
+```
+
+- `str_sub`
+
+  - Equivalente à função `substr`.
+  
+--
+
+  - Seu uso é similar a `substr`.
+  
+
+```r
+stringr::str_sub("Texto", 2, 3)
+```
+
+```
+## [1] "ex"
+```
+
+---
+# Argumentos com valores negativos
+
+- Um caso interessante dessas funções é quando utilizamos valores negativos para os argumentos `start` e `end`.
+
+--
+
+- Veja os seguintes exemplos:
+
+
+```r
+stringr::str_sub("Inicio-Fim", start = -3)
+```
+
+```
+## [1] "Fim"
+```
+
+--
+
+
+```r
+stringr::str_sub("Inicio-Fim", end = -5)
+```
+
+```
+## [1] "Inicio"
+```
+
+--
+
+
+```r
+stringr::str_sub("BemNoInicio-Fim", end = -5)
+```
+
+```
+## [1] "BemNoInicio"
+```
+
+---
+# `str_trim`
+
+- Em muitas situações é comum encontrar espaços em branco no início ou no final de uma *string*.
+
+--
+
+
+```r
+string_teste &lt;- c("  Texto ", "texto  ", "  texto")
+string_teste
+```
+
+```
+## [1] "  Texto " "texto  "  "  texto"
+```
+
+--
+
+
+```r
+stringr::str_trim(string_teste)
+```
+
+```
+## [1] "Texto" "texto" "texto"
+```
+
+--
+
+
+```r
+stringr::str_trim(string_teste, side = 'left')
+```
+
+```
+## [1] "Texto "  "texto  " "texto"
+```
+
+--
+
+
+```r
+stringr::str_trim(string_teste, side = 'right')
+```
+
+```
+## [1] "  Texto" "texto"   "  texto"
+```
+
+---
+# `str_detect`
+
+- Em algumas situações é necessário saber se uma certa sequência de caracteres aparece num certo texto.
+
+--
+
+- Exemplo:
+
+--
+
+
+```r
+palavras &lt;- c("Abcd", "abCD", "abcddde")
+```
+
+--
+
+
+```r
+stringr::str_detect(palavras, "abcd")
+```
+
+```
+## [1] FALSE FALSE  TRUE
+```
+
+--
+
+- Note que existe a diferença entre maiúsculas e mínusculas.
+
+--
+
+- A função `str_which` nos diz em quais das posições do vetor foi encontrado o padrão buscado.
+
+
+```r
+stringr::str_which(palavras, "abcd")
+```
+
+```
+## [1] 3
+```
+
+---
+# `str_subset`
+
+- Similar a função `subset` do pacote base porém para selecionar textos que apresentam o padrão procurado.
+
+
+```r
+stringr::str_subset(palavras, "abcd")
+```
+
+```
+## [1] "abcddde"
+```
+
+--
+
+# `str_remove` e `str_remove_all`
+
+
+```r
+stringr::str_remove(palavras, "ab")
+```
+
+```
+## [1] "Abcd"  "CD"    "cddde"
+```
+
+--
+
+
+```r
+stringr::str_remove_all(palavras, "d")
+```
+
+```
+## [1] "Abc"  "abCD" "abce"
+```
+
+---
+# `str_replace`
+
+- É possível também substituir valores de variáveis de texto.
+
+
+```r
+stringr::str_replace(palavras, "d", "D")
+```
+
+```
+## [1] "AbcD"    "abCD"    "abcDdde"
+```
+
+--
+
+# `str_to_upper` e `str_to_lower`
+
+- Muitas vezes é interessante deixar todas os caracteres com letras maiúsculas ou minúsculas.
+
+
+```r
+stringr::str_to_upper(palavras)
+```
+
+```
+## [1] "ABCD"    "ABCD"    "ABCDDDE"
+```
+
+---
+class: inverse, middle, center
+
+# Expressões regulares
+
+---
+# Expressões regulares
+
+- É uma maneira de identificar padrões no texto a partir de um código específico.
+
+  - Encontrar um padrão no início ou no fim do texto.
+  
+  - Um padrão que pode aparecer uma ou mais vezes.
+  
+  - Uma palavra que não é precedida por outra.
+  
+--
+
+- Para esse tipo de análise é sempre importante testar a expressão regular em um exemplo pequeno, antes de usar em textos maiores.
+
+--
+
+- Existem sites onde é possível testar a expressão regular, inclusive com explicações sobre o seu uso.
+
+  - [https://regexr.com/](https://regexr.com/)
+  
+--
+
+- Exemplos com as funções do `stringr`:
+
+  - [https://github.com/rstudio/cheatsheets/blob/master/strings.pdf](https://github.com/rstudio/cheatsheets/blob/master/strings.pdf)
+
+
+---
+# Classes e exemplos
+
+#### Suplentes
+
+- `x|y` ou
+- `[xy]` qualquer um de  
+- `[^xy]` qualquer coisa menos
+- `x-y` entre
+
+--
+
+
+```r
+palavras
+```
+
+```
+## [1] "Abcd"    "abCD"    "abcddde"
+```
+
+--
+
+
+```r
+stringr::str_detect(palavras, "a|b")
+```
+
+```
+## [1] TRUE TRUE TRUE
+```
+
+
+```r
+stringr::str_detect(palavras, "[aB]")
+```
+
+```
+## [1] FALSE  TRUE  TRUE
+```
+
+
+---
+
+
+```r
+palavras
+```
+
+```
+## [1] "Abcd"    "abCD"    "abcddde"
+```
+
+
+```r
+stringr::str_detect(palavras, "[^Abcd]")
+```
+
+```
+## [1] FALSE  TRUE  TRUE
+```
+
+--
+
+
+```r
+stringr::str_detect(palavras, "[A-D]")
+```
+
+```
+## [1]  TRUE  TRUE FALSE
+```
+
+--
+
+
+
+```r
+stringr::str_detect(palavras, "[c-e]")
+```
+
+```
+## [1]  TRUE FALSE  TRUE
+```
+
+
+--
+
+
+
+```r
+stringr::str_detect(palavras, "[a-d]")
+```
+
+```
+## [1] TRUE TRUE TRUE
+```
+
+
+---
+# Classes e exemplos
+
+#### Âncoras
+
+- `^x` começo da string
+- `x$` fim da string
+
+--
+
+
+```r
+novas_palavras &lt;- c("AaBbCcDd", "abcd", "ABCD")
+```
+
+--
+
+
+```r
+stringr::str_detect(novas_palavras, "^a")
+```
+
+```
+## [1] FALSE  TRUE FALSE
+```
+
+--
+
+
+```r
+stringr::str_detect(novas_palavras, "^A")
+```
+
+```
+## [1]  TRUE FALSE  TRUE
+```
+
+--
+
+
+```r
+stringr::str_detect(novas_palavras, "D$")
+```
+
+```
+## [1] FALSE FALSE  TRUE
+```
+
+---
+# Sequência de valores
+
+- `x(?=y)` seguido por
+- `x(?!y)` não seguido por
+- `(?&lt;=x)y` precedido por
+- `(?&lt;!x)y` não precedido por
+
+
+
+```r
+frases &lt;- c("Caso a caso.", "Caso-19")
+```
+
+
+```r
+stringr::str_detect(frases, "[Cc]aso(=?\\s)")
+```
+
+```
+## [1]  TRUE FALSE
+```
+
+
+```r
+stringr::str_detect(frases, "[Cc]aso(=?\\S)")
+```
+
+```
+## [1] TRUE TRUE
+```
+
+
+```r
+stringr::str_detect(frases, "(?&lt;!^)[Cc]aso")
+```
+
+```
+## [1]  TRUE FALSE
+```
+
+
+---
+### Quantificadores
+
+- `x?` zero ou um
+- `x*` zero ou mais
+- `x+` um ou mais
+- `x{n}` exatamente “n”
+- `x{n,}` “n” ou mais
+- `x{n,m}` entre “n” e “m”
+
+
+```r
+devaneios &lt;- c("4aaaa", "8aaaaaaaa", "1a", "0ydyys")
+```
+
+
+```r
+stringr::str_detect(devaneios, "a?")
+```
+
+```
+## [1] TRUE TRUE TRUE TRUE
+```
+
+
+```r
+stringr::str_detect(devaneios, "a+")
+```
+
+```
+## [1]  TRUE  TRUE  TRUE FALSE
+```
+
+
+```r
+stringr::str_detect(devaneios, "a{4,7}")
+```
+
+```
+## [1]  TRUE  TRUE FALSE FALSE
+```
+
+---
+# Alguns operadores
+
+  - `\\s` espaço; `\\S` não espaço
+
+  - `\\d` qualquer dígito; `\\D` não dígito
+
+  - `\\w` qualquer caractere de palavra
+
+  - `[:lower:]` letra minusculas
+
+  - `[:upper:]` letras maiusculas
+
+  - `[:punct:]` pontuação
+
+  - `[:graph:]` letras, números e pontuações
+
+  - `.` qualquer coisa (caso queira usar o “.” em sua forma literal, use
+    `\\.`)
+
+
+
+---
+class: middle, center
+
+![](https://media.giphy.com/media/lD76yTC5zxZPG/giphy.gif)
+
+# Fim!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
