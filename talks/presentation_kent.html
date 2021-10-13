@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Multiple-output response variables and Bayesian quantile regression models</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <script src="presentation_files/header-attrs-2.10/header-attrs.js"></script>
+    <script src="presentation_files/fabric-4.3.1/fabric.min.js"></script>
+    <link href="presentation_files/xaringanExtra-scribble-0.0.1/scribble.css" rel="stylesheet" />
+    <script src="presentation_files/xaringanExtra-scribble-0.0.1/scribble.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', function() { window.xeScribble = new Scribble({"pen_color":["#FF0000"],"pen_size":3,"eraser_size":30,"palette":[]}) })</script>
+    <script src="presentation_files/clipboard-2.0.6/clipboard.min.js"></script>
+    <link href="presentation_files/shareon-1.4.1/shareon.min.css" rel="stylesheet" />
+    <script src="presentation_files/shareon-1.4.1/shareon.min.js"></script>
+    <link href="presentation_files/xaringanExtra-shareagain-0.2.6/shareagain.css" rel="stylesheet" />
+    <script src="presentation_files/xaringanExtra-shareagain-0.2.6/shareagain.js"></script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+class: center
+
+background-image: url(figuras/example_plot.png)
+background-size: cover
+
+## Multiple-output response variables and Bayesian quantile regression models &lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+
+#### Bruno Santos | Canterbury, University of Kent | 14 Nov 2021
+
+---
+
+
+
+class: inverse, middle, center
+
+# Motivation
+
+---
+
+## Tests of High School students in Brazil
+
+.center[![](figuras/data.gif)]
+
+- Variables: 
+
+  * `\(y_1\)`: grade in natural sciences; 
+  * `\(y_2\)`: grade in human sciences; 
+  * `\(y_3\)`: grade in mathematics.
+
+ 
+---
+
+## Data on relative points won and minutes in tennis matches
+
+&lt;img src="figuras/dispersion_tennis.png" width="35%" style="display: block; margin: auto;" /&gt;
+
+- Variables: 
+  - `\(y_1\)`: scaled relative points won. 
+  - `\(y_2\)`: scaled minutes.
+
+ 
+---
+ 
+# Data on four fetus biometric measurements
+
+- `\(Y_1\)`: femur length (F); 
+- `\(Y_2\)`: head circumference (HC);
+- `\(Y_3\)`: abdominal circumference (AC);
+- `\(Y_4\)`: biparietal diameter (BPD).
+
+--
+
+&lt;img src="figuras/dispersion_fetus.png" width="35%" style="display: block; margin: auto;" /&gt;
+ 
+---
+class: inverse, middle, center
+
+# Quantile definition for multivariate data
+
+---
+
+# Quantile definition
+
+- Let `\(X\)` be a random variable with cumulative distribution function (cdf)
+`$$F(x) = P(X \leqslant x).$$`
+
+--
+
+- Then using the inverse of the cdf at `\(\tau\)`, we can define
+
+`$$F^{-1}(\tau) = \mbox{inf}\{x: F(x) \geqslant \tau \}$$`
+as the `\(\tau\)`th quantile of X.
+
+--
+
+&lt;br&gt;
+
+- Question:
+
+.center[### How one can define a multivariate quantile?]
+
+---
+
+# Depth
+
+- Let `\(Y \in \mathbb{R}\)` be a univariate random variable. 
+
+--
+
+- What is the depth of `\(y\)`?
+
+--
+
+  - `\(\min(F(y), 1-F(y))\)`,
+  - where `\(F\)` is the cdf of Y.
+  
+--
+
+- We could define a region with points with at least the same depth.
+
+--
+
+- Let `\(Y \sim U(0, 1)\)`:
+
+--
+
+  - take `\(A = [0.25; 0.75]\)`.
+  
+--
+
+- All `\(y \in A\)` have the depth &gt;= 0.25.
+
+
+---
+
+## Tukey depth (Halfspace depth)
+
+
+- Halfspace example
+
+&lt;img src="figuras/plot_halfspace.png" width="35%" style="display: block; margin: auto;" /&gt;
+
+--
+
+- Tukey depth:
+
+`$$HD(z, P) := \inf\{ P(H): H \mbox{ is a closed halfspace containing } z \}.$$`
+
+---
+
+# Depth region
+
+- Definition: 
+
+`$$D(\tau) := \{ z \in \mathbb{R}^k : HD(z, P) \geq \tau \}$$`
+--
+
+&lt;img src="figuras/plot_depth_region.png" width="35%" style="display: block; margin: auto;" /&gt;
+
+---
+class: inverse, center, middle
+
+# Quantile regression
+
+---
+
+# Quantile regression models
+ 
+- Classical quantile regression:
+  
+   - models the conditional quantiles of a response variable;
+   - there is no need for a probability distribution assumption; 
+   - estimation by linear programming algorithms;
+   - inference through asymptotic results or bootstrap, for instance;
+
+--
+  
+- Bayesian quantile regression:
+  
+   - assumes an asymmetric Laplace distribution for the likelihood; 
+   - posterior consistent in the case of misspecified models;
+  
+--
+
+- Both approaches have been: 
+
+  - used in a comprehensive list of areas of scientific inquiry; 
+  - extended to a variety of different modelling approaches.
+
+---
+
+# Example
+ 
+ - Quantile regression model:
+ 
+ `$$Q_Y(\tau | X) = X \beta(\tau)$$`
+
+--
+
+&lt;img src="figuras/ArtigoNature.png" width="50%" style="display: block; margin: auto;" /&gt;
+ 
+
+---
+
+# Bayesian quantile regression
+
+&lt;img src="figuras/densLaplace_2.png" width="40%" style="display: block; margin: auto;" /&gt;
+ 
+--
+
+Sriram et al. (2013) proved that this is posterior consistent to estimate the conditional quantiles.
+
+
+---
+class: inverse, top, right
+background-image: url("figuras/gauss.jpg")
+background-size: cover
+
+### Grave of Gauss
+
+
+---
+class: inverse, center, middle
+
+# Quantile regression models for multiple-output response variables
+
+---
+
+## Directional quantile regression model
+
+- Response variable is defined as `\({\boldsymbol Y} \in \mathbb{R}^k\)`. 
+
+--
+ 
+- Directional index can be defined by `\({\boldsymbol \tau} \in \mathcal B^k := \{ {\boldsymbol v} \in \mathbb{R}^k: 0 &lt; || {\boldsymbol v} || &lt; 1. \}\)`. 
+
+--
+ 
+  - `\({\boldsymbol \tau} = \tau {\boldsymbol u}\)`.
+  - Direction: `\({\boldsymbol u} \in \mathcal{S}^{k-1} :=  \{ z \in \mathbb{R}^k : ||z|| = 1 \}\)`; 
+  - Magnitude: `\(\tau \in (0,1)\)`.
+
+--
+ 
+- Define `\(\boldsymbol \Gamma_u\)`, an arbitrary `\(k \times (k-1)\)` matrix of unit vectors.
+ 
+  - `\((u \, \vdots \, \Gamma_u)\)` is an orthonormal basis of `\(\mathbb{R}^k\)`. 
+ 
+--
+
+- **DEFINITION:**
+ 
+  - The `\(\boldsymbol \tau\)`th quantile of `\(\boldsymbol Y\)` is the `\(\tau\)`th quantile hyperplane obtained from the regression of `\({\boldsymbol Y_u} := {\boldsymbol u}^{'} {\boldsymbol Y}\)` on the marginals of `\({\boldsymbol Y}^{\perp} := {\boldsymbol \Gamma_u}^{'} \boldsymbol Y\)` with an intercept term.
+
+
+---
+
+# Estimation setup
+
+ The `\(\boldsymbol \tau\)`th quantile of `\(\boldsymbol Y\)` is any element of the collection `\(\Lambda_\tau\)` of hyperplanes 
+ 
+ `$$\lambda_\tau := \{ \boldsymbol y \in \mathbb{R}^k : \boldsymbol u^{'} \boldsymbol y = \hat{\boldsymbol b}_\tau \boldsymbol \Gamma^{'}_u \boldsymbol y + \hat{a}_\tau \},$$` 
+ 
+ such that `\((\hat{a}_\tau, \hat{\boldsymbol b}_\tau)\)` are the solutions of the minimization problem 
+
+`$$\min_{(a_\tau, \boldsymbol b_\tau) \in \mathbb{R}^k} E[\rho_\tau(\boldsymbol u^{'} \boldsymbol y - \boldsymbol b_\tau \boldsymbol \Gamma^{'}_u \boldsymbol y - a_\tau )].$$`
+--
+
+where `\(\rho_\tau(u)\)` is a known loss function in the quantile regression literature defined as
+
+`$$\rho_\tau (u) = u(\tau-\mathbb{I}(u&lt;0)), \quad 0 &lt; \tau &lt; 1.$$`
+--
+
+- For Bayesian models, we use the density of the asymmetric Laplace distribution in the likelihood
+
+`$$f(y;\mu,\sigma,\tau) = \frac{\tau(1-\tau)}{\sigma}\exp\left\{-\rho_\tau\left( \frac{y_i - \mu}{\sigma} \right)\right\}.$$`
+
+---
+# Upper and lower halfspaces
+
+--
+
+With predictor variables, we have 
+`$$\lambda_\tau(\boldsymbol X) = \{ \boldsymbol u^{'} \boldsymbol y = \hat{\boldsymbol b}_\tau \boldsymbol \Gamma^{'}_u \boldsymbol y + 
+\boldsymbol x^{'} \hat{\boldsymbol \beta}_\tau  + \hat{a}_\tau \},$$`
+
+--
+
+We can say that each element `\((\hat{a}_\tau, \hat{\boldsymbol b}_\tau, \hat{\boldsymbol \beta}_\tau)\)` define an upper closed quantile halfspace
+`\begin{equation*}
+ H^+_{\tau \boldsymbol u} = H^+_{\tau \boldsymbol u} (\hat{a}_\tau, \hat{\boldsymbol b}_\tau, \hat{\boldsymbol \beta}_\tau) = \{ \boldsymbol y \in \mathbb{R}^k : \boldsymbol u^{'} \boldsymbol y \geq \hat{\boldsymbol b}_\tau \boldsymbol \Gamma^{'}_u \boldsymbol y + \boldsymbol x^{'} \hat{\boldsymbol \beta}_\tau  + \hat{a}_\tau \}
+\end{equation*}`
+and an analogous lower open quantile halfspace switching `\(\geq\)` for `\(&lt;\)`.
+
+--
+.center[
+.pull-left[![](figuras/03.png)]
+--
+.pull-right[![](figuras/27.png)]]
+
+
+---
+
+# Properties
+
+
+- Probabilistic nature of quantiles:
+ 
+`$$P(\boldsymbol Y \in H_{\tau \boldsymbol u}^-) = \tau,$$` 
+
+&lt;img src="figuras/plot_halfspace_arrow.png" width="30%" style="display: block; margin: auto;" /&gt;
+
+--
+
+- Line joining the two probability mass centers is parallel to `\(\boldsymbol u\)`.
+
+
+---
+
+# Quantile region
+
+Moreover, fixing `\(\tau\)` we are able to define the `\(\tau\)` quantile region `\(R(\tau)\)` as 
+`\begin{equation*}
+ R(\tau) = \bigcap_{{\boldsymbol u} \in \mathcal{S}^{k-1}} H_{\tau \boldsymbol u}^+.
+\end{equation*}`
+
+--
+
+.center[![](figuras/animation.gif)]
+
+
+---
+
+# Quantile region
+
+Moreover, fixing `\(\tau\)` we are able to define the `\(\tau\)` quantile region `\(R(\tau)\)` as 
+`\begin{equation*}
+ R(\tau) = \bigcap_{{\boldsymbol u} \in \mathcal{S}^{k-1}} H_{\tau \boldsymbol u}^+.
+\end{equation*}`
+
+&lt;img src="figuras/plot_depth_region_new.png" width="35%" style="display: block; margin: auto;" /&gt;
+
+
+---
+class: middle
+
+## Depth region and quantile region
+
+.pull-left[
+- Depth region:
+
+`$$D(\tau) := \{ z \in \mathbb{R}^k : HD(z, P) \geq \tau \}$$`
+- Quantile region `\(R(\tau)\)`:
+`$$R(\tau) = \bigcap_{{\boldsymbol u} \in \mathcal{S}^{k-1}} H_{\tau \boldsymbol u}^+.$$`
+&lt;img src="figuras/plot_depth_region_new.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+]
+--
+.pull-right[
+.middle[
+# `$$R(\tau) = D(\tau)$$`]
+]
+
+
+
+---
+
+### Bayesian directional quantile regression model
+
+Consider the mixture representation of the asymmetric Laplace distribution
+`$$\begin{align*}
+ Y_i | w_i &amp;\sim N(\mu + \theta w_i, \psi^2 \sigma w_i)  \\
+  w_i &amp;\sim \mbox{Exp}(\sigma) \\ 
+  &amp;\Updownarrow \\  
+  Y &amp;\sim AL(\mu, \sigma, \tau) \\
+\end{align*}$$`
+
+Then one can consider that, for each direction `\(u\)`, 
+`$$Y_u | \boldsymbol b_\tau, \boldsymbol \beta_\tau, \sigma, w \sim N(Y^\perp b_\tau + \boldsymbol x^{'}  \boldsymbol \beta_\tau + \theta w_i, \psi^2 \sigma w_i),$$`
+--
+
+&lt;br&gt;
+
+- That result makes it possible:
+
+  - to use interesting developments of the univariate in the multivariate case.
+
+
+---
+class: inverse, bottom, left
+background-image: url("figuras/dirichlet.jpg")
+background-size: cover
+
+### Grave of Dirichlet
+
+
+---
+class: inverse, middle, center
+
+# Applications
+
+
+---
+
+# ENEM data
+
+Data available online about exam students take to enter universities.
+
+- We consider around 20.000 observations from the state of SP.
+ 
+- Response variable (scores):
+ 
+  - `\(Y_1\)`: Natural sciences, such as Chemistry, Physics and Biology.
+  - `\(Y_2\)`: Human sciences, such as History, Geography, Philosophy and
+Sociology.
+  - `\(Y_3\)`: Mathematics.
+
+- Covariates available:
+ 
+  - scores for different disciplines;
+  - gender;
+  - private and public schools;
+  - Income and education of the parents;
+  - ...
+
+
+---
+
+# Directions
+
+- 512 directions considered
+
+.center[![](figuras/directions_1.gif)]
+
+---
+
+# Private vs public schools
+
+.center[![](figuras/escolas.gif)]
+
+---
+class: center, middle, inverse
+
+# Comparison of tennis' greats via multiple-output Bayesian quantile regression models
+
+---
+# Tennis data 
+
+- There is currently a tie between 3 players with most Grand Slam (GS) titles:
+
+  - Novak Djokovic
+  - Roger Federer
+  - Rafael Nadal
+  
+--
+
+- They all have 20 GS titles and one often ask:
+
+  - who is the greatest between them?
+  
+  - Who is the Greatest of All Time (GOAT)?
+  
+--
+
+- Here we compare some statistics which could be linked on how each player dominate their opponent.
+
+  - Minutes played.
+  - Relative points won.
+
+--
+
+---
+# Covariates and model
+
+- We consider the following covariates: 
+
+  - Player (Federer, Nadal, Djokovic);
+  - Surface;
+  - Win or loss;
+  - Type of tournament;
+  - Top 20 player opponent or not;
+  
+--
+
+- For the model, we fix `\(\tau = 0.25\)` and consider 180 directions in the unit circle.
+
+--
+
+- To better measures their differences:
+
+  - we consider interaction effects between player and the other covariates. 
+  
+---
+
+# Quantile regions for surface
+
+- Nadal is known for being dominant on clay courts. 
+--
+
+- Federer in grass courts.
+--
+
+- Djokovic in hard courts.
+--
+
+![](figuras/qr_surface.png)
+
+
+---
+# Quantile regions for type of tournament
+
+![](figuras/qr_tournaments.png)
+
+---
+# Quantile regions for Top 20
+
+![](figuras/qr_top20.png)
+
+---
+# Quantile regions for Win/Loss
+
+![](figuras/qr_win.png)
+
+
+---
+
+class: inverse, middle, center
+
+# Next steps
+
+---
+
+# Some ideas
+
+- Models for more than 3 dimensions:
+  - how to visualize the results?
+    
+  - multivariate growth curves?
+   
+  - how to define the directions?
+  
+&lt;img src="figuras/IWSM46fig2.png" width="90%" style="display: block; margin: auto;" /&gt;
+    
+
+  
+&lt;!-- --- --&gt;
+
+&lt;!-- # References --&gt;
+
+&lt;!-- - Santos and Kneib (2020). Noncrossing structured additive multiple-output Bayesian quantile regression models. *Statistics and Computing.* --&gt;
+
+&lt;!-- - Guggisberg (2019). A Bayesian Approach to Multiple-Output Quantile Regression. *arXiv:1909.02623*. --&gt;
+
+&lt;!-- -	Hallin, Paindaveine and Siman (2010). Multivariate quantiles and multiple-output regression quantiles: From `\(L_1\)` optimization to halfspace depth. *Annals of Statistics.* --&gt;
+
+&lt;!-- - Rodrigues and Fan (2017). Regression Adjustment for Noncrossing Bayesian Quantile Regression. *Journal of Computational and Graphical Statistics.* --&gt;
+
+&lt;!-- - Waldmann, Kneib, Yue, Lang and Flexeder (2013). Bayesian semiparametric additive quantile regression. *Statistical Modelling.* --&gt;
+
+
+
+---
+class: center, middle
+
+# Thank you!
+
+&lt;br&gt;
+
+Slides made with R package [**xaringan**](https://github.com/yihui/xaringan).
+
+&lt;br&gt;
+
+Talk available at:
+
+[https://brsantos.github.io/talks/presentation_kent.html](https://brsantos.github.io/talks/presentation_kent.html)
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
