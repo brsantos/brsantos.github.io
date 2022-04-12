@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Advanced Regression Modelling</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <meta name="date" content="2022-04-12" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <script src="libs/fabric/fabric.min.js"></script>
+    <link href="libs/xaringanExtra-scribble/scribble.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-scribble/scribble.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', function() { window.xeScribble = new Scribble({"pen_color":["#FF0000"],"pen_size":3,"eraser_size":30,"palette":[]}) })</script>
+    <script src="libs/clipboard/clipboard.min.js"></script>
+    <link href="libs/shareon/shareon.min.css" rel="stylesheet" />
+    <script src="libs/shareon/shareon.min.js"></script>
+    <link href="libs/xaringanExtra-shareagain/shareagain.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-shareagain/shareagain.js"></script>
+    <link href="libs/tachyons/tachyons.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+layout: true
+
+background-image: url(ukent_logo.jpg)
+background-position: 95% 5%
+background-size: 20%
+
+---
+class: middle, center
+
+# Advanced Regression Modelling
+
+*****
+
+### Bruno Santos
+
+
+#### email: b.santos@kent.ac.uk
+
+
+
+
+### GRC workshops
+
+---
+
+layout: false
+
+
+
+
+
+
+
+
+
+class: inverse, middle, center
+
+# Introduction
+
+
+---
+# Regression models
+
+- Statistical model to quantify association between two or more variables.
+
+--
+
+- Usually, we consider
+
+  - "Regression to the mean" ou "Mean Regression"
+  
+--
+
+- Even further
+
+  - We assume linear effects.
+
+--
+
+- If we define
+
+  - `\(Y\)` as response variable,
+  - `\(X\)` as predictor variable,
+  
+--
+
+`$$\begin{align*}
+E(Y|X = x) &amp;= f(x) \\
+&amp;= \beta_0 + \beta_1 x
+\end{align*}$$`
+
+---
+
+# Visualisation - Positive effect
+
+.center[
+![](img/anim_vert_pos.gif)
+]
+
+
+---
+# Visualisation - Negative effect
+
+.center[
+![](img/anim_vert_neg.gif)
+]
+
+---
+
+# Conditional dist. - Positive effect
+
+.center[
+![](img/anim_hor_pos.gif)]
+
+
+---
+
+# Conditional dist. - Negative effect
+
+.center[
+![](img/anim_hor_neg.gif)]
+
+
+---
+# Summary
+
+- Linear model
+
+`$$Y_i = \beta_0 + \beta_1 x_i + \epsilon_i, \quad i=1,\ldots,n.$$`
+--
+
+- Assumption of the linear model:
+
+  - Homoscedasticity : `\(\mbox{Var}(\epsilon_i) = \sigma^2\)`.
+  
+  - Independent errors.
+  
+  - `\(\epsilon_i \sim N(0, \sigma^2)\)`.
+  
+--
+
+- It is possible to verify if these assumptions are met after we fit the model.
+
+  - Diagnostic analysis.
+
+
+---
+# Data - Example
+
+.center[
+![](img/graf_dispersao.png)
+]
+
+---
+# Estimation methods
+
+- Linear model
+
+`$$Y_i = \beta_0 + \beta_1 x_i + \epsilon_i$$`
+--
+
+- Ordinary least squares
+`$$\min_{(\beta_0, \beta_1) \in \mathbb{R}^2} \sum_{i=1}^n (Y_i - \beta_0 - \beta_1 x_i)^2$$`
+
+--
+
+- Linear model in its matricial form
+
+`$$Y = X\beta + \epsilon$$`
+--
+
+- Least squares estimator 
+
+`$$\hat{\beta} = (X^t X)^{-1}X^t Y$$`
+
+
+---
+# Regression example
+
+.center[
+![](img/graf_regressao.png)
+]
+
+---
+# One vision about regression
+
+.bg-washed-green.b--dark-green.ba.bw2.br3.shadow-5.ph4.mt5[
+What the regression curve does is give a grand summary for the ave- rages of the distribution corresponding to the set of x’s. We could go further and compute several different regression curves correspon- ding to the various percentage points of the distribution and thus get a more complete picture of the set. Ordinarily this is not done, and so the regression often gives a rather incomplete picture. Just as the mean gives an incomplete picture of a single distribution, so the regression curve gives a correspondingly incomplete picture for a set of distributions.
+.tr[
+— Mosteller and Tukey (1977), pg. 266
+]]
+
+---
+# Normal distribution and its quantiles
+
+.pull-left[
+![](img/normal.png)]
+
+--
+
+.pull-right[
+![](img/normal_quantis.png)]
+
+
+---
+# Regression with conditional quantiles
+
+.center[
+![](img/normal_regressao.png)
+]
+
+---
+class: inverse, bottom, left
+background-image: url("img/gauss.jpg")
+background-size: cover
+
+### Gauss' grave
+
+---
+class: center, middle, inverse
+
+# Quantile regression
+
+
+---
+
+# Initial thoughts
+
+- The normal linear regression model is capable of estimating conditional quantiles.
+
+--
+
+  - But those quantiles will always be parallel.
+  
+--
+
+- ### And when these quantiles are not parallel?
+
+--
+
+- That is the goal of quantile regression models.
+
+--
+
+- Estimate the effect of each predictor variable for different quantiles.
+
+--
+
+- This behavior violates the homoscedasticity assumption. 
+
+--
+
+  - There, the assumption for estimating this model will be different.
+  
+--
+
+- Example:
+
+  - Would the gender gap in salaries be different for lower or higher incomes?
+  
+---
+# Visualising the difference - Normal linear model
+
+.center[
+![](img/dist_tempo_genero.png)
+]
+
+---
+# Example - Nature
+
+.center[
+![](img/ArtigoNature2.png)]
+
+
+---
+# About estimation
+
+- In the linear model,
+
+`$$Y_i = \beta_0 + \beta_1 x_i + \epsilon_i$$`
+--
+
+- We considered minimise squared errors: 
+
+`$$\min_{(\beta_0, \beta_1) \in \mathbb{R}^2} \sum_{i=1}^n (Y_i - \beta_0 - \beta_1 x_i)^2$$`
+
+--
+
+- Why not considering absolute errors?
+
+`$$\min_{(\beta_0, \beta_1) \in \mathbb{R}^2} \sum_{i=1}^n |Y_i - \beta_0 - \beta_1 x_i |$$`
+--
+
+- Historically, the proposal to minimise absolute errors was the first idea for estimation.
+
+--
+
+  - But it was not possible to obtain an answer with the tools of the time.
+  
+---
+
+# Quantile definition:
+
+- Let `\(Y\)` be a random variable with cumulative distribution function(cdf)
+$$
+ F(y) = P(Y \leqslant y).
+$$
+
+- Using the inverse function of the cdf at `\(\tau\)`, we define that
+
+`$$F^{-1}(\tau) = \mbox{inf}\{y: F(y) \geqslant \tau \}$$`
+
+is the quantile of order `\(\tau\)` of random variable `\(Y\)`.
+
+
+---
+# Loss function 
+
+- Remember the quadratic loss function `\(l(Y - \theta) = (Y - \theta)^2\)`.
+
+--
+
+  - We know this function is minimised when `\(\hat{\theta} = \bar{Y}\)`.
+  
+--
+
+  - `\(\displaystyle \min_{\theta \in \Theta} E[(Y - \theta)^2]\)`.
+  
+--
+
+- When we consider another loss function 
+`$$\rho_\tau (u) = u(\tau-\mathbb{I}(u&lt;0)), \quad 0 &lt; \tau &lt; 1,$$`
+where `\(\mathbb{I}\)` is the indicator function.
+
+--
+
+- Let `\(\hat{y}\)`, a predictor of `\(Y\)`, that minimises the loss function
+`$$E \big[ \rho_\tau(Y-\hat{y}) \big].$$`
+--
+
+- We can verify that  `\(\hat{y}=F^{-1}(\tau)\)` minimises that expected loss function.
+
+---
+# Seminal paper
+
+.center[
+![](img/RegressionQuantiles.png)]
+
+---
+# Main result
+
+- Koenker and Bassett (1978):
+
+  - Find the quantile regression estimator  `\(\boldsymbol \beta(\tau)\)` as solution of the minimisation problem
+  
+`$$\displaystyle \min_{\boldsymbol{\beta} \in \mathbb{R}^p} \sum_{i=1}^n \rho_\tau(y_i - \boldsymbol{x_i}'\boldsymbol{\beta}).$$`
+--
+
+- This estimator is also known as weighted minimum absolute estimator.
+
+--
+
+- To find these minimum values of this function are found through linear programming algorithms.
+
+  - Simplex algorithm;
+  - Interior point algorithm.
+  
+--
+
+- In `R` one can use the package: `quantreg`.
+
+---
+# Example - Coefficients plot
+
+.center[![](img/exemplo_coeficientes.png)]
+
+---
+# Example - Coefficients plot
+
+.center[![](img/exemplo_coeficientes_2.png)]
+
+---
+# Bayesian approach
+
+- Notice that it was not necessary to assume a probability distribution for the response variable.
+
+--
+
+  - This is considered to be one of the advantages of the method. 
+  
+--
+
+- For the Bayesian approach, remember that it is necessary a likelihood function.
+
+--
+
+- Bayes Theorem allows us to say
+
+`$$\pi(\beta|Y) \propto L(\beta) \pi(\beta)$$`
+--
+
+- In the case of quantile regression model, we will consider the Asymmetric Laplace distribution. 
+
+--
+
+- `\(Y \sim LA(\mu, \sigma, \tau)\)`, with density function:
+
+`$$f(y;\mu,\sigma,\tau) = \frac{\tau(1-\tau)}{\sigma}\exp\left\{-\rho_\tau\left( \frac{y_i - \mu}{\sigma} \right)\right\}.$$`
+--
+
+- Important property: `\(P(Y &lt; \mu) = \tau\)`.
+
+
+---
+# Density examples
+
+
+.pull-left[
+![](img/laplace_density1.png)
+]
+
+--
+
+.pull-right[
+![](img/laplace_density2.png)]
+
+---
+# Detail about the likelihood
+
+--
+
+.center[
+![](img/densLaplace_2.png)]
+
+---
+class: inverse, middle, center
+
+# Example with simulated data
+
+---
+# Beta distribution
+
+- `\(Y \in [0, 1]\)`.
+
+--
+
+- `\(Y \sim Beta(a, b)\)`, where `\(a &gt; 0\)` and `\(b &gt; 0\)`, if the density function is given by
+
+`$$f(y | a, b) = \frac{\Gamma(a+b)}{\Gamma(a)\Gamma(b)} y^{a-1}(1-y)^{b-1}.$$`
+
+--
+
+&lt;br&gt;
+
+- Properties
+
+  - `\(E(Y) = a/(a+b)\)`
+  - `\(Var(Y) = (a+b)/[(a+b)^2(a+b+1)]\)`
+  
+--
+
+&lt;br&gt;
+
+- Example:
+
+  - Proportion of people with access to the internet.
+  - Proportion of clients with debts in the bank.
+  
+---
+
+# Density function example 
+
+&lt;img src="index_files/figure-html/graf15-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+# Density reparameterisation
+
+- We can reparameterise the distribution's density:
+
+  - **Goal:** The parameters have a more meaningful explanation:
+
+`$$f(y_i; \mu_i, \phi) = \frac{\Gamma(\phi)}{\Gamma(\mu_i \phi)\Gamma((1-\mu_i)\phi)} y^{\mu_i \phi-1}(1-y)^{(1-\mu_i)\phi-1}, \quad 0 &lt; y_i &lt; 1,$$`
+- `\(E(Y) = \mu\)`, `\(0 &lt; \mu &lt; 1.\)`
+- `\(\mbox{Var}(Y) = (\mu(1-\mu))/(1+\phi)\)`, `\(\phi &gt; 0.\)`
+
+--
+
+- We can also write the parameters as function of other variables. 
+
+--
+
+- Obtaining a beta regression model
+
+  - `\(g(\mu_i) = x_i^t\beta\)`
+  
+
+---
+# Beta distribution mixture
+
+- Consider that we generate values of the distribution `\(X \sim Unif(0, 1)\)`.
+
+--
+
+- Simulate 600 observations of the Beta distribution with `\(\phi = 100\)` and considering two values for `\(\mu_i\)` with equal probability
+
+`$$\mu_1 = \frac{\exp(-1-x_i)}{1 + \exp(-1-x_i)},$$` 
+`$$\mu_2 = \frac{\exp(1+x_i)}{1 + \exp(1+x_i)}.$$`
+--
+
+- This will generate a mixture of Beta distributions
+
+  - With the same precision parameter.
+  
+  - Though, different means.
+  
+---
+# Data histogram
+
+.center[
+![](img/hist_beta.png)]
+
+---
+# Dispersion values
+
+.center[
+![](img/regBetaMistura.png)]
+
+---
+class: middle
+
+# Estimated coefficients by quantile regression
+
+.right-column[
+![](img/coef_beta.png)]
+
+.left-column[
+&lt;br&gt;&lt;br&gt;&lt;br&gt;
+
+- Coefficients are equal to 1 to larger quantiles.
+
+- And equal to -1 for smaller quantiles.
+
+- Without the need to define a beta distribution for the response variable.
+]
+
+---
+class: inverse, bottom, left
+background-image: url("img/canterbury1.jpg")
+background-size: cover
+
+### Canterbury
+
+---
+class: middle, center, inverse
+
+# Example with real data
+
+
+---
+# Data about income in a state of Brazil
+
+- Data from 2015.
+
+- Filtering people from the state of Paraiba.
+
+- With age &gt; 18 years old.
+
+- With income larger than zero.
+
+--
+
+- Total: 2.544 people.
+
+  - **Response variable**: people income
+
+---
+# Income histogram as a function of other variables 
+
+.pull-left[
+![](img/hist_genero.png)]
+
+--
+
+.pull-right[
+![](img/hist_etnia.png)]
+
+---
+# Dispersion plot as function of other variables
+
+.pull-left[
+![](img/disp_rendimento.png)]
+
+--
+
+.pull-right[
+![](img/disp_anosEstudo.png)]
+
+---
+# Quantile regression model
+
+- Let's consider the following model:
+
+--
+
+- **Response variable:** 
+
+  - Income.
+  
+--
+
+- **Predictor variables:**
+
+  - age
+  - gender (Female, Male)
+  - race (White, Non-white)
+  - years of education
+  
+---
+# Model estimates
+
+.center[
+![](img/coef_reg_quantilica.png)
+]
+
+---
+
+# Model estimates - Years of education
+
+.center[
+![](img/coef_reg_quantilica2.png)
+]
+
+
+---
+
+# Model estimates - White people
+
+.center[
+![](img/coef_reg_quantilica3.png)
+]
+
+---
+
+# Model estimates - Male gender
+
+.center[
+![](img/coef_reg_quantilica4.png)
+]
+
+---
+
+# Model estimates - Age
+
+.center[
+![](img/coef_reg_quantilica5.png)
+]
+
+---
+# Final remarks
+
+- Quantile regression allows to estimate regression effects in a local way.
+
+--
+
+- It is not necessary to assume a probability distribution for the data.
+
+--
+
+  - See example with mixture of data with beta distribution.
+  
+--
+
+- Quantile regresion model allows to obtain conclusions such as:
+  - one variable has an effect different than zero for just a region of the response variable. 
+
+--
+
+- It is possible to use the Bayesian approach or the classical one as well.
+
+---
+class: inverse, bottom, left
+background-image: url("img/coffee_pexel.jpg")
+background-size: cover
+
+### Questions
+
+---
+class: inverse, middle, center
+
+# Other regression models
+
+---
+# Regression models
+
+- Initially, we talked about regression models for the mean.
+  
+  - The mean is written as function of other covariates.
+  
+--
+
+- The normal model is the main example of this class of models.
+
+--
+
+  - But we can cite generalized linear models (GLM).
+  
+--
+
+- Following, we presented quantile regression models.
+
+--
+
+  - More flexible, as they are capable of estimating effects in different quantiles.
+  
+--
+
+- But there are other ways of suggesting more flexible models.
+
+---
+
+# Distributional regression
+
+- We can consider that all available parameters of a probability distribution can be written with regression elements.
+
+--
+
+  - What does that mean?
+  
+--
+
+- Consider the case where `\(Y \sim Beta(\mu, \phi)\)`.
+
+  - We can write a model for the mean
+  
+--
+
+`$$g(\mu) = x^t \beta$$`
+--
+
+  - But we could also write a model for the precision parameter.
+  
+--
+
+`$$h(\phi) = z^t \gamma$$`
+--
+
+- The predictor variables can be the same or we can consider different sets of variables.
+
+--
+
+- Some of these models that suggest this alternative are known as *distributional regression*.
+
+  - GAMLSS or BAMLSS.
+
+---
+# BAMLSS
+
+- *Bayesian additive models for location, scale and shape.* 
+
+  - *A Lego Toolbox for Flexible Bayesian Regression (and Beyond)*
+
+- You can find a good introduction to these models in
+
+  - [http://www.bamlss.org](http://www.bamlss.org)
+
+--
+
+- These models are equivalent to GAMLS models, but with a Bayesian approach.
+--
+
+- The idea is that if
+
+`$$Y \sim \mathcal{D}(h_1(\theta_1), \ldots, h_k(\theta_k))$$`
+--
+
+- Then, it is possible use these models with 
+
+`$$\eta_i = \eta(X, \beta_i) = f_{1j}(X;\beta_{1j}) + \cdots + f_{mj}(X;\beta_{mj})$$`
+--
+
+- Where these functions can be represented as nonlinear functions, spatial effects, etc.
+
+---
+# Example
+
+- Let's consider the same data considered before about income.
+
+--
+
+- We can consider the Gamma distribution to model this data set.
+
+--
+
+- The density of the gamma distribution is given by
+
+`$$f(y; \mu, \sigma) = \frac{y^{\sigma-1}\exp\left\{-\frac{\sigma y}{\mu}\right\}}{\left(\frac{\mu}{\sigma}\right)^\sigma \Gamma(\sigma)}$$`
+
+--
+
+- In, we can do the following: 
+
+
+
+
+
+```r
+library(bamlss)
+
+f &lt;- income ~ gender + race + age + year_education
+
+b1 &lt;- bamlss(f, family = "gamma", data = data_paraiba)
+```
+
+--
+
+- Initially, we are modelling only the mean of `\(Y\)`.
+
+---
+# First results
+
+- To obtain the estimates and respective credible intervals, we can do
+
+
+```r
+summary_model &lt;- summary(b1)
+```
+
+--
+
+- One part of this result can be seen in the following table, with the coefficients for the mean
+
+![](img/tabela_coeficientes.png)
+
+--
+
+- All variables seem to contribute to explain the mean of the income variable.
+
+---
+# Nonlinear effects
+
+- Should we consider only linear effects for variables age and years of education? 
+
+--
+
+- We can check this hypothesis testing the possibility of a nonlinear effect for each one of these variables.
+
+--
+
+- We could start by testing a polinomial effect for each one of those.
+
+- With BAMLSS, we can do that altering our formula:
+
+
+```r
+f2 &lt;- income ~ gender + race + poly(age, 3) + poly(year_education, 3)
+
+b2 &lt;- bamlss(f2, family = "gamma", data = data_paraiba)
+```
+
+- We can compare both models, through DIC.
+
+
+```r
+DIC(b1, b2)
+```
+
+```
+##         DIC       pd
+## b1 40388.21 5.854771
+## b2 40181.67 9.991810
+```
+
+---
+# Visualising nonlinear effects
+
+- We can do the following in R to visualise nonlinear effects:
+
+
+```r
+nd &lt;- data.frame(year_education = seq(1, 16, len = 100), 
+                 age = seq(18, 80, len = 100))
+
+nd$p_age &lt;- predict(b2, newdata = nd, 
+                     model = "mu", term = "age",
+        FUN = c95, intercept = FALSE)
+
+nd$p_years_educ &lt;- predict(b2, newdata = nd, 
+                     model = "mu", term = "year_education",
+                     FUN = c95, intercept = FALSE)
+
+par(mfrow = c(1, 2))
+ylim &lt;- range(c(nd$p_age, nd$p_years_educ))
+plot2d(p_age ~ age, data = nd, ylim = ylim)
+plot2d(p_years_educ ~ year_education, 
+       data = nd, ylim = ylim)
+```
+
+---
+# Result
+
+.center[
+![](img/efeito_nao_linear.png)]
+
+---
+class: inverse, bottom, left
+background-image: url("img/dirichlet.jpg")
+background-size: cover
+
+### Dirichlet's grave
+
+---
+# Other probability distributions 
+
+- Here, we consider the Gamma distribution, but we could have considered others.
+
+--
+
+  - In fact, we did not do any kind of diagnostic analysis.
+  
+--
+
+- Before doing this, we will propose models with other probability distributions.
+
+  - And make that comparison.
+  
+--
+
+- We can try the following probability distributions.
+
+  - Weibull distribution.
+  - Lognormal distribution.
+  - Generalised Pareto distribution.
+  
+- If you're interested to see all densities available, you can check the following link:
+
+  - [http://www.bamlss.org/articles/families.html](http://www.bamlss.org/articles/families.html)
+
+---
+# Fitting other models:
+
+
+```r
+b2_1 &lt;- bamlss(f2, family = "gamma", data = data_paraiba)
+
+b2_2 &lt;- bamlss(f2, family = "weibull", data = data_paraiba)
+
+b2_3 &lt;- bamlss(f2, family = "lognormal", data = data_paraiba)
+
+b2_4 &lt;- bamlss(f2, family = "gpareto", data = data_paraiba)
+```
+
+--
+
+- We can compare DIC's of the models
+
+--
+
+
+```r
+DIC(b2_1, b2_2, b2_3, b2_4)
+```
+
+```
+##           DIC        pd
+## b2_1 40181.84 10.077817
+## b2_2 40347.39  9.718914
+## b2_3 40222.14 10.167041
+## b2_4 42074.67  0.000000
+```
+
+
+---
+# Diagnostic analysis
+
+- The most used residual for this type of model is the quantile residual. 
+
+  - In summary, you expect that this residual follows a normal distribution, if the model is well fitted.
+  
+--
+
+- We can use the following commands in R, to evaluate the fit:
+
+
+```r
+plot(b2_1, which = c("hist-resid", "qq-resid"))
+
+plot(b2_2, which = c("hist-resid", "qq-resid"))
+
+plot(b2_3, which = c("hist-resid", "qq-resid"))
+
+plot(b2_4, which = c("hist-resid", "qq-resid"))
+```
+
+---
+# Diagnostic analysis - Gamma model
+
+![](img/diag_gamma.png)
+---
+# Diagnostic analysis - Weibull model
+
+![](img/diag_weibull.png)
+
+---
+# Diagnostic analysis - Lognormal model
+
+![](img/diag_lognormal.png)
+---
+# Diagnostic analysis -  Generalised Pareto model
+
+![](img/diag_gpareto.png)
+
+---
+# Now the parameter `\(\sigma\)`
+
+- In the gamma distribution, we had
+
+`$$f(y; \mu, \sigma) = \frac{y^{\sigma-1}\exp\left\{-\frac{\sigma y}{\mu}\right\}}{\left(\frac{\mu}{\sigma}\right)^\sigma \Gamma(\sigma)}$$`
+--
+
+- We fitted a model for the mean `\(\mu\)`.
+
+  - But we can check whether we gain more information using a regression element to parameter `\(\sigma\)`.
+  
+--
+
+- Basically, we assume a regression structure for `\(\sigma.\)`
+
+`$$h(\sigma) = f(X; \gamma)$$`
+  
+
+```r
+f3 &lt;- list(income ~ gender + race + poly(age, 3) + poly(year_education, 3), 
+           sigma ~ gender + race + poly(age, 3) + poly(year_education, 3))
+
+b3 &lt;- bamlss(f3, family = "gamma", data = data_paraiba)
+```
+
+---
+
+# Coefficients for `\(\mu\)` 
+
+.center[![](img/tabela_coeficientes_3.png)]
+
+
+---
+
+# Coefficients for `\(\sigma\)`
+
+.center[![](img/tabela_coeficientes_3_sigma.png)]
+
+---
+# Visualisation of nonlinear effects
+
+- We can use the same commands as before, just altering `model = "sigma"`
+
+
+```r
+nd &lt;- data.frame(year_education = seq(1, 16, len = 100), 
+                 age = seq(18, 80, len = 100))
+
+nd$p_age &lt;- predict(b2, newdata = nd, 
+                     model = "sigma", term = "age",
+        FUN = c95, intercept = FALSE)
+
+nd$p_year_educ &lt;- predict(b2, newdata = nd, 
+                     model = "sigma", term = "year_education",
+                     FUN = c95, intercept = FALSE)
+
+par(mfrow = c(1, 2))
+ylim &lt;- range(c(nd$p_age, nd$p_year_educ))
+plot2d(p_age ~ age, data = nd, ylim = ylim)
+plot2d(p_year_educ ~ year_education, data = nd, ylim = ylim)
+```
+
+---
+# Resultado
+
+.center[![](img/efeito_nao_linear_sigma.png)]
+
+
+---
+# Increasing the flexibility of the nonlinear effect
+
+- Instead of using a polinomial model, we can use a more flexible approach.
+
+--
+
+- For instance, using some form of splines. 
+
+--
+
+  - The BAMLS package has some predefined functions.
+  
+--
+
+- To fit the model like that, we can do
+
+
+```r
+f4 &lt;- list(income ~ gender + race + age + s(year_education), 
+           sigma ~ gender + race + s(age) + s(year_education))
+
+b4 &lt;- bamlss(f4, family = "gamma", data = data_paraiba)
+```
+
+---
+# Visualisation of the nonlinear effect
+
+.center[![](img/efeito_spline_sigma.png)]
+
+---
+class: inverse, bottom, left
+background-image: url("img/canterbury2.jpg")
+background-size: cover
+
+### Canterbury
+
+---
+# Interpreting the parameters in these models
+
+- We can use a R package to help us to observe the results of the models.
+
+--
+
+- One package that does that is the `distreg.vis`.
+
+  - More info at [https://github.com/Stan125/distreg.vis](https://github.com/Stan125/distreg.vis).
+  
+--
+
+- One can generate different scenarios for the explanatory variables and observe the associated probability distribution.
+
+--
+
+- After fitting the models, we can do the following the compare the different scenarios:
+
+
+```r
+distreg.vis::vis()
+```
+
+--
+
+- This command will initiate a Shiny app to visualise the different results of the models.
+
+---
+# App illustration
+
+- One example that we can obtain with this package.
+
+.center[![](img/distreg_vis.png)]
+
+---
+# App illustration
+
+- We can also compare the values of the moments of the chosen scenarios.
+
+.center[![](img/distreg_vis2.png)]
+
+---
+class: inverse, middle, center
+
+# Spatial effects
+
+---
+# Intuition
+
+- There are different ways of you estimating spacial effects inside a statistical model.
+
+--
+
+- One of these ways is thinking about splines in two dimensions. 
+--
+
+  - Now, we can obtain a nonlinear surface. 
+  
+--
+
+- The BAMLSS package also enables the user with different ways of estimating this spacial effect.
+
+--
+
+- We can see some examples in the following figures.
+
+---
+# Example with data about rain in Austria.
+
+- Taken from the paper:
+
+  - Umlauf, Klein and Zeileis (2018). “BAMLSS: Bayesian Additive Models for Location, Scale and Shape (and Beyond).” *Journal of Computational and Graphical Statistics* 27 (3): 612–27.
+  
+.center[![](img/rainmodel-data-stations.png)]
+
+
+---
+# Results of the model
+
+.center[![](img/rainmodel-effects-predict.png)]
+
+---
+# Results of the model
+
+.pull-left[![](img/rainmodel-effects-spatial-mu.png)]
+
+.pull-right[![](img/rainmodel-effects-spatial-sigma.png)]
+
+&lt;!-- --- --&gt;
+&lt;!-- class: inverse, middle, center --&gt;
+
+&lt;!-- # Modelos de regressão quantílica para variáveis aleatórias com mais de uma dimensão --&gt;
+
+&lt;!-- --- --&gt;
+&lt;!-- # Variável resposta com mais de uma dimensão --&gt;
+
+&lt;!-- .pull-left[ --&gt;
+&lt;!-- Escore no ENEM: --&gt;
+&lt;!-- - `\(Y_1\)`: ciências humanas --&gt;
+&lt;!-- - `\(Y_2\)`: ciências biológicas --&gt;
+&lt;!-- - `\(Y_3\)`: matemática  --&gt;
+
+&lt;!-- Nota-se uma relação de dependência entre as variáveis. --&gt;
+
+&lt;!-- ] --&gt;
+
+&lt;!-- .pull-right[ --&gt;
+&lt;!-- ![](img/gif_dados.gif)] --&gt;
+
+&lt;!-- --- --&gt;
+&lt;!-- # Direções --&gt;
+
+&lt;!-- .center[![](img/directions.gif)] --&gt;
+
+&lt;!-- - Nesse modelo, foram estimados modelos em 512 direções: --&gt;
+
+&lt;!--   - Para entender como diferentes variáveis podem ter um efeito na nota das pessoas fazendo o ENEM. --&gt;
+
+&lt;!-- - Variáveis consideradas: --&gt;
+
+&lt;!--   - Gênero, escola pública vs privada, educação dos pais, etc. --&gt;
+
+&lt;!-- --- --&gt;
+&lt;!-- # Diferença entre escola pública e privada --&gt;
+
+&lt;!-- .center[![](img/gif_resultado.gif)] --&gt;
+
+&lt;!-- --- --&gt;
+
+&lt;!-- class: middle, center, inverse --&gt;
+
+&lt;!-- # Modelos de regressão quantílica com dados de sobrevivência --&gt;
+
+&lt;!-- --- --&gt;
+&lt;!-- # Exemplo: --&gt;
+
+&lt;!-- - Artigo: Rodrigues, Borges e Santos (2021). A defective cure rate quantile regression model for male breast cancer data.  --&gt;
+
+&lt;!-- .center[![](img/coef_survival.png)] --&gt;
+
+
+
+---
+class: middle, center
+
+
+# Thank you!
+ 
+**b.santos@kent.ac.uk**
+
+**Twitter:** @bruno_r_santos
+
+
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
