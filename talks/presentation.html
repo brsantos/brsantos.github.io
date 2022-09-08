@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>New approach to study the over-coverage in Population Registers</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bruno Santos" />
+    <script src="presentation_files/header-attrs-2.14/header-attrs.js"></script>
+    <script src="presentation_files/fabric-4.3.1/fabric.min.js"></script>
+    <link href="presentation_files/xaringanExtra-scribble-0.0.1/scribble.css" rel="stylesheet" />
+    <script src="presentation_files/xaringanExtra-scribble-0.0.1/scribble.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', function() { window.xeScribble = new Scribble({"pen_color":["#FF0000"],"pen_size":3,"eraser_size":30,"palette":[]}) })</script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+class: center, middle
+
+## New approach to study the over-coverage in Population Registers &lt;br&gt;&lt;br&gt;
+
+#### joint work with Andrea Monti, Eleni Matechou, Eleonora Mussino, Sven Drefahl
+
+&lt;br&gt;&lt;br&gt;
+
+#### Bruno Santos | SUDA Colloquium Series | 8 Sep 2022
+
+---
+
+
+
+
+
+## Current project members
+
+&lt;img src="images/project_members.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: inverse, middle, center
+
+# Introduction
+
+---
+
+## Example during the pandemic
+
+&lt;img src="images/poor_data_denominator.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+## Another example during the pandemic
+
+&lt;img src="images/poor_data_numerator.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+## Potential biases
+
+- ### Undercoverage
+
+Person is there but it is **NOT** counted.
+
+&lt;img src="images/fig_undercoverage.png" width="35%" style="display: block; margin: auto;" /&gt;
+
+---
+## Potential biases
+
+- ### Overcoverage
+
+Person is **NOT** there but it is counted.
+
+&lt;img src="images/fig_overcoverage.png" width="35%" style="display: block; margin: auto;" /&gt;
+
+---
+## Population estimates
+
+- Bias in population estimates are particularly important for migrant population.
+
+- Previous research has focused more on issues of under-coverage and the problems of estimating the size and characteristics of undocumented populations.
+
+--
+
+- Over-coverage is an increasingly pressing phenomenon.
+
+  - Increasing number of countries with register-based systems and register-based censuses (Poulain and Herm 2013; Skinner 2018).
+  - Lack of knowledge and incentives to inform the country's authorities when leaving the country.
+  
+---
+
+## Over-coverage 
+  
+- Over-coverage could lead to:
+  
+  - inaccurate account of the flows and stocks of migrant populations;
+  
+  - inaccurate representations of composition and characteristics of migrant populations;
+  
+  - apparent demographic paradoxes, such as the unexpectedly **low mortality** and **fertility rates** in some migrant populations (e.g., Qvist 1999; Palloni and Arias 2004).
+  
+
+---
+## First attempt
+
+&lt;img src="images/fig_paper.png" width="75%" style="display: block; margin: auto;" /&gt;
+
+
+---
+## Method proposed by Statistics Sweden
+
+- Provide individual probability of being over-coveraged:
+
+  - Logistic regression.
+
+  - Dependent variable: future deregistering.
+  
+  - Independent variable: scenarios.
+  
+--
+
+- Difficult replication.
+  
+
+---
+## Goals
+
+- Current status:
+
+  - determinist approach;
+  - assumptions related to the probability of deregistration;
+  - need for extensive information.
+
+--
+
+- Aims for this paper:
+  - create a replicable method for other researchers;
+  - parsimonious;
+  - probabilistic;
+  - estimation of false positives;
+  - check for randomness of deregistration;
+
+
+&lt;!-- - Population of interest:  --&gt;
+&lt;!--   - Swedish foreign born residents aged 18+ years old between 1990 and 2016. --&gt;
+  
+
+---
+class: inverse, middle, center
+
+# Statistical modelling 
+
+---
+## Data being considered
+
+- First approach:
+
+  - All migrants arriving in Sweden from 1990 to 2016 in each year, where we follow their "trajectory".
+  
+  - Capture-recapture method.
+
+--
+  
+- Second approach:
+
+  - All migrant populations in a given year.
+  
+  - Multiple system estimation.
+  
+---
+
+## Register information
+
+- For both methods, we are considering the following information from registers:
+
+  - death;
+  - immigration and emigration;
+  - employment and unemployment;
+  - studies;
+  - civil status change;
+  - citizenship;
+  - internal moves;
+  - children;
+  - household income and pension;
+  
+---
+
+## Capture-Recapture models
+
+- John Graunt, father of demography, applied a capture-recapture technique to estimate the effect of the plague on the population of England in 1600s.
+
+- Pierre Simon Laplace set about estimating the population of France in 1802.
+
+--
+
+- These models have been extensively used in modelling of animal populations.
+
+--
+
+  - Size of population.
+  - Characteristics related to their migration pattern.
+  - ...
+  
+--
+
+- Individuals are uniquely identified.
+
+---
+
+## Data used to model
+
+- We follow each individual registered and record their "detection history" for each list we consider:
+
+--
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; ind &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Year_1 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Year_2 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Year_3 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Year_4 &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+--
+
+- An individual can only be "captured" if they are present.
+
+---
+## Model possibilities
+
+- For every individual, we have the following covariates:
+
+  - sex;
+  - age;
+  - time in Sweden;
+  - country of birth.
+  
+--
+
+- Considering these variables
+
+  - We model the conditional probability of the person leaving the country every year.
+  - We model the conditional probabilities of the individual appearing in a given list.
+
+---
+## Probability of deregistering
+
+- Using the list of emigration:
+  
+  - we can also model the probability of a person deregistering in a given year.
+
+--
+
+- All these conditional probabilities are used to learn about a latent variable:
+
+  - `\(Z_{ik} = 1\)`, if the `\(i\)`th person is present in year `\(k\)`.
+  
+--
+
+- We consider a Bayesian approach where we sample these values from their posterior distribution.
+
+--
+
+- These values can be used to learn about the probability of a person being in the country in a given year.
+
+---
+## Some considerations
+
+- In a simulated setting, we are able to recover all parameters even when the number of lists is big.
+
+--
+
+- This approach allows us to model deregistration as a function of individual characteristics or as the same value for all individuals.
+
+--
+
+- The latent variable approach creates a hurdle to use this model with the whole cohort of migrants.
+
+--
+
+- We are currently studying and making changes to the model, so that it becomes computationally more efficient. 
+
+
+---
+## Multiple System Estimation (MSE)
+
+- Another approach based on models from capture-recapture data.
+
+--
+
+- In this method, we consider contingency tables based on the data.
+
+  - We need to use categories for age and time in Sweden, for instance.
+  
+--
+
+- Log-linear models are used to explain counts in each cell.
+
+`$$y_i \sim \mbox{Poisson}(\mu_i)$$`
+
+--
+
+- Considering covariates, we can write the following
+
+`$$\log \boldsymbol \mu = \phi 1_n + \boldsymbol X \boldsymbol \theta$$`
+
+---
+
+
+---
+##  MSE - considerations
+
+- This method has been used in different scenarios for estimation of:
+
+  - number of drugs users in Scotland (King et al. 2014);
+  
+  - victims of human trafficking (Cruyff et al. 2017);
+  
+  - victims of modern slavery (Silverman, 2020);
+
+--
+
+- It allows for the possibility of estimating the number of people in unobserved cells.
+
+--
+
+  - In the over-coverage example, the number of false negatives.
+
+---
+# Model considered
+
+- We consider a log-linear model for years between 1992 and 2016.
+
+  - Considering all the migrant population.
+  
+--
+
+- We consider sex, age groups and time in Sweden divided in categories.
+
+- We consider interaction terms between all available lists and these control variables.
+
+--
+
+- We consider a Bayesian approach provided by the package `conting`.
+
+  - This package allows for the possibility of posterior inference related to model probabilities.
+
+---
+## Overall effect
+
+&lt;img src="images/plot_all.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+
+---
+## Sex effect
+
+&lt;img src="images/plot_female.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+## Age effect
+
+&lt;img src="images/plot_age.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+
+---
+## Time in Sweden effect
+
+&lt;img src="images/time_sweden.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+## Interactions effect
+
+&lt;img src="images/plot_interactions.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+
+
+
+
+---
+## Final remarks
+
+- Earlier results show that we can consider this model to correct a deterministic approach for the over-coverage probability.
+
+--
+
+  - Estimating the false positives number for the different combinations of the control variables.
+  
+--
+
+- This model allows for the estimation of the association between the control variables and the different lists.
+
+--
+
+- We believe that this gives a more complete picture of this over-coverage bias, by taking into account the uncertainty related to these observed counts.
+
+---
+## Next steps
+
+- Build R package that researchers can use the MSE approach for correcting rates, based on this model.
+
+  - Input: lists and control variables.
+  
+  - Output: corrected index.
+  
+--
+
+- This could be tested with data from different countries.
+
+--
+
+- Adjust the capture-recapture method, so that it is able to consider dependence between individuals and lists.
+
+
+---
+class: center, middle
+
+# Thank you!
+# Obrigado!
+# Tack!
+
+
+&lt;br&gt;
+
+contact: b.santos@kent.ac.uk
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
