@@ -33,7 +33,6 @@ navbar-links:
 #    Notas: "notas"
 #  en: 
    About: "about"
-   Teaching: "teaching"
    Research: "research"
 
 #  Author's home: "http://brsantos.org"
@@ -55,7 +54,7 @@ author:
   email: "brunodosantos@gmail.com"
   facebook: Bruno Santos  # eg. daattali
   github: brsantos    # eg. daattali
-  twitter: yourname   # eg. daattali
+  twitter: bruno_r_santos   # eg. daattali
   reddit: yourname    # eg. daattali
   google-plus: +yourname   # eg. +DeanAttali or 109424658772469020925
   linkedin: yourname  # eg. daattali
@@ -72,7 +71,7 @@ footer-links-active:
   rss: true
   facebook: false
   email: true
-  twitter: false
+  twitter: true
   google-plus: false
   github: true
   reddit: false
