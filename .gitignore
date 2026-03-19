@@ -1,0 +1,16 @@
+_site
+.bundle
+.DS_store
+.idea
+.jekyll-cache
+.jekyll-metadata
+.ruby-version
+.sass-cache
+.tweet-cache
+.venv
+assets/libs/
+assets/rendercv/rendercv_output/*.typ
+assets/rendercv/rendercv_output/*.jpg
+Gemfile.lock
+node_modules/
+vendor
