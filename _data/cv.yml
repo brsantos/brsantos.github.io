@@ -1,0 +1,232 @@
+cv:
+  name: Bruno Santos
+  headline: Researcher in Statistics
+  email: brunodosantos@gmail.com
+  photo: ../assets/img/bruno-santos.jpg
+  social_networks:
+    - network: GitHub
+      username: brsantos
+
+  sections:
+    Education:
+      - institution: University of Sao Paulo
+        area: Statistics
+        degree: PhD
+        start_date: 2012-01
+        end_date: 2016-12
+        location: Sao Paulo, Brazil
+        highlights:
+          - "Supervisor: Heleno Bolfarine"
+          - "Thesis title: Extensions of Bayesian quantile regression models"
+          - "Research visit at Duke University (2013-2014) under Alan Gelfand and Surya Tokdar"
+
+      - institution: University of Sao Paulo
+        area: Statistics
+        degree: MSc
+        start_date: 2010-01
+        end_date: 2012-12
+        location: Sao Paulo, Brazil
+        highlights:
+          - "Supervisor: Silvia Nagib Elian"
+          - "Dissertation title: Quantile regression models"
+
+      - institution: University of Sao Paulo
+        area: Statistics
+        degree: BSc
+        start_date: 2005-01
+        end_date: 2008-12
+        location: Sao Paulo, Brazil
+
+    Experience:
+      - company: CEAUL (Centro de Estatistica e Aplicacoes - Universidade de Lisboa)
+        position: Researcher in Statistics
+        location: Lisbon, Portugal
+        start_date: 2024-04
+        end_date: 2025-12
+
+      - company: University of Kent
+        position: Lecturer in Statistics
+        location: Canterbury, United Kingdom
+        start_date: 2021-09
+        end_date: 2023-12
+        highlights:
+          - "Teaching: Statistics I; Probability and Classical Inference (2021/2022); Advanced Statistical Modelling; Predictive Modelling (2022/2023)."
+
+      - company: Federal University of Espirito Santo (UFES)
+        position: Assistant Professor
+        location: Vitoria, Brazil
+        start_date: 2019-10
+        end_date: 2021-07
+        highlights:
+          - "Teaching: Statistics I; Statistics II; Probability and Statistics I; Analysis of Categorical Data; Computational Statistics II."
+
+      - company: Georg-August-Universitaet Goettingen
+        position: Postdoctoral Researcher
+        location: Goettingen, Germany
+        start_date: 2018-02
+        end_date: 2019-09
+        highlights:
+          - "Teaching: Generalized Regression; Spatial Statistics."
+
+      - company: Federal University of Bahia (UFBA)
+        position: Assistant Professor
+        location: Salvador, Brazil
+        start_date: 2016-12
+        end_date: 2018-01
+        highlights:
+          - "Teaching: Statistical Methods; Bayesian Inference."
+
+    Publications:
+      - date: 2025
+        title: A defective cure rate quantile regression model for male breast cancer data
+        authors:
+          - Rodrigues, A.
+          - Borges, P.
+          - Santos, B.
+        journal: Journal of Applied Statistics, 52(8), 1485-1512
+
+      - date: 2024
+        title: Using population register data and capture-recapture models to estimate over-coverage in Sweden
+        authors:
+          - Santos, B.
+          - Mussino, E.
+          - Drefahl, S.
+          - Matechou, E.
+        journal: Scientific Reports 14, 30551
+
+      - date: 2024
+        title: Multiple systems estimation for studying over-coverage and its heterogeneity in population registers
+        authors:
+          - Mussino, E.
+          - Santos, B.
+          - Monti, A.
+          - Matechou, E.
+          - Drefahl, S.
+        journal: Quality & Quantity 58, 5033-5056
+
+      - date: 2023
+        title: Bias reduction of maximum likelihood estimates for an asymmetric class of power models with applications
+        authors:
+          - Gomez, Y.
+          - Santos, B.
+          - Gallardo, D.
+          - Venegas, O.
+          - Gomez, H.
+        journal: REVSTAT - Statistical Journal, 21(4), 491-507
+
+      - date: 2020
+        title: Noncrossing structured additive multiple-output Bayesian quantile regression models
+        authors:
+          - Santos, B.
+          - Kneib, T.
+        journal: Statistics and Computing
+
+      - date: 2018
+        title: Bayesian quantile regression analysis for continuous data with a discrete component at zero
+        authors:
+          - Santos, B.
+          - Bolfarine, H.
+        journal: Statistical Modelling
+
+      - date: 2015
+        title: Bayesian analysis for zero-or-one inflated proportion data using quantile regression
+        authors:
+          - Santos, B.
+          - Bolfarine, H.
+        journal: Journal of Statistical Computation and Simulation
+
+      - date: 2015
+        title: Influence measures in quantile regression models
+        authors:
+          - Santos, B.
+          - Elian, S.
+        journal: Communications in Statistics - Theory and Methods
+
+      - date: 2014
+        title: Association of pollution with quantiles and expectations of the hospitalization rate of elderly people by respiratory diseases in the city of Sao Paulo, Brazil
+        authors:
+          - Alencar, A.
+          - Santos, B.
+        journal: Environmetrics
+
+    Conference Proceedings:
+      - date: 2020
+        title: Growth curves for multiple-output response variables via Bayesian quantile regression models
+        authors:
+          - Santos, B.
+          - Rodrigues, A.
+          - Kneib, T.
+        journal: Proceedings of the 35th International Workshop on Statistical Modelling
+
+      - date: 2018
+        title: Structured additive multiple-output noncrossing Bayesian quantile regression models
+        authors:
+          - Santos, B.
+          - Kneib, T.
+        journal: Proceedings of the 33rd International Workshop on Statistical Modelling
+
+      - date: 2015
+        title: Analysis of Brazil's presidential election via Bayesian spatial quantile regression
+        authors:
+          - Santos, B.
+          - Bolfarine, H.
+        journal: Proceedings of the 30th International Workshop on Statistical Modelling
+
+      - date: 2013
+        title: A two-part model using quantile regression under a Bayesian perspective
+        authors:
+          - Santos, B.
+          - Bolfarine, H.
+        journal: Proceedings of the 28th International Workshop on Statistical Modelling
+
+      - date: 2012
+        title: "Analysis of residuals in quantile regression: an application to income data in Brazil"
+        authors:
+          - Santos, B.
+          - Elian, S.
+        journal: Proceedings of the 27th International Workshop on Statistical Modelling
+
+    Awards:
+      - name: Collaborations with Developing Countries, Grant Scheme 5
+        date: 2022
+        summary: "London Mathematical Society (Grant amount: GBP 1,972)"
+      - name: 2nd place, Best poster award
+        date: 2018
+        summary: 23rd Brazilian National Symposium of Probability and Statistics
+      - name: Best Student Poster Toyota Corporation Award
+        date: 2015
+        summary: "30th International Workshop on Statistical Modelling (USD 500)"
+      - name: Student Travel Grant
+        date: 2013
+        summary: "28th International Workshop on Statistical Modelling (EUR 800)"
+
+    Teaching:
+      - "University of Kent (2021/2022): Statistics I; Probability and Classical Inference"
+      - "University of Kent (2022/2023): Advanced Statistical Modelling; Predictive Modelling"
+      - "Federal University of Espirito Santo (2019-2021): Statistics I; Statistics II; Probability and Statistics I; Analysis of Categorical Data; Computational Statistics II"
+      - "Georg-August-Universitaet Goettingen (2018-2019): Generalized Regression; Spatial Statistics"
+      - "Federal University of Bahia (2017): Statistical Methods; Bayesian Inference"
+
+    Short Courses:
+      - "3rd Paraibano Meeting of Statistics (2021): Regression models beyond the conditional mean"
+      - "24th Brazilian National Symposium of Probability and Statistics (postponed, 2020): Visualization of spatial effects in regression models"
+      - "XIII School of Regression Models (2013): Regression models with truncated and censored responses"
+      - "Universidad de Antofagasta (2017): Quantile regression: a classical and a Bayesian approach"
+
+    Service and Activities:
+      - Member, Migrating Trajectories research project (University of Stockholm and University of Kent)
+      - Local organizing committee, Movement and migration in ecology workshop (University of Kent, May 2022)
+      - Local organizing committee, 1st Workshop on Data Science and Statistical Learning (UFES, November 2019)
+      - Leader, Observatory of Covid-19 in favelas of Espirito Santo (OCOFA)
+      - Program Committee member, useR! 2021 and useR! 2022 conferences
+
+    Software:
+      - name: baquantreg
+        summary: R package for Bayesian quantile regression.
+        highlights:
+          - "GitHub: https://github.com/brsantos/baquantreg"
+
+      - name: ggcrqr
+        summary: R package for quantile regression visualization and diagnostics.
+        highlights:
+          - "GitHub: https://github.com/brsantos/ggcrqr"

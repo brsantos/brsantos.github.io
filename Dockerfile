@@ -1,44 +1,76 @@
-FROM mangar/jekyll:1.0
+FROM ruby:slim
 
-MAINTAINER Marcio Mangar "marcio.mangar@gmail.com"
+# uncomment these if you are having this issue with the build:
+# /usr/local/bundle/gems/jekyll-4.3.4/lib/jekyll/site.rb:509:in `initialize': Permission denied @ rb_sysopen - /srv/jekyll/.jekyll-cache/.gitignore (Errno::EACCES)
+# ARG GROUPID=901
+# ARG GROUPNAME=ruby
+# ARG USERID=901
+# ARG USERNAME=jekyll
 
-RUN gem install jekyll -v 3.1.6
-RUN gem install bundler
+ENV DEBIAN_FRONTEND noninteractive
 
-RUN gem install execjs
-RUN gem install therubyracer
-RUN gem install github-pages
-RUN gem install jekyll-paginate
-RUN gem install jekyll-seo-tag
-RUN gem install jekyll-gist
-RUN gem install json -v 1.8.3
+LABEL authors="Amir Pourmand,George Araújo" \
+      description="Docker image for al-folio academic template" \
+      maintainer="Amir Pourmand"
 
-RUN gem install minitest -v 5.9.0
-RUN gem install colorator -v 0.1
-RUN gem install ffi -v 1.9.10
-RUN gem install kramdown -v 1.10.0
-RUN gem install rouge -v 1.10.1
-RUN gem install pkg-config -v 1.1.7
-RUN gem install terminal-table -v 1.6.0
-RUN gem install ethon -v 0.9.0
-RUN gem install nokogiri -v 1.6.8
-RUN gem install activesupport -v 4.2.6
-RUN gem install html-pipeline -v 2.4.1
-RUN gem install jekyll-watch -v 1.4.0
-RUN gem install github-pages-health-check -v 1.1.0
-RUN gem install jekyll-github-metadata -v 2.0.0
-RUN gem install jekyll-mentions -v 1.1.2
-RUN gem install jekyll-redirect-from -v 0.10.0
-RUN gem install jemoji -v 0.6.2
-RUN gem install github-pages -v 82
+# uncomment these if you are having this issue with the build:
+# /usr/local/bundle/gems/jekyll-4.3.4/lib/jekyll/site.rb:509:in `initialize': Permission denied @ rb_sysopen - /srv/jekyll/.jekyll-cache/.gitignore (Errno::EACCES)
+# add a non-root user to the image with a specific group and user id to avoid permission issues
+# RUN groupadd -r $GROUPNAME -g $GROUPID && \
+#     useradd -u $USERID -m -g $GROUPNAME $USERNAME
 
+# install system dependencies
+RUN apt-get update -y && \
+    apt-get install -y --no-install-recommends \
+        build-essential \
+        curl \
+        git \
+        imagemagick \
+        inotify-tools \
+        locales \
+        nodejs \
+        procps \
+        python3-pip \
+        zlib1g-dev && \
+    pip --no-cache-dir install --upgrade --break-system-packages nbconvert
 
+# clean up
+RUN apt-get clean && \
+    apt-get autoremove && \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*  /tmp/*
 
-RUN mkdir -p /app
-ADD ./ /app
+# set the locale
+RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && \
+    locale-gen
 
-WORKDIR /app
+# set environment variables
+ENV EXECJS_RUNTIME=Node \
+    JEKYLL_ENV=production \
+    LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
+    LC_ALL=en_US.UTF-8
 
-EXPOSE 4000
+# create a directory for the jekyll site
+RUN mkdir /srv/jekyll
 
-CMD bundle exec jekyll serve
+# copy the Gemfile and Gemfile.lock to the image
+ADD Gemfile.lock /srv/jekyll
+ADD Gemfile /srv/jekyll
+
+# set the working directory
+WORKDIR /srv/jekyll
+
+# install jekyll and dependencies
+RUN gem install --no-document jekyll bundler
+RUN bundle install --no-cache
+
+EXPOSE 8080
+
+COPY bin/entry_point.sh /tmp/entry_point.sh
+
+# uncomment this if you are having this issue with the build:
+# /usr/local/bundle/gems/jekyll-4.3.4/lib/jekyll/site.rb:509:in `initialize': Permission denied @ rb_sysopen - /srv/jekyll/.jekyll-cache/.gitignore (Errno::EACCES)
+# set the ownership of the jekyll site directory to the non-root user
+# USER $USERNAME
+
+CMD ["/tmp/entry_point.sh"]
