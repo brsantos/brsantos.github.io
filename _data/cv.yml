@@ -232,11 +232,11 @@ cv:
           - "GitHub: https://github.com/brsantos/ggcrqr"
 
       - name: overcoverage
-        summary: R package for overcoverage in demography.
+        summary: Capture-Recapture Hidden Markov Models for register-based population inference.
         highlights:
           - "Website: https://brsantos.github.io/overcoverage/"
 
       - name: ocmse
-        summary: R package for multiple systems estimation in population registers.
+        summary: R package used to estimate overcoverage with Multiple System Estimation Models.
         highlights:
           - "Website: https://brsantos.github.io/ocmse/"
