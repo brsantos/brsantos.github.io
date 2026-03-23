@@ -227,6 +227,16 @@ cv:
           - "GitHub: https://github.com/brsantos/baquantreg"
 
       - name: ggcrqr
-        summary: R package for quantile regression visualization and diagnostics.
+        summary: The goal of ggcrqr is to provide R routines for estimation of Generalized Gompertz Cure Rate Quantile Regression models.
         highlights:
           - "GitHub: https://github.com/brsantos/ggcrqr"
+
+      - name: overcoverage
+        summary: R package for overcoverage in demography.
+        highlights:
+          - "Website: https://brsantos.github.io/overcoverage/"
+
+      - name: ocmse
+        summary: R package for multiple systems estimation in population registers.
+        highlights:
+          - "Website: https://brsantos.github.io/ocmse/"
