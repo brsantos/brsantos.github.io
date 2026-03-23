@@ -25,6 +25,6 @@ latest_posts:
   enabled: false
 ---
 
-I am a Researcher in Statistics at CEAUL, Faculty of Sciences, University of Lisbon. My research focuses on Bayesian quantile regression, structured additive models, and statistical modeling for complex data, with an emphasis on developing new statistical methods for demographical data. I received my PhD in Statistics from the University of Sao Paulo, including a one-year research period at Duke University, and previously held academic positions in Brazil and Germany.
+I am a Researcher in Statistics at CEAUL, Faculty of Sciences, University of Lisbon. My research focuses on Bayesian quantile regression, structured additive models, and statistical modeling for complex data, with an emphasis on developing new statistical methods for demographical data. I received my PhD in Statistics from the University of Sao Paulo, including a one-year research period at Duke University, and previously held academic positions in Brazil, Germany, and the UK.
 
-I develop methodological work with applications in demography, spatial statistics, and population registers. I also contribute to open-source software for Bayesian quantile regression.
+I develop methodological work with applications in demography and population registers. I'm also developing R packages that can be applied to the study of overcoverage in demography. I also contribute to open-source software for Bayesian quantile regression.
